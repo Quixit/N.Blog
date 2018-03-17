@@ -1,0 +1,6 @@
+{
+  "clientId" : "mMf5x7tI617MmANVKmHlDS120",
+  "clientSecret" : "Ny7hPyO0PlQc4fZ9zrY6vfWTi",
+  "tokenUrl" : "http://localhost:8080/api/token",
+  "baseUrl" : "http://localhost:8080/api"
+}

@@ -1,0 +1,14 @@
+{
+    "default": {
+        "user": {
+            "username": "BwqZ53Mpy4yctEwIg4oc5R8AL",
+            "password": "FzCIhRf4PcyNKj3TMLsSUhVTo",
+            "email": "fake@example.com"
+        },
+        "client": {
+            "name": "N.Blog API",
+            "clientId": "mMf5x7tI617MmANVKmHlDS120",
+            "clientSecret": "Ny7hPyO0PlQc4fZ9zrY6vfWTi"
+        }
+    }
+}

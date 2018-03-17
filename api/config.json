@@ -1,0 +1,14 @@
+{
+    "port": 8080,
+    "security": {
+        "tokenLife" : 3600
+    },
+    "mongoose": {
+        "uri": "mongodb://localhost/NBlog"
+    },
+    "default": {
+        "api": {
+            "version" : "0.0.1"
+        }
+    }
+}
