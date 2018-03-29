@@ -4,7 +4,7 @@ var router = express.Router();
 
 var log = require('../log')(module);
 
-var db = require('../db/mongoose');
+var mongoose = require('../db/mongoose');
 var Setting = require('../model/setting');
 
 router.get('/', function(req, res) {
@@ -55,10 +55,8 @@ router.get('/:id', function(req, res) {
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
 
 	var setting = new Setting({
-		title: req.body.title,
-		author: req.body.author,
-		description: req.body.description,
-		images: req.body.images
+		name: req.body.name,
+		value: req.body.value
 	});
 
 	setting.save(function (err) {
@@ -99,10 +97,8 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 			});
 		}
 
-		setting.title = req.body.title;
-		setting.description = req.body.description;
-		setting.author = req.body.author;
-		setting.images = req.body.images;
+		setting.name = req.body.name;
+		setting.value = req.body.value;
 
 		setting.save(function (err) {
 			if (!err) {
@@ -127,6 +123,32 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 				log.error('Internal error (%d): %s', res.statusCode, err.message);
 			}
 		});
+	});
+});
+
+router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
+	Setting.remove({ id: req.params.id },function (err) {
+		if (!err) {
+			log.info("Setting with id: %s deleted", setting.id);
+			return res.json({
+				status: 'OK',
+				setting:setting
+			});
+		} else {
+			if(err.name === 'ValidationError') {
+				res.statusCode = 400;
+				return res.json({
+					error: 'Validation error'
+				});
+			} else {
+				res.statusCode = 500;
+
+				return res.json({
+					error: 'Server error'
+				});
+			}
+			log.error('Internal error (%d): %s', res.statusCode, err.message);
+		}
 	});
 });
 

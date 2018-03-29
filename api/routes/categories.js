@@ -4,8 +4,9 @@ var router = express.Router();
 
 var log = require('../log')(module);
 
-var db = require('../db/mongoose');
+var mongoose = require('../db/mongoose');
 var Category = require('../model/category');
+var Post = require('../model/post');
 
 router.get('/', function(req, res) {
 
@@ -55,11 +56,13 @@ router.get('/:id', function(req, res) {
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
 
 	var category = new Category({
-		title: req.body.title,
-		author: req.body.author,
+		name: req.body.name,
 		description: req.body.description,
-		images: req.body.images
+		content: req.body.content
 	});
+
+	if (req.parent != null)
+		category.parent = mongoose.Types.ObjectId(req.parent);
 
 	category.save(function (err) {
 		if (!err) {
@@ -99,10 +102,16 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 			});
 		}
 
-		category.title = req.body.title;
+		category.name = req.body.name;
 		category.description = req.body.description;
-		category.author = req.body.author;
-		category.images = req.body.images;
+		category.content = req.body.content;
+
+		if (req.parent != null) {
+			category.parent = mongoose.Types.ObjectId(req.parent);
+		}
+		else {
+			category.parent = null;
+		}
 
 		category.save(function (err) {
 			if (!err) {
@@ -128,6 +137,72 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 			}
 		});
 	});
+});
+
+router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
+	let queryId = mongoose.Types.ObjectId(req.id);
+
+	Post.find({ categoryId : queryId},function (err, posts) {
+		if (!err) {
+			for (var i = 0; i < posts.length; i++)
+			{
+				posts[i].categoryId = null;
+				post[i].save(function (err) {
+					if (!err) {
+						log.info("Post with id: %s category removed.", category.id);
+					} else {
+						if(err.name === 'ValidationError') {
+							res.statusCode = 400;
+							return res.json({
+								error: 'Validation error'
+							});
+						} else {
+							res.statusCode = 500;
+
+							return res.json({
+								error: 'Server error'
+							});
+						}
+						log.error('Internal error (%d): %s', res.statusCode, err.message);
+					}
+				});
+			}
+
+			Category.remove({ id: req.params.id },function (err) {
+				if (!err) {
+					log.info("Category with id: %s deleted", setting.id);
+					return res.json({
+						status: 'OK',
+						setting:setting
+					});
+				} else {
+					if(err.name === 'ValidationError') {
+						res.statusCode = 400;
+						return res.json({
+							error: 'Validation error'
+						});
+					} else {
+						res.statusCode = 500;
+
+						return res.json({
+							error: 'Server error'
+						});
+					}
+					log.error('Internal error (%d): %s', res.statusCode, err.message);
+				}
+			});
+		} else {
+			res.statusCode = 500;
+
+			log.error('Internal error(%d): %s',res.statusCode,err.message);
+
+			return res.json({
+				error: 'Server error'
+			});
+		}
+	});
+
+
 });
 
 module.exports = router;

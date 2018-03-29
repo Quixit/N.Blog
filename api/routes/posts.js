@@ -4,7 +4,7 @@ var router = express.Router();
 
 var log = require('../log')(module);
 
-var db = require('../db/mongoose');
+var mongoose = require('../db/mongoose');
 var Post = require('../model/post');
 
 router.get('/', function(req, res) {
@@ -56,10 +56,16 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 	var post = new Post({
 		title: req.body.title,
-		author: req.body.author,
 		description: req.body.description,
-		images: req.body.images
+		content: req.body.content,
+		userId: mongoose.Types.ObjectId(req.user.id),
+		tags: req.body.tags,
+		published: req.body.published,
+		slug: req.body.slug
 	});
+
+	if (req.categoryId != null)
+		post.categoryId = mongoose.Types.ObjectId(req.categoryId);
 
 	post.save(function (err) {
 		if (!err) {
@@ -101,8 +107,14 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		post.title = req.body.title;
 		post.description = req.body.description;
-		post.author = req.body.author;
-		post.images = req.body.images;
+		post.content = req.body.content;
+		post.tags = req.body.tags;
+		post.published = req.body.published;
+		post.slug = req.body.slug;
+		post.modified = Date.now;
+
+		if (req.categoryId != null)
+			post.categoryId = mongoose.Types.ObjectId(req.categoryId);
 
 		post.save(function (err) {
 			if (!err) {
@@ -127,6 +139,32 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 				log.error('Internal error (%d): %s', res.statusCode, err.message);
 			}
 		});
+	});
+});
+
+router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
+	Post.remove({ id: req.params.id },function (err) {
+		if (!err) {
+			log.info("Post with id: %s deleted", setting.id);
+			return res.json({
+				status: 'OK',
+				setting:setting
+			});
+		} else {
+			if(err.name === 'ValidationError') {
+				res.statusCode = 400;
+				return res.json({
+					error: 'Validation error'
+				});
+			} else {
+				res.statusCode = 500;
+
+				return res.json({
+					error: 'Server error'
+				});
+			}
+			log.error('Internal error (%d): %s', res.statusCode, err.message);
+		}
 	});
 });
 

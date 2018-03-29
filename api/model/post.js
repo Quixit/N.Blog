@@ -42,9 +42,6 @@ var mongoose = require('mongoose'),
 			type: Date,
 			required: true,
 			default: Date.now
-		},
-		inactive: {
-			type: Boolean
 		}
 	});
 

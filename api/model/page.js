@@ -24,17 +24,16 @@ var mongoose = require('mongoose'),
 			default: Date.now
 		},
 		published: {
-			type: Boolean
+			type: Boolean,
+			required: true
 		},
 		list: {
-			type: Boolean
+			type: Boolean,
+			required: true
 		},
 		slug: {
 			type: String,
 			unique: true
-		},
-		inactive: {
-			type: Boolean
 		},
 		parent: {
         type: Schema.Types.ObjectId,
