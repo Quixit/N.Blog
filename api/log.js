@@ -1,18 +1,21 @@
 var winston = require('winston');
+var fs = require('fs');
 
 winston.emitErrs = true;
 
 function logger(module) {
 
+    fs.closeSync(fs.openSync('./all.log', 'a'));
+
     return new winston.Logger({
         transports : [
             new winston.transports.File({
                 level: 'info',
-                filename: './logs/all.log',
+                filename: './all.log',
                 handleException: true,
                 json: true,
-                maxSize: 5242880, //5mb 
-                maxFiles: 2, 
+                maxSize: 5242880, //5mb
+                maxFiles: 2,
                 colorize: false
             }),
             new winston.transports.Console({
