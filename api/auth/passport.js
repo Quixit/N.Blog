@@ -55,7 +55,7 @@ passport.use(new ClientPasswordStrategy(
 
 passport.use(new BearerStrategy(
     function(accessToken, done) {
-
+console.log('adfs');
       let key = '';
       let salt = '';
 
