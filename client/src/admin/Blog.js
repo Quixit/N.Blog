@@ -24,7 +24,7 @@ class Blog extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="title" gutterBottom>Blog</Typography>
+          <Typography variant="h6" gutterBottom>Blog</Typography>
         </Grid>
         <Grid item xs={12}>
         </Grid>

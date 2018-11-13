@@ -40,7 +40,7 @@ class Users extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="title" gutterBottom>Users</Typography>
+          <Typography variant="h6" gutterBottom>Users</Typography>
         </Grid>
         <Grid item xs={12}>
           <Paper>
@@ -56,7 +56,7 @@ class Users extends Component {
               <TableBody>
                 {this.state.users.map(u => {
                   return (
-                    <TableRow key={u.id}>
+                    <TableRow key={u._id}>
                       <TableCell component="th" scope="row">
                         {u.username}
                       </TableCell>

@@ -2,6 +2,9 @@ import { createMuiTheme } from "@material-ui/core/styles";
 
 //Override base theme styles.
 const Theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  }
 });
 
 //Build on top of theme styles.
