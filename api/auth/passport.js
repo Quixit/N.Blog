@@ -13,7 +13,7 @@ var RefreshToken = require('../model/refreshToken');
 
 passport.use(new BasicStrategy(
     function(username, password, done) {
-
+console.log('basic');
         Client.findOne({ clientId: username }, function(err, client) {
             if (err) {
             	return done(err);
@@ -34,7 +34,7 @@ passport.use(new BasicStrategy(
 
 passport.use(new ClientPasswordStrategy(
     function(clientId, clientSecret, done) {
-
+console.log('pass');
         Client.findOne({ clientId: clientId }, function(err, client) {
             if (err) {
             	return done(err);
@@ -54,17 +54,19 @@ passport.use(new ClientPasswordStrategy(
 ));
 
 passport.use(new BearerStrategy(
-    function(accessToken, done) {
+    function(token, done) {
+
 console.log('adfs');
       let key = '';
       let salt = '';
 
-      if (accessToken.length >= 64)
-        salt = accessToken.substring(0,64);
+      if (token.length >= 64)
+        salt = token.substring(0,64);
 
-      if (accessToken.length > 64)
-        key = accessToken.substring(64);
-
+      if (token.length > 64)
+        key = token.substring(64);
+console.log(key);
+console.log(salt);
       const hash = crypto.createHmac('sha256', salt)
                  .update(key)
                  .digest('hex');
@@ -101,7 +103,7 @@ console.log('adfs');
             }
 
             var info = { scope: '*' };
-            done(null, user, info);
+            return done(null, user, info);
         });
     });
 }));

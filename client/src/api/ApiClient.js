@@ -103,7 +103,7 @@ class ApiClient {
 
     if (this.user != null)
     {
-      options.headers.Authorize = 'Bearer ' + this.user.access_token;      
+      options.headers.Authorization = 'Bearer ' + this.user.access_token;
     }
 
     let url = config.baseUrl + '/' + type;

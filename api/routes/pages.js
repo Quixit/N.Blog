@@ -7,7 +7,7 @@ var log = require('../log')(module);
 var mongoose = require('../db/mongoose');
 var Page = require('../model/page');
 
-router.get('/', function(req, res) {
+router.get('/', passport.authenticate('bearer', { session: false }), function(req, res) {
 
 	Page.find(function (err, pages) {
 		if (!err) {

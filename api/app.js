@@ -6,6 +6,7 @@ var passport = require('./auth/passport');
 var methodOverride = require('method-override');
 var log = require('./log')(module);
 var router = require('./routes/router');
+var util = require('util');
 
 //Configure express.
 var app = express();
@@ -22,7 +23,7 @@ app.use(router);
 // catch 404 and forward to error handler
 app.use(function(req, res, next){
     res.status(404);
-    log.debug('%s %d %s', req.method, res.statusCode, req.url);
+    log.debug(util.format('%s %d %s', req.method, res.statusCode, req.url));
     res.json({
     	error: 'Not found'
     });
@@ -32,7 +33,7 @@ app.use(function(req, res, next){
 // error handlers
 app.use(function(err, req, res, next){
     res.status(err.status || 500);
-    log.error('%s %d %s', req.method, res.statusCode, err.message);
+    log.debug(util.format('%s %d %s', req.method, res.statusCode, err.message));
     res.json({
     	error: err.message
     });

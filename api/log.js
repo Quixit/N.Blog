@@ -1,13 +1,11 @@
 var winston = require('winston');
 var fs = require('fs');
 
-winston.emitErrs = true;
-
 function logger(module) {
 
     fs.closeSync(fs.openSync('./all.log', 'a'));
 
-    return new winston.Logger({
+    return winston.createLogger({
         transports : [
             new winston.transports.File({
                 level: 'info',

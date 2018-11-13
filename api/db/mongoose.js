@@ -4,8 +4,9 @@ var log = require('../log')(module);
 var config = require('../config');
 var connectUri = config.get('mongoose:uri');
 
+mongoose.set('useCreateIndex', true);
 mongoose.Promise = global.Promise;
-mongoose.connect(connectUri);
+mongoose.connect(connectUri, { useNewUrlParser: true });
 
 var db = mongoose.connection;
 
