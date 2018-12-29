@@ -31,7 +31,7 @@ class Users extends Component {
   list() {
     Client.get('users').then(users => {
       this.setState({ users: users });
-    });
+    }).catch(e => console.error(e));
   }
 
   render() {

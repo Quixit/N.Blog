@@ -56,7 +56,6 @@ console.log('pass');
 passport.use(new BearerStrategy(
     function(token, done) {
 
-console.log('adfs');
       let key = '';
       let salt = '';
 
@@ -65,8 +64,7 @@ console.log('adfs');
 
       if (token.length > 64)
         key = token.substring(64);
-console.log(key);
-console.log(salt);
+
       const hash = crypto.createHmac('sha256', salt)
                  .update(key)
                  .digest('hex');

@@ -9,7 +9,7 @@ class ApiClient {
       this.user = {
         access_token : token,
         refresh_token : localStorage.getItem('ApiClient.refresh_token'),
-        expires : Number(localStorage.removeItem('ApiClient.expires'))
+        expires : Number(localStorage.getItem('ApiClient.expires'))
       };
     }
     else {
@@ -74,16 +74,16 @@ class ApiClient {
   fetch(url, options)
   {
     return fetch(url, options)
-        .then(response =>
-          response.json().then(result => ({ result, response }))
-              ).then(({ result, response }) =>  {
-          if (!response.ok) {
-            return Promise.reject(result, response);
-          }
-          else {
-            return Promise.resolve(result);
-          }
-        });
+        .then(response => {
+            if (response.ok) {
+              return response.json().then(result => ({ result, response }))
+            }
+            else {
+              return Promise.reject(response.text(), response);
+            }
+          }).then(({ result, response }) =>
+            Promise.resolve(result)
+        );
   }
   async request (type, method, id, body) {
 

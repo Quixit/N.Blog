@@ -6,14 +6,14 @@
   "description": "Frontend Client for N.Blog platform.",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^3.4.0",
+    "@material-ui/core": "^3.7.1",
     "@material-ui/icons": "^3.0.1",
-    "ajv": "^6.5.5",
-    "react": "^16.6.1",
-    "react-dom": "^16.6.1",
+    "ajv": "^6.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "react-loadable": "^5.5.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.1"
+    "react-scripts": "^2.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,5 +26,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {}
 }

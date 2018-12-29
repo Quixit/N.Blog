@@ -38,8 +38,6 @@ var passComplexity = function(pass)
 };
 
 router.get('/', passport.authenticate('bearer', { session: false }), function(req, res) {
-console.log('dfs');
-//console.log(req);
 	User.find({ inactive: false },function (err, users) {
 		if (!err) {
 			return res.json(users);
