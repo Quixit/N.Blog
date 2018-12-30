@@ -15,6 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 
 import { Styles} from '../Theme';
@@ -75,7 +76,7 @@ class Users extends Component {
       password: this.state.password
     };
 
-    if (this.state._id === '') {
+    if (this.state._id === 'new') {
       Client.post('users', item).then(users => {
         this.select({});
         this.list();
@@ -98,7 +99,8 @@ class Users extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h2" gutterBottom>Users</Typography>
+          <Typography variant="h2" gutterBottom>Users <Button color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></Button></Typography>
+
         </Grid>
         {this.state._id == '' ?
           <Grid item xs={12}>
@@ -137,7 +139,7 @@ class Users extends Component {
           :
           <Grid item xs={12}>
             <Paper>
-              <Typography variant="h4">Edit</Typography>
+              <Typography variant="h4">{this.state._id === 'new' ? 'New' : 'Edit'}</Typography>
               <Grid item xs={12}>
                 <form className={classes.container} noValidate autoComplete="off">
                   <TextField
@@ -174,6 +176,15 @@ class Users extends Component {
                     className={classes.textField}
                     value={this.state.lastName}
                     onChange={this.handleChange('lastName')}
+                    margin="normal"
+                  />
+                  <TextField
+                    required = {this.state._id === 'new'}
+                    error={this.state._id === 'new' && this.state.password == ''}
+                    label="Set Password"
+                    className={classes.textField}
+                    value={this.state.password}
+                    onChange={this.handleChange('password')}
                     margin="normal"
                   />
                 </form>

@@ -56,11 +56,9 @@ class ApiClient {
     }
     else
     {
-      this.user.expires = new Date().getTime() + Number(this.user.expires_in);
-
       localStorage.setItem('ApiClient.access_token', this.user.access_token);
       localStorage.setItem('ApiClient.refresh_token', this.user.refresh_token);
-      localStorage.setItem('ApiClient.expires', this.user.expires);
+      localStorage.setItem('ApiClient.expires', Number(this.user.expires_in) * 1000 + new Date().getTime()) //getTime in is milliseconds, expires_in is in s);
     }
   }
   logoff() {

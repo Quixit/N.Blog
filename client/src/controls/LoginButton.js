@@ -17,11 +17,11 @@ class LoginButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.username,
-      password: props.password,
+      username: props.username || '',
+      password: props.password || '',
       isLoggedIn: Client.isLoggedIn,
       loginOpen: false,
-      redirectTo: null
+      redirectTo: ''
     };
 
     //This binding is necessary to make `this` work in the callback
@@ -62,7 +62,7 @@ class LoginButton extends Component {
   render() {
     const { classes } = this.props;
 
-    if (this.state.redirectTo) {
+    if (this.state.redirectTo != '') {
       return <Redirect to={this.state.redirectTo} />;
     }
 
@@ -75,7 +75,7 @@ class LoginButton extends Component {
           open={this.state.loginOpen}
           onClose={this.handleClose}>
           <div className={classes.modalPaper}>
-            <Typography variant="title" id="login-modal-title" gutterBottom>
+            <Typography variant="h6" id="login-modal-title" gutterBottom>
               Login
             </Typography>
             <Grid container spacing={16}>
