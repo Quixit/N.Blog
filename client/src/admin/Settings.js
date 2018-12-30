@@ -24,7 +24,7 @@ class Settings extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h6" gutterBottom>Settings</Typography>
+          <Typography variant="h2" gutterBottom>Settings</Typography>
         </Grid>
         <Grid item xs={12}>
         </Grid>

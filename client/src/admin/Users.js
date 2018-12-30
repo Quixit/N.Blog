@@ -12,26 +12,84 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import TextField from '@material-ui/core/TextField';
 
 import { Styles} from '../Theme';
 import Client from '../api/ApiClient';
+import ServerErrorDialog from '../controls/ServerErrorDialog';
 
 class Users extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: []
+      items: [],
+      serverError: false,
+      _id: '',
+      username: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: ''
     };
-
-    this.list = this.list.bind(this);
 
     this.list();
   }
 
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
+  isEmail(address) {
+    return !! address.match(/.+@.+\../);
+  }
+
   list() {
     Client.get('users').then(users => {
-      this.setState({ users: users });
-    }).catch(e => console.error(e));
+      this.setState({ items : users });
+    });
+  }
+
+  select(item) {
+      this.setState({
+        _id: item._id || '',
+        username: item.username || '',
+        email: item.email || '',
+        firstName: item.firstName || '',
+        lastName: item.lastName || '',
+        password: ''
+      });
+  }
+
+  save() {
+    var item = {
+      _id: this.state._id,
+      username: this.state.username,
+      email: this.state.email,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      password: this.state.password
+    };
+
+    if (this.state._id === '') {
+      Client.post('users', item).then(users => {
+        this.select({});
+        this.list();
+      });
+    }
+    else {
+      Client.put('users', item).then(users => {
+        this.select({});
+        this.list();
+      });
+    }
+
+    this.select({});
+    this.list();
   }
 
   render() {
@@ -40,36 +98,94 @@ class Users extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h6" gutterBottom>Users</Typography>
+          <Typography variant="h2" gutterBottom>Users</Typography>
         </Grid>
-        <Grid item xs={12}>
-          <Paper>
-            <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Username</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>First Name</TableCell>
-                  <TableCell>Last Name</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.state.users.map(u => {
-                  return (
-                    <TableRow key={u._id}>
-                      <TableCell component="th" scope="row">
-                        {u.username}
-                      </TableCell>
-                      <TableCell>{u.email}</TableCell>
-                      <TableCell>{u.firstName}</TableCell>
-                      <TableCell>{u.lastName}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Grid>
+        {this.state._id == '' ?
+          <Grid item xs={12}>
+            <Paper>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Username</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>First Name</TableCell>
+                    <TableCell>Last Name</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.state.items.map(u => {
+                    return (
+                      <TableRow key={u._id}>
+                        <TableCell component="th" scope="row">
+                          {u.username}
+                        </TableCell>
+                        <TableCell>{u.email}</TableCell>
+                        <TableCell>{u.firstName}</TableCell>
+                        <TableCell>{u.lastName}</TableCell>
+                        <TableCell>
+                          <Button color="primary" aria-label="Edit" onClick={e => this.select(u)}><EditIcon /></Button>
+                          <Button color="primary" aria-label="Delete"><DeleteIcon /></Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </Paper>
+          </Grid>
+          :
+          <Grid item xs={12}>
+            <Paper>
+              <Typography variant="h4">Edit</Typography>
+              <Grid item xs={12}>
+                <form className={classes.container} noValidate autoComplete="off">
+                  <TextField
+                    required
+                    error={this.state.username === ""}
+                    label="Username"
+                    className={classes.textField}
+                    value={this.state.username}
+                    onChange={this.handleChange('username')}
+                    margin="normal"
+                  />
+                  <TextField
+                    required
+                    error={this.state.email === "" || !this.isEmail(this.state.email)}
+                    helperText={this.state.email != "" && !this.isEmail(this.state.email) ? 'Enter a valid email address.' : ''}
+                    label="Email"
+                    type="email"
+                    className={classes.textField}
+                    value={this.state.email}
+                    onChange={this.handleChange('email')}
+                    margin="normal"
+                  />
+                  <TextField
+                    label="First Name"
+                    required
+                    error={this.state.firstName === ""}
+                    className={classes.textField}
+                    value={this.state.firstName}
+                    onChange={this.handleChange('firstName')}
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Last Name"
+                    className={classes.textField}
+                    value={this.state.lastName}
+                    onChange={this.handleChange('lastName')}
+                    margin="normal"
+                  />
+                </form>
+              </Grid>
+              <Grid item xs={12}>
+                <Button color="primary" aria-label="Save" className={classes.button} onClick={e => this.save()}>Save</Button>
+                <Button color="secondary" aria-label="Cancel" className={classes.button} onClick={e => this.select({})}>Cancel</Button>
+                <ServerErrorDialog open={ this.state.serverError } handleClose={e => this.setState({serverError : false})} />
+              </Grid>
+            </Paper>
+          </Grid>
+        }
       </Grid>
     );
   }

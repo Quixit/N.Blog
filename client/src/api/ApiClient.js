@@ -116,11 +116,11 @@ class ApiClient {
   get(type, id) {
     return this.request(type, 'GET', id);
   }
-  put(type, body, id) {
-    return this.request(type, 'PUT', id, body);
+  put(type, body) {
+    return this.request(type, 'PUT', body._id, JSON.stringify(body));
   }
-  post(type, body, id) {
-    return this.request(type, 'POST', id, body);
+  post(type, body) {
+    return this.request(type, 'POST', null, JSON.stringify(body));
   }
   delete(type, id) {
     return this.request(type, 'DELETE', id);

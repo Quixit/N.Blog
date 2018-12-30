@@ -24,7 +24,7 @@ class Pages extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h6" gutterBottom>Pages</Typography>
+          <Typography variant="h2" gutterBottom>Pages</Typography>
         </Grid>
         <Grid item xs={12}>
         </Grid>

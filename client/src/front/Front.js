@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
-import LoginButton from '../admin/LoginButton'
+import LoginButton from '../controls/LoginButton'
 import { Styles} from '../Theme';
 
 class Front extends Component {

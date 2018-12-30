@@ -126,14 +126,6 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 });
 
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	var complexity = passComplexity(req.body.password);
-
-	if (complexity.length > 0) {
-		return res.json({
-			error: complexity.join(' ')
-		});
-	}
-
 	var userId = req.params.id;
 
 	User.findById(userId, function (err, user) {
@@ -150,8 +142,17 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		user.firstName = req.body.firstName;
 		user.lastName = req.body.lastName;
 
-		if (req.body.password != null)
+		if (req.body.password != null && req.body.password != '') {
+			var complexity = passComplexity(req.body.password);
+
+			if (complexity.length > 0) {
+				return res.json({
+					error: complexity.join(' ')
+				});
+			}
+
 			user.password = req.body.password;
+		}
 
 		user.inactive = false;
 

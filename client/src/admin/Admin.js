@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
-import LoginButton from '../admin/LoginButton'
+import LoginButton from '../controls/LoginButton'
 import Blog from './Blog'
 import Pages from './Pages'
 import Users from './Users'
