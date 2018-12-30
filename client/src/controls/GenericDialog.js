@@ -15,7 +15,7 @@ import Grid from '@material-ui/core/Grid';
 
 class ServerErrorDialog extends Component {
   render() {
-    const { classes, open, handleClose } = this.props;
+    const { classes, open, handleClose, title, text, type } = this.props;
 
     return (
       <Dialog
@@ -24,17 +24,29 @@ class ServerErrorDialog extends Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Connection Error"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              There has been an error communicating with the server. Please check your inputs and try again.
+              {text}
             </DialogContentText>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary" autoFocus>
-              Dismiss
-            </Button>
-          </DialogActions>
+          {
+            type === 'ok' ?
+            <DialogActions>
+              <Button onClick={e => handleClose('ok')} color="primary" autoFocus>
+                Ok
+              </Button>
+              <Button onClick={e => handleClose('cancel')} color="secondary">
+                Cancel
+              </Button>
+            </DialogActions>
+            :
+            <DialogActions>
+              <Button onClick={e => handleClose('dismiss')} color="primary" autoFocus>
+                Dismiss
+              </Button>
+            </DialogActions>
+          }
         </Dialog>
     );
   }
@@ -43,7 +55,10 @@ class ServerErrorDialog extends Component {
 ServerErrorDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  type: PropTypes.string
 };
 
 export default withStyles(Styles)(ServerErrorDialog);

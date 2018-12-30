@@ -7,7 +7,7 @@ var log = require('../log')(module);
 var mongoose = require('../db/mongoose');
 var User = require('../model/user');
 
-var passComplexity = function(pass)
+var passComplexity = function(password)
 {
 	var options = {
 		length: 8,
@@ -22,7 +22,7 @@ var passComplexity = function(pass)
 	if (password.length < options.length)
 		messages.push("Password must be at least " + options.length + " characters.");
 
-	if (options.hasUpperCase &&  !/[A-Z]/.test(password))
+	if (options.upperCase &&  !/[A-Z]/.test(password))
 		messages.push("Password must contain at least one upper case letter.");
 
 	if (options.lowerCase &&  !/[a-z]/.test(password))

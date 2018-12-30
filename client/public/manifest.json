@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "N.Blog Client",
+  "name": "Frontend Client for N.Blog platform.",
   "icons": [
     {
       "src": "favicon.ico",

@@ -20,7 +20,7 @@ import TextField from '@material-ui/core/TextField';
 
 import { Styles} from '../Theme';
 import Client from '../api/ApiClient';
-import ServerErrorDialog from '../controls/ServerErrorDialog';
+import GenericDialog from '../controls/GenericDialog';
 
 class Users extends Component {
   constructor(props) {
@@ -28,6 +28,7 @@ class Users extends Component {
     this.state = {
       items: [],
       serverError: false,
+      deleteId: '',
       _id: '',
       username: '',
       email: '',
@@ -45,13 +46,53 @@ class Users extends Component {
     });
   };
 
+  isValid() {
+    var state = this.state;
+
+    return state.username !== '' && this.isEmail(this.state.email) && state.firstName !== '' && (state._id !== 'new' || state.password !== '' );
+  }
+
   isEmail(address) {
     return !! address.match(/.+@.+\../);
   }
 
+  passComplexity(password)
+  {
+  	var options = {
+  		length: 8,
+  		upperCase: true,
+  		lowerCase: true,
+  		number: true,
+  		nonAlphaNumeric: false
+  	};
+
+  	var messages = [];
+
+  	if (password.length < options.length)
+  		messages.push("Password must be at least " + options.length + " characters.");
+
+  	if (options.upperCase &&  !/[A-Z]/.test(password))
+  		messages.push("Password must contain at least one upper case letter.");
+
+  	if (options.lowerCase &&  !/[a-z]/.test(password))
+  		messages.push("Password must contain at least one lower case letter.");
+
+
+  	if (options.number &&  !/\d/.test(password))
+  		messages.push("Password must contain at least one number.");
+
+  	if (options.nonAlphaNumeric &&  !/\W/.test(password))
+  		messages.push("Password must contain at least one non-alphanumeric character.");
+
+  	return messages;
+  };
+
   list() {
     Client.get('users').then(users => {
       this.setState({ items : users });
+    })
+    .catch(msg => {
+      this.setState({ serverError: true })
     });
   }
 
@@ -77,20 +118,47 @@ class Users extends Component {
     };
 
     if (this.state._id === 'new') {
-      Client.post('users', item).then(users => {
+      Client.post('users', item)
+      .then(users => {
         this.select({});
         this.list();
+      })
+      .catch(msg => {
+        this.setState({ serverError: true })
       });
     }
     else {
-      Client.put('users', item).then(users => {
+      Client.put('users', item)
+      .then(users => {
         this.select({});
         this.list();
+      })
+      .catch(msg => {
+        this.setState({ serverError: true })
       });
     }
 
     this.select({});
     this.list();
+  }
+
+  delete(result) {
+    if (result === 'ok')
+    {
+      Client.delete('users', this.state.deleteId)
+      .then(users => {
+        this.setState({deleteId : ''});
+        this.select({});
+        this.list();
+      })
+      .catch(msg => {
+        this.setState({ serverError: true })
+      });
+    }
+    else {
+      this.setState({deleteId : ''});
+      this.select({});
+    }
   }
 
   render() {
@@ -99,12 +167,24 @@ class Users extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h2" gutterBottom>Users <Button color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></Button></Typography>
-
+          <Typography variant="h2" gutterBottom>Users<Button color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></Button></Typography>
         </Grid>
+        <GenericDialog
+          open={ this.state.serverError }
+          handleClose={r => this.setState({serverError : false})}
+          title="Connection Error"
+          text="There has been an error communicating with the server. Please check your inputs and try again."
+        />
+        <GenericDialog
+          open={ this.state.deleteId !== '' }
+          handleClose={ r => this.delete(r) }
+          title="Confirm Delete"
+          text={"This will permanently delete this user. Do you want to continue?"}
+          type="ok"
+        />
         {this.state._id == '' ?
           <Grid item xs={12}>
-            <Paper>
+            <Paper className={classes.tableContainer}>
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
@@ -127,7 +207,7 @@ class Users extends Component {
                         <TableCell>{u.lastName}</TableCell>
                         <TableCell>
                           <Button color="primary" aria-label="Edit" onClick={e => this.select(u)}><EditIcon /></Button>
-                          <Button color="primary" aria-label="Delete"><DeleteIcon /></Button>
+                          <Button color="primary" aria-label="Delete" onClick={e => this.setState({ deleteId: u._id})}><DeleteIcon /></Button>
                         </TableCell>
                       </TableRow>
                     );
@@ -139,7 +219,9 @@ class Users extends Component {
           :
           <Grid item xs={12}>
             <Paper>
-              <Typography variant="h4">{this.state._id === 'new' ? 'New' : 'Edit'}</Typography>
+              <Grid item xs={12} className={classes.baseline}>
+                <Typography variant="h4">{this.state._id === 'new' ? 'New' : 'Edit'}</Typography>
+              </Grid>
               <Grid item xs={12}>
                 <form className={classes.container} noValidate autoComplete="off">
                   <TextField
@@ -153,7 +235,7 @@ class Users extends Component {
                   />
                   <TextField
                     required
-                    error={this.state.email === "" || !this.isEmail(this.state.email)}
+                    error={!this.isEmail(this.state.email)}
                     helperText={this.state.email != "" && !this.isEmail(this.state.email) ? 'Enter a valid email address.' : ''}
                     label="Email"
                     type="email"
@@ -180,8 +262,10 @@ class Users extends Component {
                   />
                   <TextField
                     required = {this.state._id === 'new'}
-                    error={this.state._id === 'new' && this.state.password == ''}
+                    error={(this.state._id === 'new' || this.state.password !== '') && this.passComplexity(this.state.password).length > 0}
+                    helperText ={(this.state._id === 'new' || this.state.password !== '') ? this.passComplexity(this.state.password)[0] : ''}
                     label="Set Password"
+                    type="password"
                     className={classes.textField}
                     value={this.state.password}
                     onChange={this.handleChange('password')}
@@ -189,10 +273,22 @@ class Users extends Component {
                   />
                 </form>
               </Grid>
-              <Grid item xs={12}>
-                <Button color="primary" aria-label="Save" className={classes.button} onClick={e => this.save()}>Save</Button>
-                <Button color="secondary" aria-label="Cancel" className={classes.button} onClick={e => this.select({})}>Cancel</Button>
-                <ServerErrorDialog open={ this.state.serverError } handleClose={e => this.setState({serverError : false})} />
+              <Grid item xs={12} align="right">
+                <Button
+                  color="primary"
+                  aria-label="Save"
+                  className={classes.button}
+                  disabled={!this.isValid()}
+                  onClick={e => this.save()}>
+                  Save
+                </Button>
+                <Button
+                  color="secondary"
+                  aria-label="Cancel"
+                  className={classes.button}
+                  onClick={e => this.select({})}>
+                  Cancel
+                </Button>
               </Grid>
             </Paper>
           </Grid>

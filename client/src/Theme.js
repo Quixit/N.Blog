@@ -24,7 +24,15 @@ const Styles = theme => ({
     marginRight: theme.spacing.unit
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing.unit
+  },
+  baseline: {
+    padding: theme.spacing.unit
+  },
+  tableContainer: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
   }
 });
 
