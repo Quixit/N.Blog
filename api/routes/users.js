@@ -7,8 +7,7 @@ var log = require('../log')(module);
 var mongoose = require('../db/mongoose');
 var User = require('../model/user');
 
-var passComplexity = function(password)
-{
+var passComplexity = function(password) {
 	var options = {
 		length: 8,
 		upperCase: true,
@@ -47,7 +46,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function(re
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -61,7 +60,7 @@ router.get('/:id', function(req, res) {
 			res.statusCode = 404;
 
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -75,7 +74,7 @@ router.get('/:id', function(req, res) {
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -110,7 +109,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			if(err.name === 'ValidationError') {
 				res.statusCode = 400;
 				res.json({
-					error: 'Validation error'
+					error: 'Validation error.'
 				});
 			} else {
 				res.statusCode = 500;
@@ -118,7 +117,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 				log.error('Internal error(%d): %s', res.statusCode, err.message);
 
 				res.json({
-					error: 'Server error'
+					error: 'Server error.'
 				});
 			}
 		}
@@ -133,7 +132,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 			res.statusCode = 404;
 			log.error('User with id: %s Not Found', userId);
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -167,13 +166,13 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 				if(err.name === 'ValidationError') {
 					res.statusCode = 400;
 					return res.json({
-						error: 'Validation error'
+						error: 'Validation error.'
 					});
 				} else {
 					res.statusCode = 500;
 
 					return res.json({
-						error: 'Server error'
+						error: 'Server error.'
 					});
 				}
 				log.error('Internal error (%d): %s', res.statusCode, err.message);
@@ -190,7 +189,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 			res.statusCode = 404;
 			log.error('User with id: %s Not Found', userId);
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -207,13 +206,13 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 				if(err.name === 'ValidationError') {
 					res.statusCode = 400;
 					return res.json({
-						error: 'Validation error'
+						error: 'Validation error.'
 					});
 				} else {
 					res.statusCode = 500;
 
 					return res.json({
-						error: 'Server error'
+						error: 'Server error.'
 					});
 				}
 				log.error('Internal error (%d): %s', res.statusCode, err.message);

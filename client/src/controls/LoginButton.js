@@ -62,7 +62,7 @@ class LoginButton extends Component {
   render() {
     const { classes } = this.props;
 
-    if (this.state.redirectTo != '') {
+    if (this.state.redirectTo !== '') {
       return <Redirect to={this.state.redirectTo} />;
     }
 

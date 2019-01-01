@@ -56,9 +56,11 @@ class ApiClient {
     }
     else
     {
+      this.user.expires = (Number(this.user.expires_in) * 1000) + new Date().getTime(); //getTime in is milliseconds, expires_in is in s);
+
       localStorage.setItem('ApiClient.access_token', this.user.access_token);
       localStorage.setItem('ApiClient.refresh_token', this.user.refresh_token);
-      localStorage.setItem('ApiClient.expires', Number(this.user.expires_in) * 1000 + new Date().getTime()) //getTime in is milliseconds, expires_in is in s);
+      localStorage.setItem('ApiClient.expires', this.user.expires)
     }
   }
   logoff() {
@@ -73,14 +75,21 @@ class ApiClient {
   {
     return fetch(url, options)
         .then(response => {
+          if (response.status === 401) { //Unauthorized
+            return Promise.resolve({error: response.text(), response});;
+          }
+          else {
+            return response.json().then(result => ({ result, response }))
+          }
+        })
+          .then(({ result, response }) => {
             if (response.ok) {
-              return response.json().then(result => ({ result, response }))
+              return Promise.resolve(result);
             }
             else {
-              return Promise.reject(response.text(), response);
+              return Promise.reject(result);
             }
-          }).then(({ result, response }) =>
-            Promise.resolve(result)
+          }
         );
   }
   async request (type, method, id, body) {

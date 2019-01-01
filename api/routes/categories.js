@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -33,7 +33,7 @@ router.get('/:id', function(req, res) {
 			res.statusCode = 404;
 
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -47,7 +47,7 @@ router.get('/:id', function(req, res) {
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -61,8 +61,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		content: req.body.content
 	});
 
-	if (req.parent != null)
-		category.parent = mongoose.Types.ObjectId(req.parent);
+	if (req.body.parent != null)
+		category.parent = mongoose.Types.ObjectId(req.body.parent);
 
 	category.save(function (err) {
 		if (!err) {
@@ -75,7 +75,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			if(err.name === 'ValidationError') {
 				res.statusCode = 400;
 				res.json({
-					error: 'Validation error'
+					error: 'Validation error.'
 				});
 			} else {
 				res.statusCode = 500;
@@ -83,7 +83,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 				log.error('Internal error(%d): %s', res.statusCode, err.message);
 
 				res.json({
-					error: 'Server error'
+					error: 'Server error.'
 				});
 			}
 		}
@@ -98,7 +98,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 			res.statusCode = 404;
 			log.error('Category with id: %s Not Found', categoryId);
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -106,8 +106,8 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		category.description = req.body.description;
 		category.content = req.body.content;
 
-		if (req.parent != null) {
-			category.parent = mongoose.Types.ObjectId(req.parent);
+		if (req.body.parent != null) {
+			category.parent = mongoose.Types.ObjectId(req.body.parent);
 		}
 		else {
 			category.parent = null;
@@ -124,13 +124,13 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 				if(err.name === 'ValidationError') {
 					res.statusCode = 400;
 					return res.json({
-						error: 'Validation error'
+						error: 'Validation error.'
 					});
 				} else {
 					res.statusCode = 500;
 
 					return res.json({
-						error: 'Server error'
+						error: 'Server error.'
 					});
 				}
 				log.error('Internal error (%d): %s', res.statusCode, err.message);
@@ -154,13 +154,13 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 						if(err.name === 'ValidationError') {
 							res.statusCode = 400;
 							return res.json({
-								error: 'Validation error'
+								error: 'Validation error.'
 							});
 						} else {
 							res.statusCode = 500;
 
 							return res.json({
-								error: 'Server error'
+								error: 'Server error.'
 							});
 						}
 						log.error('Internal error (%d): %s', res.statusCode, err.message);
@@ -168,7 +168,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 				});
 			}
 
-			Category.remove({ id: req.params.id },function (err) {
+			Category.deleteOne({ _id: req.params.id },function (err) {
 				if (!err) {
 					log.info("Category with id: %s deleted", setting.id);
 					return res.json({
@@ -179,13 +179,13 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 					if(err.name === 'ValidationError') {
 						res.statusCode = 400;
 						return res.json({
-							error: 'Validation error'
+							error: 'Validation error.'
 						});
 					} else {
 						res.statusCode = 500;
 
 						return res.json({
-							error: 'Server error'
+							error: 'Server error.'
 						});
 					}
 					log.error('Internal error (%d): %s', res.statusCode, err.message);
@@ -197,7 +197,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -13,6 +11,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
@@ -27,7 +26,7 @@ class Users extends Component {
     super(props);
     this.state = {
       items: [],
-      serverError: false,
+      serverError: '',
       deleteId: '',
       _id: '',
       username: '',
@@ -92,7 +91,7 @@ class Users extends Component {
       this.setState({ items : users });
     })
     .catch(msg => {
-      this.setState({ serverError: true })
+      this.setState({ serverError: msg.error })
     });
   }
 
@@ -124,7 +123,7 @@ class Users extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: true })
+        this.setState({ serverError: msg.error })
       });
     }
     else {
@@ -134,7 +133,7 @@ class Users extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: true })
+        this.setState({ serverError: msg.error })
       });
     }
 
@@ -152,7 +151,7 @@ class Users extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: true })
+        this.setState({ serverError: msg.error })
       });
     }
     else {
@@ -167,13 +166,13 @@ class Users extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h2" gutterBottom>Users<Button color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></Button></Typography>
+          <Typography variant="h2" gutterBottom>Users<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
-          open={ this.state.serverError }
-          handleClose={r => this.setState({serverError : false})}
-          title="Connection Error"
-          text="There has been an error communicating with the server. Please check your inputs and try again."
+          open={ this.state.serverError !== '' }
+          handleClose={r => this.setState({serverError : ''})}
+          title="Request Error"
+          text={"There has been an error processing your request. " + this.state.serverError}
         />
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -182,7 +181,7 @@ class Users extends Component {
           text={"This will permanently delete this user. Do you want to continue?"}
           type="ok"
         />
-        {this.state._id == '' ?
+        {this.state._id === '' ?
           <Grid item xs={12}>
             <Paper className={classes.tableContainer}>
               <Table className={classes.table}>
@@ -206,8 +205,8 @@ class Users extends Component {
                         <TableCell>{u.firstName}</TableCell>
                         <TableCell>{u.lastName}</TableCell>
                         <TableCell>
-                          <Button color="primary" aria-label="Edit" onClick={e => this.select(u)}><EditIcon /></Button>
-                          <Button color="primary" aria-label="Delete" onClick={e => this.setState({ deleteId: u._id})}><DeleteIcon /></Button>
+                          <IconButton color="primary" aria-label="Edit" onClick={e => this.select(u)}><EditIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Delete" onClick={e => this.setState({ deleteId: u._id})}><DeleteIcon /></IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -236,7 +235,7 @@ class Users extends Component {
                   <TextField
                     required
                     error={!this.isEmail(this.state.email)}
-                    helperText={this.state.email != "" && !this.isEmail(this.state.email) ? 'Enter a valid email address.' : ''}
+                    helperText={this.state.email !== "" && !this.isEmail(this.state.email) ? 'Enter a valid email address.' : ''}
                     label="Email"
                     type="email"
                     className={classes.textField}

@@ -1,7 +1,7 @@
 {
     "port": 8080,
     "security": {
-        "tokenLife" : 3600
+        "tokenLife" : 900
     },
     "mongoose": {
         "uri": "mongodb://localhost/NBlog"

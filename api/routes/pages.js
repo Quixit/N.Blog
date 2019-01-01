@@ -18,7 +18,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function(re
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -32,7 +32,7 @@ router.get('/:id', function(req, res) {
 			res.statusCode = 404;
 
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -46,7 +46,7 @@ router.get('/:id', function(req, res) {
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -59,13 +59,11 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		description: req.body.description,
 		content: req.body.content,
 		published: req.body.published,
-		list: req.body.list,
-		slug: req.body.slug,
-		published: req.body.published
+		slug: req.body.slug
 	});
 
-	if (req.parent != null)
-		page.parent = mongoose.Types.ObjectId(req.parent);
+	if (req.body.parent != null && req.body.parent !== '')
+		page.parent = mongoose.Types.ObjectId(req.body.parent);
 
 	page.save(function (err) {
 		if (!err) {
@@ -78,7 +76,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			if(err.name === 'ValidationError') {
 				res.statusCode = 400;
 				res.json({
-					error: 'Validation error'
+					error: 'Validation error.'
 				});
 			} else {
 				res.statusCode = 500;
@@ -86,7 +84,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 				log.error('Internal error(%d): %s', res.statusCode, err.message);
 
 				res.json({
-					error: 'Server error'
+					error: 'Server error.'
 				});
 			}
 		}
@@ -101,21 +99,19 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 			res.statusCode = 404;
 			log.error('Page with id: %s Not Found', pageId);
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
 		page.title = req.body.title;
 		page.description = req.body.description;
 		page.content = req.body.content;
-		page.published = req.body.published;
-		page.list = req.body.list;
 		page.slug = req.body.slug;
 		page.published = req.body.published;
-		page.modified = Date.now;
+		page.modified = new Date();
 
-		if (req.parent != null) {
-			page.parent = mongoose.Types.ObjectId(req.parent);
+		if (req.body.parent !== null && req.body.parent !== '' && req.body.parent != pageId) {
+			page.parent = mongoose.Types.ObjectId(req.body.parent);
 		}
 		else {
 			page.parent = null;
@@ -132,13 +128,19 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 				if(err.name === 'ValidationError') {
 					res.statusCode = 400;
 					return res.json({
-						error: 'Validation error'
+						error: 'Validation error.'
+					});
+				}
+				else if(err.code == 11000) {
+					res.statusCode = 400;
+					return res.json({
+						error: 'Slug must be unique.'
 					});
 				} else {
 					res.statusCode = 500;
 
 					return res.json({
-						error: 'Server error'
+						error: 'Server error.'
 					});
 				}
 				log.error('Internal error (%d): %s', res.statusCode, err.message);
@@ -148,24 +150,24 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 });
 
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	Page.remove({ id: req.params.id },function (err) {
+
+	Page.deleteOne({ _id: req.params.id },function (err) {
 		if (!err) {
-			log.info("Page with id: %s deleted", setting.id);
+			log.info("Page with id: %s deleted", req.params.id);
 			return res.json({
-				status: 'OK',
-				setting:setting
+				status: 'OK'
 			});
 		} else {
 			if(err.name === 'ValidationError') {
 				res.statusCode = 400;
 				return res.json({
-					error: 'Validation error'
+					error: 'Validation error.'
 				});
 			} else {
 				res.statusCode = 500;
 
 				return res.json({
-					error: 'Server error'
+					error: 'Server error.'
 				});
 			}
 			log.error('Internal error (%d): %s', res.statusCode, err.message);

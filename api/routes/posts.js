@@ -18,7 +18,7 @@ router.get('/', function(req, res) {
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -32,7 +32,7 @@ router.get('/:id', function(req, res) {
 			res.statusCode = 404;
 
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -46,7 +46,7 @@ router.get('/:id', function(req, res) {
 			log.error('Internal error(%d): %s',res.statusCode,err.message);
 
 			return res.json({
-				error: 'Server error'
+				error: 'Server error.'
 			});
 		}
 	});
@@ -64,8 +64,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		slug: req.body.slug
 	});
 
-	if (req.categoryId != null)
-		post.categoryId = mongoose.Types.ObjectId(req.categoryId);
+	if (req.body.categoryId != null)
+		post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
 
 	post.save(function (err) {
 		if (!err) {
@@ -78,7 +78,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			if(err.name === 'ValidationError') {
 				res.statusCode = 400;
 				res.json({
-					error: 'Validation error'
+					error: 'Validation error.'
 				});
 			} else {
 				res.statusCode = 500;
@@ -86,7 +86,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 				log.error('Internal error(%d): %s', res.statusCode, err.message);
 
 				res.json({
-					error: 'Server error'
+					error: 'Server error.'
 				});
 			}
 		}
@@ -101,7 +101,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 			res.statusCode = 404;
 			log.error('Post with id: %s Not Found', postId);
 			return res.json({
-				error: 'Not found'
+				error: 'Not found.'
 			});
 		}
 
@@ -111,10 +111,10 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		post.tags = req.body.tags;
 		post.published = req.body.published;
 		post.slug = req.body.slug;
-		post.modified = Date.now;
+		post.modified = new Date();
 
-		if (req.categoryId != null)
-			post.categoryId = mongoose.Types.ObjectId(req.categoryId);
+		if (req.body.categoryId != null)
+			post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
 
 		post.save(function (err) {
 			if (!err) {
@@ -127,13 +127,13 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 				if(err.name === 'ValidationError') {
 					res.statusCode = 400;
 					return res.json({
-						error: 'Validation error'
+						error: 'Validation error.'
 					});
 				} else {
 					res.statusCode = 500;
 
 					return res.json({
-						error: 'Server error'
+						error: 'Server error.'
 					});
 				}
 				log.error('Internal error (%d): %s', res.statusCode, err.message);
@@ -143,24 +143,23 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 });
 
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	Post.remove({ id: req.params.id },function (err) {
+	Post.deleteOne({ _id: req.params.id },function (err) {
 		if (!err) {
-			log.info("Post with id: %s deleted", setting.id);
+			log.info("Post with id: %s deleted", req.params.id);
 			return res.json({
-				status: 'OK',
-				setting:setting
+				status: 'OK'
 			});
 		} else {
 			if(err.name === 'ValidationError') {
 				res.statusCode = 400;
 				return res.json({
-					error: 'Validation error'
+					error: 'Validation error.'
 				});
 			} else {
 				res.statusCode = 500;
 
 				return res.json({
-					error: 'Server error'
+					error: 'Server error.'
 				});
 			}
 			log.error('Internal error (%d): %s', res.statusCode, err.message);

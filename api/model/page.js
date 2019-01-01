@@ -4,7 +4,6 @@ var mongoose = require('mongoose'),
 	Page = new Schema({
 		title: {
 			type: String,
-			unique: true,
 			required: true
 		},
 		description: {
@@ -27,22 +26,15 @@ var mongoose = require('mongoose'),
 			type: Boolean,
 			required: true
 		},
-		list: {
-			type: Boolean,
-			required: true
-		},
 		slug: {
 			type: String,
-			unique: true
+			unique: true,
+			required: true
 		},
 		parent: {
         type: Schema.Types.ObjectId,
-        ref: 'parent',
-    },
-    children: [{
-        type: Schema.Types.ObjectId,
-        ref: 'child',
-    }]
+        ref: 'parent'
+    }
 	});
 
 module.exports = mongoose.model('Page', Page);
