@@ -32,8 +32,8 @@ var generateTokens = function (data, done) {
 			salt,
 			refreshSalt;
 
-    RefreshToken.remove(data, errorHandler);
-    AccessToken.remove(data, errorHandler);
+    RefreshToken.deleteOne(data, errorHandler);
+    AccessToken.deleteOne(data, errorHandler);
 
     tokenValue = crypto.randomBytes(32).toString('hex');
     refreshTokenValue = crypto.randomBytes(32).toString('hex');

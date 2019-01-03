@@ -76,7 +76,7 @@ class ApiClient {
     return fetch(url, options)
         .then(response => {
           if (response.status === 401) { //Unauthorized
-            return Promise.resolve({error: response.text(), response});;
+            return response.text().then(result => ({ result: {error: result + "."}, response }))
           }
           else {
             return response.json().then(result => ({ result, response }))

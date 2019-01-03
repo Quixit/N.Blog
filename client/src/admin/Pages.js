@@ -23,9 +23,10 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
+import Divider from '@material-ui/core/Divider';
 
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
@@ -44,7 +45,6 @@ class Pages extends Component {
       _id: '',
       title: '',
       description: '',
-      content: '',
       published: false,
       slug: '',
       parent: '',
@@ -68,7 +68,7 @@ class Pages extends Component {
 
   handleEditorStateChange: Function = (editorState) => {
     this.setState({
-      editorState,
+      editorState
     });
   };
 
@@ -88,14 +88,23 @@ class Pages extends Component {
   }
 
   select(item) {
+      const contentBlock = htmlToDraft(item.content || '');
+      let editorState;
+
+      if (contentBlock) {
+        console.log('');
+        const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+        editorState = EditorState.createWithContent(contentState);
+      }
+
       this.setState({
         _id: item._id || '',
         title: item.title || '',
         description: item.description || '',
-        content: item.content || '',
         published: item.published || false,
         slug: item.slug || '',
-        parent: item.parent || ''
+        parent: item.parent || '',
+        editorState: editorState || EditorState.createEmpty()
       });
   }
 
@@ -104,7 +113,7 @@ class Pages extends Component {
       _id: this.state._id,
       title: this.state.title,
       description: this.state.description,
-      content: this.state.content,
+      content: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
       published: this.state.published,
       slug: this.state.slug,
       parent: this.state.parent
@@ -152,6 +161,27 @@ class Pages extends Component {
       this.setState({deleteId : ''});
       this.select({});
     }
+  }
+
+  uploadImageCallBack(file) {
+    return new Promise(
+      (resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.imgur.com/3/image');
+        xhr.setRequestHeader('Authorization', 'Client-ID XXXXX');
+        const data = new FormData();
+        data.append('image', file);
+        xhr.send(data);
+        xhr.addEventListener('load', () => {
+          const response = JSON.parse(xhr.responseText);
+          resolve(response);
+        });
+        xhr.addEventListener('error', () => {
+          const error = JSON.parse(xhr.responseText);
+          reject(error);
+        });
+      }
+    );
   }
 
   render() {
@@ -241,13 +271,6 @@ class Pages extends Component {
                     margin="normal"
                   />
                   <TextField
-                    label="Content"
-                    className={classes.textField}
-                    value={this.state.content }
-                    onChange={this.handleChange('content')}
-                    margin="normal"
-                  />
-                  <TextField
                     select
                     label="Parent"
                     error={this.state.parent === this.state._id}
@@ -265,33 +288,28 @@ class Pages extends Component {
                       </MenuItem>
                     ))}
                   </TextField>
-                  <FormGroup
-                    margin="normal"
-                    className={classes.textField}
-                  >
-                  <FormControlLabel
-                     control={
-                       <Checkbox
-                         checked={this.state.published}
-                         onChange={this.handleCheck('published')}
-                       />
-                     }
-                     label="Published"
-                  />
-                  </FormGroup>
-
                   <div>
                     <Editor
                       editorState={this.state.editorState}
-                      wrapperClassName="demo-wrapper"
-                      editorClassName="demo-editor"
                       onEditorStateChange={this.handleEditorStateChange}
-                    />
-                    <textarea
-                      disabled
-                      value={draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))}
+                      toolbar={{
+                        image: { uploadCallback: this.uploadImageCallBack, alt: { present: true, mandatory: true } },
+                      }}
                     />
                   </div>
+                  <Divider light/>
+                  <FormGroup
+                    margin="normal"
+                    className={classes.textField}>
+                    <FormControlLabel
+                       control={
+                         <Checkbox
+                           checked={this.state.published}
+                           onChange={this.handleCheck('published')}
+                         />
+                       }
+                       label="Published" />
+                  </FormGroup>
                 </form>
               </Grid>
               <Grid item xs={12} align="right">

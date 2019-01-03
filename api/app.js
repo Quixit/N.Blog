@@ -1,12 +1,13 @@
-var express = require('express');
-var cors = require('cors');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var passport = require('./auth/passport');
-var methodOverride = require('method-override');
-var log = require('./log')(module);
-var router = require('./routes/router');
-var util = require('util');
+const express = require('express');
+const fileUpload = require('express-fileupload');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const passport = require('./auth/passport');
+const methodOverride = require('method-override');
+const log = require('./log')(module);
+const router = require('./routes/router');
+const util = require('util');
 
 //Configure express.
 var app = express();
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(methodOverride());
 app.use(passport.initialize());
+app.use(fileUpload());
 
 app.use(router);
 

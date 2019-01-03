@@ -7,7 +7,7 @@ var Client = require('./model/client');
 var AccessToken = require('./model/accessToken');
 var RefreshToken = require('./model/refreshToken');
 
-User.remove({}, function(err) {
+User.deleteMany({}, function(err) {
     var user = new User({
         username: defaults.get("default:user:username"),
         password: defaults.get("default:user:password"),
@@ -23,7 +23,7 @@ User.remove({}, function(err) {
     });
 });
 
-Client.remove({}, function(err) {
+Client.deleteMany({}, function(err) {
     var client = new Client({
         name: defaults.get("default:client:name"),
         clientId: defaults.get("default:client:clientId"),
@@ -41,13 +41,13 @@ Client.remove({}, function(err) {
     });
 });
 
-AccessToken.remove({}, function (err) {
+AccessToken.deleteMany({}, function (err) {
     if (err) {
         return log.error(err);
     }
 });
 
-RefreshToken.remove({}, function (err) {
+RefreshToken.deleteMany({}, function (err) {
     if (err) {
         return log.error(err);
     }
