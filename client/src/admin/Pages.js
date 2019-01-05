@@ -166,22 +166,34 @@ class Pages extends Component {
   uploadImageCallBack(file) {
     return new Promise(
       (resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.imgur.com/3/image');
-        xhr.setRequestHeader('Authorization', 'Client-ID XXXXX');
-        const data = new FormData();
-        data.append('image', file);
-        xhr.send(data);
-        xhr.addEventListener('load', () => {
-          const response = JSON.parse(xhr.responseText);
-          resolve(response);
-        });
-        xhr.addEventListener('error', () => {
-          const error = JSON.parse(xhr.responseText);
-          reject(error);
-        });
+
+        var reader  = new FileReader();
+
+        reader.addEventListener("load", function () {
+
+          console.log(reader.result);
+            resolve({ data: { link: reader.result } })
+          }, false);
+        reader.addEventListener("error", function () {
+          reject(reader.result);
+        }, false);
+
+        if (file) {
+          reader.readAsDataURL(file);
+        }
       }
     );
+  }
+
+  getBase64(file, cb) {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+        cb(reader.result)
+    };
+    reader.onerror = function (error) {
+        console.log('Error: ', error);
+    };
   }
 
   render() {
@@ -293,7 +305,7 @@ class Pages extends Component {
                       editorState={this.state.editorState}
                       onEditorStateChange={this.handleEditorStateChange}
                       toolbar={{
-                        image: { uploadCallback: this.uploadImageCallBack, alt: { present: true, mandatory: true } },
+                        image: { uploadCallback: this.uploadImageCallBack, previewImage: true, alt: { present: true, mandatory: true } },
                       }}
                     />
                   </div>
