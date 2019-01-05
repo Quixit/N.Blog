@@ -23,8 +23,7 @@ var mongoose = require('mongoose'),
 			ref: 'Category'
 		},
 		tags: [{
-			type: String,
-			required: true
+			type: String
 		}],
 		published: {
 			type: Boolean

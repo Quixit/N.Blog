@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 
 import { Styles} from '../Theme';
 import Client from '../api/ApiClient';
@@ -24,6 +25,11 @@ class Settings extends Component {
           <Typography variant="h2" gutterBottom>Settings</Typography>
         </Grid>
         <Grid item xs={12}>
+          <Paper>
+            <Grid item xs={12} className={classes.baseline}>
+              <Typography variant="body">Reserved for Future Use</Typography>
+            </Grid>
+          </Paper>
         </Grid>
       </Grid>
     );

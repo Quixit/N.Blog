@@ -3,6 +3,7 @@ var passport = require('passport');
 var router = express.Router();
 
 var log = require('../log')(module);
+const util = require('util');
 
 var mongoose = require('../db/mongoose');
 var Page = require('../model/page');
@@ -78,6 +79,11 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 				res.json({
 					error: 'Validation error.'
 				});
+			} else if(err.message.startsWith('E11000')) {
+				res.statusCode = 400;
+				return res.json({
+					error: 'Slug must be unique.'
+				});
 			} else {
 				res.statusCode = 500;
 
@@ -131,7 +137,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Validation error.'
 					});
 				}
-				else if(err.code == 11000) {
+				else if(err.message.startsWith('E11000')) {
 					res.statusCode = 400;
 					return res.json({
 						error: 'Slug must be unique.'

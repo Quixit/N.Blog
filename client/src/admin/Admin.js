@@ -7,10 +7,11 @@ import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 
 import LoginButton from '../controls/LoginButton'
-import Blog from './Blog'
+import Posts from './Posts'
+import Categories from './Categories'
 import Pages from './Pages'
 import Users from './Users'
-import Settings from './Settings'
+//import Settings from './Settings'
 import { Styles} from '../Theme';
 
 class Admin extends Component {
@@ -36,21 +37,23 @@ class Admin extends Component {
             <Grid item xs={10}>
               <Tabs value={tab} onChange={this.handleChange}>
                 <Tab label="Blog" />
+                <Tab label="Categories" />
                 <Tab label="Pages" />
                 <Tab label="Users" />
-                <Tab label="Settings" />
+                {/*<Tab label="Settings" />*/}
               </Tabs>
             </Grid>
             <Grid item xs={2} padding="default" style={ {textAlign: 'right', paddingTop: 8, paddingRight:8}}>
-              <LoginButton />
+              <LoginButton force={true} />
             </Grid>
           </Grid>
         </AppBar>
         <div style={{ padding: 8 * 3 }}>
-          {tab === 0 && <Blog />}
-          {tab === 1 && <Pages />}
-          {tab === 2 && <Users />}
-          {tab === 3 && <Settings />}
+          {tab === 0 && <Posts />}
+          {tab === 1 && <Categories />}
+          {tab === 2 && <Pages />}
+          {tab === 3 && <Users />}
+          {/*{tab === 4 && <Settings />}*/}
         </div>
       </div>
     );

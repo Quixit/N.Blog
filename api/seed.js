@@ -1,6 +1,7 @@
 var log = require('./log')(module);
 var db = require('./db/mongoose');
 var defaults = require('./defaults');
+const util = require('util');
 
 var User = require('./model/user');
 var Client = require('./model/client');

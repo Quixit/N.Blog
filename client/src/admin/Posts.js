@@ -32,23 +32,26 @@ import { Styles} from '../Theme';
 import Client from '../api/ApiClient';
 import GenericDialog from '../controls/GenericDialog';
 
-class Pages extends Component {
+class Posts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       items: [],
+      categories: [],
       serverError: '',
       deleteId: '',
       _id: '',
       title: '',
       description: '',
+      categoryId: '',
+      tags: '',
       published: false,
       slug: '',
-      parent: '',
       editorState: EditorState.createEmpty()
     };
 
     this.list();
+    this.listCategories();
   }
 
   handleChange = name => event => {
@@ -72,12 +75,21 @@ class Pages extends Component {
   isValid() {
     var state = this.state;
 
-    return state.title !== '' && state.slug !== '' && this.state.parent !== this.state._id;
+    return state.title !== '' && state.slug !== '';
   }
 
   list() {
-    Client.get('pages').then(pages => {
-      this.setState({ items : pages });
+    Client.get('posts').then(posts => {
+      this.setState({ items : posts });
+    })
+    .catch(msg => {
+      this.setState({ serverError: msg.error })
+    });
+  }
+
+  listCategories() {
+    Client.get('categories').then(categories => {
+      this.setState({ categories });
     })
     .catch(msg => {
       this.setState({ serverError: msg.error })
@@ -99,7 +111,8 @@ class Pages extends Component {
         description: item.description || '',
         published: item.published || false,
         slug: item.slug || '',
-        parent: item.parent || '',
+        categoryId: item.categoryId || '',
+        tags: item.tags === undefined ? '' : item.tags.join(','),
         editorState: editorState || EditorState.createEmpty()
       });
   }
@@ -112,11 +125,12 @@ class Pages extends Component {
       content: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
       published: this.state.published,
       slug: this.state.slug,
-      parent: this.state.parent
+      categoryId: this.state.categoryId,
+      tags: this.state.tags.split(',')
     };
 
     if (this.state._id === 'new') {
-      Client.post('pages', item)
+      Client.post('posts', item)
       .then(users => {
         this.select({});
         this.list();
@@ -126,7 +140,7 @@ class Pages extends Component {
       });
     }
     else {
-      Client.put('pages', item)
+      Client.put('posts', item)
       .then(users => {
         this.select({});
         this.list();
@@ -140,7 +154,7 @@ class Pages extends Component {
   delete(result) {
     if (result === 'ok')
     {
-      Client.delete('pages', this.state.deleteId)
+      Client.delete('posts', this.state.deleteId)
       .then(users => {
         this.setState({deleteId : ''});
         this.select({});
@@ -175,13 +189,24 @@ class Pages extends Component {
     );
   }
 
+  getCategory(id) {
+
+    for(var i =0; i < this.state.categories.length; i++)
+    {
+        if (this.state.categories[i]._id === id)
+          return this.state.categories[i];
+    }
+
+    return {};
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h2" gutterBottom>Pages<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2" gutterBottom>Blog<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.serverError !== '' }
@@ -193,7 +218,7 @@ class Pages extends Component {
           open={ this.state.deleteId !== '' }
           handleClose={ r => this.delete(r) }
           title="Confirm Delete"
-          text={"This will permanently delete this page. Do you want to continue?"}
+          text={"This will permanently delete this post. Do you want to continue?"}
           type="ok"
         />
         {this.state._id === '' ?
@@ -204,6 +229,7 @@ class Pages extends Component {
                   <TableRow>
                     <TableCell>Title</TableCell>
                     <TableCell>Slug</TableCell>
+                    <TableCell>Category</TableCell>
                     <TableCell>Published</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
@@ -216,6 +242,7 @@ class Pages extends Component {
                           {p.title}
                         </TableCell>
                         <TableCell>{p.slug}</TableCell>
+                        <TableCell>{this.getCategory(p.categoryId).name}</TableCell>
                         <TableCell>{p.published ? 'Yes' : 'No'}</TableCell>
                         <TableCell>
                           <IconButton color="primary" aria-label="Edit" onClick={e => this.select(p)}><EditIcon /></IconButton>
@@ -263,22 +290,28 @@ class Pages extends Component {
                   />
                   <TextField
                     select
-                    label="Parent"
-                    error={this.state.parent === this.state._id}
-                    helperText ={this.state.parent === this.state._id ? 'A page cannot be its own parent' : ''}
+                    label="Category"
                     className={classes.textField}
-                    value={this.state.parent}
-                    onChange={this.handleChange('parent')}
+                    value={this.state.categoryId}
+                    onChange={this.handleChange('categoryId')}
                     margin="normal"
                   >
                     <MenuItem key={1} value={''}>
                     </MenuItem>
-                    {this.state.items.map(option => (
+                    {this.state.categories.map(option => (
                       <MenuItem key={option._id} value={option._id}>
-                        {option.title}
+                        {option.name}
                       </MenuItem>
                     ))}
                   </TextField>
+                  <TextField
+                    label="Tags"
+                    className={classes.textField}
+                    helperText="Separated by commas"
+                    value={this.state.tags }
+                    onChange={this.handleChange('tags')}
+                    margin="normal"
+                  />
                   <div>
                     <Editor
                       editorState={this.state.editorState}
@@ -328,8 +361,8 @@ class Pages extends Component {
   }
 }
 
-Pages.propTypes = {
+Posts.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(Styles)(Pages);
+export default withStyles(Styles)(Posts);

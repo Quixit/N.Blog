@@ -10,19 +10,7 @@ var mongoose = require('mongoose'),
 		description: {
 			type: String,
 			required: false
-		},
-		content: {
-			type: String,
-			required: false
-		},
-		parent: {
-        type: Schema.Types.ObjectId,
-        ref: 'parent',
-    },
-    children: [{
-        type: Schema.Types.ObjectId,
-        ref: 'child',
-    }]
+		}
 	});
 
 module.exports = mongoose.model('Category', Category);

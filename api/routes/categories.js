@@ -3,6 +3,7 @@ var passport = require('passport');
 var router = express.Router();
 
 var log = require('../log')(module);
+const util = require('util');
 
 var mongoose = require('../db/mongoose');
 var Category = require('../model/category');
@@ -57,12 +58,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 	var category = new Category({
 		name: req.body.name,
-		description: req.body.description,
-		content: req.body.content
+		description: req.body.description
 	});
-
-	if (req.body.parent != null)
-		category.parent = mongoose.Types.ObjectId(req.body.parent);
 
 	category.save(function (err) {
 		if (!err) {
@@ -76,6 +73,11 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 				res.statusCode = 400;
 				res.json({
 					error: 'Validation error.'
+				});
+			} else if(err.message.startsWith('E11000')) {
+				res.statusCode = 400;
+				return res.json({
+					error: 'Name must be unique.'
 				});
 			} else {
 				res.statusCode = 500;
@@ -104,14 +106,6 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		category.name = req.body.name;
 		category.description = req.body.description;
-		category.content = req.body.content;
-
-		if (req.body.parent != null) {
-			category.parent = mongoose.Types.ObjectId(req.body.parent);
-		}
-		else {
-			category.parent = null;
-		}
 
 		category.save(function (err) {
 			if (!err) {
@@ -125,6 +119,11 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 					res.statusCode = 400;
 					return res.json({
 						error: 'Validation error.'
+					});
+				} else if(err.message.startsWith('E11000')) {
+					res.statusCode = 400;
+					return res.json({
+						error: 'Name must be unique.'
 					});
 				} else {
 					res.statusCode = 500;

@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import {
   Redirect
 } from "react-router-dom";
+import {withRouter} from 'react-router-dom';
 
 class LoginButton extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class LoginButton extends Component {
       username: props.username || '',
       password: props.password || '',
       isLoggedIn: Client.isLoggedIn,
-      loginOpen: false,
+      loginOpen: props.force === true  && !Client.isLoggedIn,
       redirectTo: ''
     };
 
@@ -62,7 +63,7 @@ class LoginButton extends Component {
   render() {
     const { classes } = this.props;
 
-    if (this.state.redirectTo !== '') {
+    if (this.state.redirectTo !== '' && this.state.redirectTo !== this.props.location.pathname) {
       return <Redirect to={this.state.redirectTo} />;
     }
 
@@ -111,7 +112,8 @@ class LoginButton extends Component {
 LoginButton.propTypes = {
   classes: PropTypes.object.isRequired,
   username: PropTypes.string,
-  password: PropTypes.string
+  password: PropTypes.string,
+  force: PropTypes.bool
 };
 
-export default withStyles(Styles)(LoginButton);
+export default withRouter(withStyles(Styles)(LoginButton));

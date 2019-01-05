@@ -3,6 +3,7 @@ var passport = require('passport');
 var router = express.Router();
 
 var log = require('../log')(module);
+const util = require('util');
 
 var mongoose = require('../db/mongoose');
 var Setting = require('../model/setting');

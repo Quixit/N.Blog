@@ -3,6 +3,7 @@ var passport = require('passport');
 var router = express.Router();
 
 var log = require('../log')(module);
+const util = require('util');
 
 var mongoose = require('../db/mongoose');
 var Post = require('../model/post');
@@ -64,7 +65,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		slug: req.body.slug
 	});
 
-	if (req.body.categoryId != null)
+	if (req.body.categoryId != null && req.body.categoryId != '')
 		post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
 
 	post.save(function (err) {
@@ -79,6 +80,11 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 				res.statusCode = 400;
 				res.json({
 					error: 'Validation error.'
+				});
+			} else if(err.message.startsWith('E11000')) {
+				res.statusCode = 400;
+				return res.json({
+					error: 'Slug must be unique.'
 				});
 			} else {
 				res.statusCode = 500;
@@ -108,12 +114,13 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		post.title = req.body.title;
 		post.description = req.body.description;
 		post.content = req.body.content;
+		post.userId = mongoose.Types.ObjectId(req.user.id);
 		post.tags = req.body.tags;
 		post.published = req.body.published;
 		post.slug = req.body.slug;
 		post.modified = new Date();
 
-		if (req.body.categoryId != null)
+		if (req.body.categoryId != null && req.body.categoryId != '')
 			post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
 
 		post.save(function (err) {
@@ -128,6 +135,11 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 					res.statusCode = 400;
 					return res.json({
 						error: 'Validation error.'
+					});
+				} else if(err.message.startsWith('E11000')) {
+					res.statusCode = 400;
+					return res.json({
+						error: 'Slug must be unique.'
 					});
 				} else {
 					res.statusCode = 500;
