@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 		} else {
 			res.statusCode = 500;
 
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -43,7 +43,7 @@ router.get('/:id', function(req, res) {
 			});
 		} else {
 			res.statusCode = 500;
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -69,7 +69,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 	post.save(function (err) {
 		if (!err) {
-			log.info("New post created with id: %s", post.id);
+			log.info(util.format("New post created with id: %s", post.id));
 			return res.json({
 				status: 'OK',
 				post:post
@@ -83,7 +83,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			} else {
 				res.statusCode = 500;
 
-				log.error('Internal error(%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error(%d): %s', res.statusCode, err.message));
 
 				res.json({
 					error: 'Server error.'
@@ -99,7 +99,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 	Post.findById(postId, function (err, post) {
 		if(!post) {
 			res.statusCode = 404;
-			log.error('Post with id: %s Not Found', postId);
+			log.error(util.format('Post with id: %s Not Found', postId));
 			return res.json({
 				error: 'Not found.'
 			});
@@ -118,7 +118,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		post.save(function (err) {
 			if (!err) {
-				log.info("Post with id: %s updated", post.id);
+				log.info(util.format("Post with id: %s updated", post.id));
 				return res.json({
 					status: 'OK',
 					post:post
@@ -136,7 +136,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error('Internal error (%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
@@ -145,7 +145,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	Post.deleteOne({ _id: req.params.id },function (err) {
 		if (!err) {
-			log.info("Post with id: %s deleted", req.params.id);
+			log.info(util.format("Post with id: %s deleted", req.params.id));
 			return res.json({
 				status: 'OK'
 			});
@@ -162,7 +162,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 					error: 'Server error.'
 				});
 			}
-			log.error('Internal error (%d): %s', res.statusCode, err.message);
+			log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 		}
 	});
 });

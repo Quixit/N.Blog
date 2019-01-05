@@ -43,7 +43,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function(re
 		} else {
 			res.statusCode = 500;
 
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -71,7 +71,7 @@ router.get('/:id', function(req, res) {
 			});
 		} else {
 			res.statusCode = 500;
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -100,7 +100,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 	user.save(function (err) {
 		if (!err) {
-			log.info("New user created with id: %s", user.id);
+			log.info(util.format("New user created with id: %s", user.id));
 			return res.json({
 				status: 'OK',
 				user:user
@@ -114,7 +114,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			} else {
 				res.statusCode = 500;
 
-				log.error('Internal error(%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error(%d): %s', res.statusCode, err.message));
 
 				res.json({
 					error: 'Server error.'
@@ -130,7 +130,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 	User.findById(userId, function (err, user) {
 		if(!user) {
 			res.statusCode = 404;
-			log.error('User with id: %s Not Found', userId);
+			log.error(util.format('User with id: %s Not Found', userId));
 			return res.json({
 				error: 'Not found.'
 			});
@@ -157,7 +157,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		user.save(function (err) {
 			if (!err) {
-				log.info("User with id: %s updated", user.id);
+				log.info(util.format("User with id: %s updated", user.id));
 				return res.json({
 					status: 'OK',
 					user:user
@@ -175,7 +175,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error('Internal error (%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
@@ -187,7 +187,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 	User.findById(userId, function (err, user) {
 		if(!user) {
 			res.statusCode = 404;
-			log.error('User with id: %s Not Found', userId);
+			log.error(util.format('User with id: %s Not Found', userId));
 			return res.json({
 				error: 'Not found.'
 			});
@@ -197,7 +197,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 
 		user.save(function (err) {
 			if (!err) {
-				log.info("User with id: %s deleted", user.id);
+				log.info(util.format("User with id: %s deleted", user.id));
 				return res.json({
 					status: 'OK',
 					user:user
@@ -215,7 +215,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 						error: 'Server error.'
 					});
 				}
-				log.error('Internal error (%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});

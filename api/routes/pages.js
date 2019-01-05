@@ -15,7 +15,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function(re
 		} else {
 			res.statusCode = 500;
 
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -43,7 +43,7 @@ router.get('/:id', function(req, res) {
 			});
 		} else {
 			res.statusCode = 500;
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -67,7 +67,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 	page.save(function (err) {
 		if (!err) {
-			log.info("New page created with id: %s", page.id);
+			log.info(util.format("New page created with id: %s", page.id));
 			return res.json({
 				status: 'OK',
 				page:page
@@ -81,7 +81,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			} else {
 				res.statusCode = 500;
 
-				log.error('Internal error(%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error(%d): %s', res.statusCode, err.message));
 
 				res.json({
 					error: 'Server error.'
@@ -97,7 +97,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 	Page.findById(pageId, function (err, page) {
 		if(!page) {
 			res.statusCode = 404;
-			log.error('Page with id: %s Not Found', pageId);
+			log.error(util.format('Page with id: %s Not Found', pageId));
 			return res.json({
 				error: 'Not found.'
 			});
@@ -119,7 +119,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		page.save(function (err) {
 			if (!err) {
-				log.info("Page with id: %s updated", page.id);
+				log.info(util.format("Page with id: %s updated", page.id));
 				return res.json({
 					status: 'OK',
 					page:page
@@ -143,7 +143,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error('Internal error (%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
@@ -153,7 +153,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 
 	Page.deleteOne({ _id: req.params.id },function (err) {
 		if (!err) {
-			log.info("Page with id: %s deleted", req.params.id);
+			log.info(util.format("Page with id: %s deleted", req.params.id));
 			return res.json({
 				status: 'OK'
 			});
@@ -170,7 +170,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 					error: 'Server error.'
 				});
 			}
-			log.error('Internal error (%d): %s', res.statusCode, err.message);
+			log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 		}
 	});
 });

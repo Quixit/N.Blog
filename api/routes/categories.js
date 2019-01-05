@@ -16,7 +16,7 @@ router.get('/', function(req, res) {
 		} else {
 			res.statusCode = 500;
 
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -44,7 +44,7 @@ router.get('/:id', function(req, res) {
 			});
 		} else {
 			res.statusCode = 500;
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -66,7 +66,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 	category.save(function (err) {
 		if (!err) {
-			log.info("New category created with id: %s", category.id);
+			log.info(util.format("New category created with id: %s", category.id));
 			return res.json({
 				status: 'OK',
 				category:category
@@ -80,7 +80,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			} else {
 				res.statusCode = 500;
 
-				log.error('Internal error(%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error(%d): %s', res.statusCode, err.message));
 
 				res.json({
 					error: 'Server error.'
@@ -96,7 +96,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 	Category.findById(categoryId, function (err, category) {
 		if(!category) {
 			res.statusCode = 404;
-			log.error('Category with id: %s Not Found', categoryId);
+			log.error(util.format('Category with id: %s Not Found', categoryId));
 			return res.json({
 				error: 'Not found.'
 			});
@@ -115,7 +115,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		category.save(function (err) {
 			if (!err) {
-				log.info("Category with id: %s updated", category.id);
+				log.info(util.format("Category with id: %s updated", category.id));
 				return res.json({
 					status: 'OK',
 					category:category
@@ -133,7 +133,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error('Internal error (%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
@@ -149,7 +149,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 				posts[i].categoryId = null;
 				post[i].save(function (err) {
 					if (!err) {
-						log.info("Post with id: %s category removed.", category.id);
+						log.info(util.format("Post with id: %s category removed.", category.id));
 					} else {
 						if(err.name === 'ValidationError') {
 							res.statusCode = 400;
@@ -163,14 +163,14 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 								error: 'Server error.'
 							});
 						}
-						log.error('Internal error (%d): %s', res.statusCode, err.message);
+						log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 					}
 				});
 			}
 
 			Category.deleteOne({ _id: req.params.id },function (err) {
 				if (!err) {
-					log.info("Category with id: %s deleted", setting.id);
+					log.info(util.format("Category with id: %s deleted", setting.id));
 					return res.json({
 						status: 'OK',
 						setting:setting
@@ -188,13 +188,13 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 							error: 'Server error.'
 						});
 					}
-					log.error('Internal error (%d): %s', res.statusCode, err.message);
+					log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 				}
 			});
 		} else {
 			res.statusCode = 500;
 
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'

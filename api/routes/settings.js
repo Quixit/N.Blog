@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 		} else {
 			res.statusCode = 500;
 
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -43,7 +43,7 @@ router.get('/:id', function(req, res) {
 			});
 		} else {
 			res.statusCode = 500;
-			log.error('Internal error(%d): %s',res.statusCode,err.message);
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
 
 			return res.json({
 				error: 'Server error.'
@@ -61,7 +61,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 	setting.save(function (err) {
 		if (!err) {
-			log.info("New setting created with id: %s", setting.id);
+			log.info(util.format("New setting created with id: %s", setting.id));
 			return res.json({
 				status: 'OK',
 				setting:setting
@@ -75,7 +75,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 			} else {
 				res.statusCode = 500;
 
-				log.error('Internal error(%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error(%d): %s', res.statusCode, err.message));
 
 				res.json({
 					error: 'Server error.'
@@ -91,7 +91,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 	Setting.findById(settingId, function (err, setting) {
 		if(!setting) {
 			res.statusCode = 404;
-			log.error('Setting with id: %s Not Found', settingId);
+			log.error(util.format('Setting with id: %s Not Found', settingId));
 			return res.json({
 				error: 'Not found.'
 			});
@@ -102,7 +102,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		setting.save(function (err) {
 			if (!err) {
-				log.info("Setting with id: %s updated", setting.id);
+				log.info(util.format("Setting with id: %s updated", setting.id));
 				return res.json({
 					status: 'OK',
 					setting:setting
@@ -120,7 +120,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error('Internal error (%d): %s', res.statusCode, err.message);
+				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
@@ -129,7 +129,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	Setting.deleteOne({ _id: req.params.id },function (err) {
 		if (!err) {
-			log.info("Setting with id: %s deleted", req.params.id);
+			log.info(util.format("Setting with id: %s deleted", req.params.id));
 			return res.json({
 				status: 'OK',
 				setting:setting
@@ -147,7 +147,7 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 					error: 'Server error.'
 				});
 			}
-			log.error('Internal error (%d): %s', res.statusCode, err.message);
+			log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 		}
 	});
 });

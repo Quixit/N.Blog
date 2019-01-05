@@ -16,7 +16,7 @@ User.deleteMany({}, function(err) {
 
     user.save(function(err, user) {
         if(!err) {
-            log.info("Add User - %s:%s", user.username, user.password);
+            log.info(util.format("Add User - %s:%s", user.username, user.password));
         } else {
             return log.error(err);
         }
@@ -33,7 +33,7 @@ Client.deleteMany({}, function(err) {
     client.save(function(err, client) {
 
         if(!err) {
-            log.info("Add Client - %s:%s", client.clientId, client.clientSecret);
+            log.info(util.format("Add Client - %s:%s", client.clientId, client.clientSecret));
         } else {
             return log.error(err);
         }

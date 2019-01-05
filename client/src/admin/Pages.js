@@ -139,9 +139,6 @@ class Pages extends Component {
         this.setState({ serverError: msg.error })
       });
     }
-
-    this.select({});
-    this.list();
   }
 
   delete(result) {
@@ -166,12 +163,9 @@ class Pages extends Component {
   uploadImageCallBack(file) {
     return new Promise(
       (resolve, reject) => {
-
         var reader  = new FileReader();
 
         reader.addEventListener("load", function () {
-
-          console.log(reader.result);
             resolve({ data: { link: reader.result } })
           }, false);
         reader.addEventListener("error", function () {

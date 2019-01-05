@@ -136,9 +136,6 @@ class Users extends Component {
         this.setState({ serverError: msg.error })
       });
     }
-
-    this.select({});
-    this.list();
   }
 
   delete(result) {
