@@ -6,12 +6,12 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 
-import LoginButton from '../controls/LoginButton'
-import Posts from './Posts'
-import Categories from './Categories'
-import Pages from './Pages'
-import Users from './Users'
-//import Settings from './Settings'
+import LoginButton from '../controls/LoginButton';
+import Posts from './Posts';
+import Categories from './Categories';
+import Pages from './Pages';
+import Users from './Users';
+import Settings from './Settings';
 import { Styles} from '../Theme';
 
 class Admin extends Component {
@@ -40,7 +40,7 @@ class Admin extends Component {
                 <Tab label="Categories" />
                 <Tab label="Pages" />
                 <Tab label="Users" />
-                {/*<Tab label="Settings" />*/}
+                <Tab label="Settings" />
               </Tabs>
             </Grid>
             <Grid item xs={2} padding="default" style={ {textAlign: 'right', paddingTop: 8, paddingRight:8}}>
@@ -53,7 +53,7 @@ class Admin extends Component {
           {tab === 1 && <Categories />}
           {tab === 2 && <Pages />}
           {tab === 3 && <Users />}
-          {/*{tab === 4 && <Settings />}*/}
+          {tab === 4 && <Settings />}
         </div>
       </div>
     );

@@ -54,102 +54,48 @@ router.get('/:id', function(req, res) {
 });
 
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
+	var promises = [];
 
-	var setting = new Setting({
-		name: req.body.name,
-		value: req.body.value
-	});
+	for (let i = 0; i < req.body.length; i++) {
+		var item = req.body[i];
 
-	setting.save(function (err) {
-		if (!err) {
-			log.info(util.format("New setting created with id: %s", setting.id));
-			return res.json({
-				status: 'OK',
-				setting:setting
-			});
-		} else {
-			if(err.name === 'ValidationError') {
-				res.statusCode = 400;
-				res.json({
-					error: 'Validation error.'
-				});
-			} else {
-				res.statusCode = 500;
-
-				log.error(util.format('Internal error(%d): %s', res.statusCode, err.message));
-
-				res.json({
-					error: 'Server error.'
-				});
-			}
-		}
-	});
-});
-
-router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	var settingId = req.params.id;
-
-	Setting.findById(settingId, function (err, setting) {
-		if(!setting) {
-			res.statusCode = 404;
-			log.error(util.format('Setting with id: %s Not Found', settingId));
-			return res.json({
-				error: 'Not found.'
-			});
-		}
-
-		setting.name = req.body.name;
-		setting.value = req.body.value;
-
-		setting.save(function (err) {
-			if (!err) {
-				log.info(util.format("Setting with id: %s updated", setting.id));
-				return res.json({
-					status: 'OK',
-					setting:setting
-				});
-			} else {
-				if(err.name === 'ValidationError') {
-					res.statusCode = 400;
-					return res.json({
-						error: 'Validation error.'
-					});
-				} else {
-					res.statusCode = 500;
-
-					return res.json({
-						error: 'Server error.'
+		promises.push(new Promise(function(resolve, reject) {
+			Setting.findOne({ name: item.name }, function (err, setting) {
+				if(setting) {
+					setting.name = req.body.name;
+					setting.value = req.body.value;
+				}
+				else {
+					setting = new Setting({
+						name: req.body.name,
+						value: req.body.value
 					});
 				}
-				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
-			}
-		});
-	});
-});
 
-router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	Setting.deleteOne({ _id: req.params.id },function (err) {
-		if (!err) {
-			log.info(util.format("Setting with id: %s deleted", req.params.id));
-			return res.json({
-				status: 'OK',
-				setting:setting
+				setting.save(function (err) {
+					if (err) {
+						log.error(util.format('Internal error (%d): %s', 500, err.message));
+						resolve(err);
+					}
+					else {
+						log.info(util.format("Setting with id: %s updated", setting.id));
+						reject(err);
+					}
+				});
 			});
-		} else {
-			if(err.name === 'ValidationError') {
-				res.statusCode = 400;
-				return res.json({
-					error: 'Validation error.'
-				});
-			} else {
-				res.statusCode = 500;
+		}));
+	}
 
-				return res.json({
-					error: 'Server error.'
-				});
-			}
-			log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
-		}
+	Promise.all(promises).then(function(values) {
+		return res.json({
+			status: 'OK'
+		});
+	}).catch(error => {
+		res.statusCode = 500;
+
+		return res.json({
+			error: 'Server error.'
+		});
 	});
 });
 
