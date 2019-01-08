@@ -16,10 +16,13 @@ class Settings extends Component {
     this.state = {
       theme : ''
     };
+
+    this.list();
   }
 
   list() {
     Client.get('settings').then(posts => {
+      console.log(posts);
       for(let i = 0; posts.length; i++)
       {
         this.setState({ [posts[i].name] : posts[i].value });
@@ -40,7 +43,6 @@ class Settings extends Component {
 
     Client.post('settings', settings)
     .then(users => {
-      this.select({});
       this.list();
     })
     .catch(msg => {

@@ -62,24 +62,24 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		promises.push(new Promise(function(resolve, reject) {
 			Setting.findOne({ name: item.name }, function (err, setting) {
 				if(setting) {
-					setting.name = req.body.name;
-					setting.value = req.body.value;
+					setting.name = item.name;
+					setting.value = item.value;
 				}
 				else {
 					setting = new Setting({
-						name: req.body.name,
-						value: req.body.value
+						name: item.name,
+						value: item.value
 					});
 				}
 
 				setting.save(function (err) {
 					if (err) {
 						log.error(util.format('Internal error (%d): %s', 500, err.message));
-						resolve(err);
+						reject(err);
 					}
 					else {
 						log.info(util.format("Setting with id: %s updated", setting.id));
-						reject(err);
+						resolve(err);
 					}
 				});
 			});
