@@ -10,7 +10,7 @@ var Post = require('../model/post');
 
 router.get('/', function(req, res) {
 
-	Post.find(function (err, posts) {
+	Post.find().sort({ created: -1 }).exec(function (err, posts) {
 		if (!err) {
 			return res.json(posts);
 		} else {

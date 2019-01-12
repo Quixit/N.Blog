@@ -11,7 +11,7 @@ var Post = require('../model/post');
 
 router.get('/', function(req, res) {
 
-	Category.find(function (err, categorys) {
+	Category.find().sort({ name: 1 }).exec(function (err, categorys) {
 		if (!err) {
 			return res.json(categorys);
 		} else {
@@ -169,10 +169,9 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 
 			Category.deleteOne({ _id: req.params.id },function (err) {
 				if (!err) {
-					log.info(util.format("Category with id: %s deleted", setting.id));
+					log.info(util.format("Category with id: %s deleted", queryId));
 					return res.json({
-						status: 'OK',
-						setting:setting
+						status: 'OK'
 					});
 				} else {
 					if(err.name === 'ValidationError') {

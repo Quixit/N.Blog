@@ -14,7 +14,7 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      theme : ''
+      title : ''
     };
 
     this.list();
@@ -22,7 +22,6 @@ class Settings extends Component {
 
   list() {
     Client.get('settings').then(posts => {
-      console.log(posts);
       for(let i = 0; posts.length; i++)
       {
         this.setState({ [posts[i].name] : posts[i].value });
@@ -36,8 +35,8 @@ class Settings extends Component {
   save() {
     let settings = [
       {
-        name: 'theme',
-        value: this.state.theme
+        name: 'title',
+        value: this.state.title
       }
     ];
 
@@ -79,11 +78,11 @@ class Settings extends Component {
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
                 required
-                error={this.state.theme === ""}
-                label="Theme"
+                error={this.state.title === ""}
+                label="Title"
                 className={classes.textField}
-                value={this.state.theme}
-                onChange={this.handleChange('theme')}
+                value={this.state.title}
+                onChange={this.handleChange('title')}
                 margin="normal"
               />
             </form>

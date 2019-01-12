@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import Typography from '@material-ui/core/Typography';
+
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
-import LoginButton from '../controls/LoginButton'
 import { Styles} from '../Theme';
 
-class Front extends Component {
+class Blog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,15 +16,14 @@ class Front extends Component {
 
     return (
       <div>
-        <Typography variant="body1">Front-End</Typography>
-        <LoginButton />
+      
       </div>
     );
   }
 }
 
-Front.propTypes = {
+Blog.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(Styles)(Front);
+export default withStyles(Styles)(Blog);

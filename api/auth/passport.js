@@ -13,7 +13,7 @@ var RefreshToken = require('../model/refreshToken');
 
 passport.use(new BasicStrategy(
     function(username, password, done) {
-console.log('basic');
+
         Client.findOne({ clientId: username }, function(err, client) {
             if (err) {
             	return done(err);
@@ -34,7 +34,7 @@ console.log('basic');
 
 passport.use(new ClientPasswordStrategy(
     function(clientId, clientSecret, done) {
-console.log('pass');
+
         Client.findOne({ clientId: clientId }, function(err, client) {
             if (err) {
             	return done(err);

@@ -175,6 +175,17 @@ class Pages extends Component {
     );
   }
 
+  getParent(id) {
+
+    for(var i =0; i < this.state.items.length; i++)
+    {
+        if (this.state.items[i]._id === id)
+          return this.state.items[i];
+    }
+
+    return {};
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -205,6 +216,7 @@ class Pages extends Component {
                     <TableCell>Title</TableCell>
                     <TableCell>Slug</TableCell>
                     <TableCell>Published</TableCell>
+                    <TableCell>Parent</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
@@ -217,6 +229,7 @@ class Pages extends Component {
                         </TableCell>
                         <TableCell>{p.slug}</TableCell>
                         <TableCell>{p.published ? 'Yes' : 'No'}</TableCell>
+                        <TableCell>{this.getParent(p.parent).title}</TableCell>
                         <TableCell>
                           <IconButton color="primary" aria-label="Edit" onClick={e => this.select(p)}><EditIcon /></IconButton>
                           <IconButton color="primary" aria-label="Delete" onClick={e => this.setState({ deleteId: p._id})}><DeleteIcon /></IconButton>

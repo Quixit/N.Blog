@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 
-import LoginButton from '../controls/LoginButton';
 import Posts from './Posts';
 import Categories from './Categories';
 import Pages from './Pages';
@@ -32,22 +30,15 @@ class Admin extends Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static">
-          <Grid container>
-            <Grid item xs={10}>
-              <Tabs value={tab} onChange={this.handleChange}>
-                <Tab label="Blog" />
-                <Tab label="Categories" />
-                <Tab label="Pages" />
-                <Tab label="Users" />
-                <Tab label="Settings" />
-              </Tabs>
-            </Grid>
-            <Grid item xs={2} padding="default" style={ {textAlign: 'right', paddingTop: 8, paddingRight:8}}>
-              <LoginButton force={true} />
-            </Grid>
-          </Grid>
-        </AppBar>
+
+        <Tabs value={tab} onChange={this.handleChange}>
+          <Tab label="Blog" />
+          <Tab label="Categories" />
+          <Tab label="Pages" />
+          <Tab label="Users" />
+          <Tab label="Settings" />
+        </Tabs>
+
         <div style={{ padding: 8 * 3 }}>
           {tab === 0 && <Posts />}
           {tab === 1 && <Categories />}
