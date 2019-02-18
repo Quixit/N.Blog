@@ -12,18 +12,19 @@ class Blog extends Component {
     };
   }
   render() {
-    const { classes } = this.props;
+    const { classes, serverError } = this.props;
 
     return (
       <div>
-      
+
       </div>
     );
   }
 }
 
 Blog.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  serverError: PropTypes.func.isRequired
 };
 
 export default withStyles(Styles)(Blog);

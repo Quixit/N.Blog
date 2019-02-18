@@ -25,7 +25,7 @@ class Admin extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, serverError } = this.props;
     const { tab } = this.state;
 
     return (
@@ -40,11 +40,11 @@ class Admin extends Component {
         </Tabs>
 
         <div style={{ padding: 8 * 3 }}>
-          {tab === 0 && <Posts />}
-          {tab === 1 && <Categories />}
-          {tab === 2 && <Pages />}
-          {tab === 3 && <Users />}
-          {tab === 4 && <Settings />}
+          {tab === 0 && <Posts serverError={serverError} />}
+          {tab === 1 && <Categories serverError={serverError} />}
+          {tab === 2 && <Pages serverError={serverError} />}
+          {tab === 3 && <Users serverError={serverError} />}
+          {tab === 4 && <Settings serverError={serverError} />}
         </div>
       </div>
     );
@@ -52,7 +52,8 @@ class Admin extends Component {
 }
 
 Admin.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  serverError: PropTypes.func.isRequired
 };
 
 export default withStyles(Styles)(Admin);

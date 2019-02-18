@@ -17,18 +17,19 @@ class Settings extends Component {
       title : ''
     };
 
+    this.serverError = this.props.serverError;
     this.list();
   }
 
   list() {
-    Client.get('settings').then(posts => {
-      for(let i = 0; posts.length; i++)
+    Client.get('settings').then(settings => {
+      for(let i = 0; i < settings.length; i++)
       {
-        this.setState({ [posts[i].name] : posts[i].value });
+        this.setState({ [settings[i].name] : settings[i].value });
       }
     })
     .catch(msg => {
-      this.setState({ serverError: msg.error })
+      this.serverError(msg.error);
     });
   }
 
@@ -45,7 +46,7 @@ class Settings extends Component {
       this.list();
     })
     .catch(msg => {
-      this.setState({ serverError: msg.error })
+      this.serverError(msg.error);
     });
   }
 
@@ -105,7 +106,8 @@ class Settings extends Component {
 }
 
 Settings.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  serverError: PropTypes.func.isRequired
 };
 
 export default withStyles(Styles)(Settings);

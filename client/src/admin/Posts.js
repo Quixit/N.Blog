@@ -38,7 +38,6 @@ class Posts extends Component {
     this.state = {
       items: [],
       categories: [],
-      serverError: '',
       deleteId: '',
       _id: '',
       title: '',
@@ -50,6 +49,7 @@ class Posts extends Component {
       editorState: EditorState.createEmpty()
     };
 
+    this.serverError = this.props.serverError;
     this.list();
     this.listCategories();
   }
@@ -83,7 +83,7 @@ class Posts extends Component {
       this.setState({ items : posts });
     })
     .catch(msg => {
-      this.setState({ serverError: msg.error })
+      this.serverError(msg.error);
     });
   }
 
@@ -92,7 +92,7 @@ class Posts extends Component {
       this.setState({ categories });
     })
     .catch(msg => {
-      this.setState({ serverError: msg.error })
+      this.serverError(msg.error);
     });
   }
 
@@ -136,7 +136,7 @@ class Posts extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
     else {
@@ -146,7 +146,7 @@ class Posts extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
   }
@@ -161,7 +161,7 @@ class Posts extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
     else {
@@ -208,12 +208,6 @@ class Posts extends Component {
         <Grid item xs={12}>
           <Typography variant="h2" gutterBottom>Blog<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
-        <GenericDialog
-          open={ this.state.serverError !== '' }
-          handleClose={r => this.setState({serverError : ''})}
-          title="Request Error"
-          text={"There has been an error processing your request. " + this.state.serverError}
-        />
         <GenericDialog
           open={ this.state.deleteId !== '' }
           handleClose={ r => this.delete(r) }
@@ -362,7 +356,8 @@ class Posts extends Component {
 }
 
 Posts.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  serverError: PropTypes.func.isRequired
 };
 
 export default withStyles(Styles)(Posts);

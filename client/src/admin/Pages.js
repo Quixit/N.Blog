@@ -37,7 +37,6 @@ class Pages extends Component {
     super(props);
     this.state = {
       items: [],
-      serverError: '',
       deleteId: '',
       _id: '',
       title: '',
@@ -48,6 +47,7 @@ class Pages extends Component {
       editorState: EditorState.createEmpty()
     };
 
+    this.serverError = this.props.serverError;
     this.list();
   }
 
@@ -80,7 +80,7 @@ class Pages extends Component {
       this.setState({ items : pages });
     })
     .catch(msg => {
-      this.setState({ serverError: msg.error })
+      this.serverError(msg.error);
     });
   }
 
@@ -122,7 +122,7 @@ class Pages extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
     else {
@@ -132,7 +132,7 @@ class Pages extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
   }
@@ -147,7 +147,7 @@ class Pages extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
     else {
@@ -194,12 +194,6 @@ class Pages extends Component {
         <Grid item xs={12}>
           <Typography variant="h2" gutterBottom>Pages<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
-        <GenericDialog
-          open={ this.state.serverError !== '' }
-          handleClose={r => this.setState({serverError : ''})}
-          title="Request Error"
-          text={"There has been an error processing your request. " + this.state.serverError}
-        />
         <GenericDialog
           open={ this.state.deleteId !== '' }
           handleClose={ r => this.delete(r) }
@@ -342,7 +336,8 @@ class Pages extends Component {
 }
 
 Pages.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  serverError: PropTypes.func.isRequired
 };
 
 export default withStyles(Styles)(Pages);

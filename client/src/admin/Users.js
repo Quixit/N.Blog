@@ -26,7 +26,6 @@ class Users extends Component {
     super(props);
     this.state = {
       items: [],
-      serverError: '',
       deleteId: '',
       _id: '',
       username: '',
@@ -36,6 +35,7 @@ class Users extends Component {
       password: ''
     };
 
+    this.serverError = this.props.serverError;
     this.list();
   }
 
@@ -91,7 +91,7 @@ class Users extends Component {
       this.setState({ items : users });
     })
     .catch(msg => {
-      this.setState({ serverError: msg.error })
+      this.serverError(msg.error);
     });
   }
 
@@ -123,7 +123,7 @@ class Users extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
     else {
@@ -133,7 +133,7 @@ class Users extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
   }
@@ -148,7 +148,7 @@ class Users extends Component {
         this.list();
       })
       .catch(msg => {
-        this.setState({ serverError: msg.error })
+        this.serverError(msg.error);
       });
     }
     else {
@@ -165,12 +165,6 @@ class Users extends Component {
         <Grid item xs={12}>
           <Typography variant="h2" gutterBottom>Users<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
-        <GenericDialog
-          open={ this.state.serverError !== '' }
-          handleClose={r => this.setState({serverError : ''})}
-          title="Request Error"
-          text={"There has been an error processing your request. " + this.state.serverError}
-        />
         <GenericDialog
           open={ this.state.deleteId !== '' }
           handleClose={ r => this.delete(r) }
@@ -295,7 +289,8 @@ class Users extends Component {
 }
 
 Users.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  serverError: PropTypes.func.isRequired
 };
 
 export default withStyles(Styles)(Users);

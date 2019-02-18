@@ -4,8 +4,7 @@ class ApiClient {
   constructor() {
     let token = localStorage.getItem('ApiClient.access_token');
 
-    if (token != null)
-    {
+    if (token != null) {
       this.user = {
         access_token : token,
         refresh_token : localStorage.getItem('ApiClient.refresh_token'),
@@ -131,6 +130,31 @@ class ApiClient {
   }
   delete(type, id) {
     return this.request(type, 'DELETE', id);
+  }
+  refreshOptions() {
+    this.get('settings').then(settings => {
+      this.settings = {};
+
+      for(let i = 0; i < settings.length; i++)
+      {
+        this.settings[settings[i].name] = settings[i].value;
+      }
+
+      if (this.optionsCallBack !== null)
+        this.optionsCallBack(this.settings);
+    })
+    .catch(msg => {
+      console.log(msg);
+      this.settings = {} ;
+    });
+  }
+  setOptionCallBack(callBack) {
+    this.optionsCallBack = callBack;
+
+    if (this.settings!= null)
+      callBack(this.settings);
+    else
+      this.refreshOptions();
   }
 }
 
