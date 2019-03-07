@@ -12,11 +12,11 @@ class Blog extends Component {
     };
   }
   render() {
-    const { classes, serverError } = this.props;
+    //const { classes, serverError } = this.props;
 
     return (
       <div>
-
+        Blog Here
       </div>
     );
   }

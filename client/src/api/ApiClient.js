@@ -148,13 +148,33 @@ class ApiClient {
       this.settings = {} ;
     });
   }
-  setOptionCallBack(callBack) {
+  setOptionsCallBack(callBack) {
     this.optionsCallBack = callBack;
 
     if (this.settings!= null)
       callBack(this.settings);
     else
       this.refreshOptions();
+  }
+  refreshPages() {
+    this.get('pages').then(pages => {
+      this.pages = pages;
+
+      if (this.pagesCallBack !== null)
+        this.pagesCallBack(this.pages);
+    })
+    .catch(msg => {
+      console.log(msg);
+      this.pages = {} ;
+    });
+  }
+  setPagesCallBack(callBack) {
+    this.pagesCallBack = callBack;
+
+    if (this.pages!= null)
+      callBack(this.pages);
+    else
+      this.refreshPages();
   }
 }
 

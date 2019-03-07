@@ -1,6 +1,4 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 
 import React, { Component } from 'react';
 import Home from './front/Home';
@@ -27,7 +25,7 @@ class Routes extends Component {
       <Router>
         <div>
         <GenericDialog
-          open={ this.state.serverError != '' }
+          open={ this.state.serverError !== '' }
           handleClose={r => this.setState({serverError : ''})}
           title="Request Error"
           text={"There has been an error processing your request. " + this.state.serverError}

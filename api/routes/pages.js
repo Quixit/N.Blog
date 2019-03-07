@@ -8,9 +8,9 @@ const util = require('util');
 var mongoose = require('../db/mongoose');
 var Page = require('../model/page');
 
-router.get('/', passport.authenticate('bearer', { session: false }), function(req, res) {
+router.get('/', function(req, res) {
 
-	Page.find().sort({ title: 1 }).exec(function (err, pages) {
+	Page.find().select('-content').sort({ title: 1 }).exec(function (err, pages) {
 		if (!err) {
 			return res.json(pages);
 		} else {

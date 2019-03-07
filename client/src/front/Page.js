@@ -11,7 +11,7 @@ class Page extends Component {
     };
   }
   render() {
-    const { classes, serverError } = this.props;
+    //const { classes, serverError } = this.props;
 
     return (
       <div>
@@ -23,7 +23,8 @@ class Page extends Component {
 
 Page.propTypes = {
   classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
+  serverError: PropTypes.func.isRequired,
+  slug: PropTypes.string.isRequired
 };
 
 export default withStyles(Styles)(Page);

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -12,11 +11,11 @@ class Home extends Component {
     };
   }
   render() {
-    const { classes, serverError } = this.props;
+    //const { classes, serverError } = this.props;
 
     return (
       <div>
-
+        Home Here
       </div>
     );
   }
