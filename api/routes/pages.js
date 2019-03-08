@@ -8,9 +8,46 @@ const util = require('util');
 var mongoose = require('../db/mongoose');
 var Page = require('../model/page');
 
+router.get('/index', function(req, res) {
+
+	Page.find({published : true}).select('-content').sort({ title: 1 }).exec(function (err, pages) {
+		if (!err) {
+			var childPages = pages.map(page => ({page: page, children: [], expanded: false}));
+			var parents = [];
+
+			for (var child of childPages) {
+				if (child.page.parent == null)
+				{
+		  		parents.push(child);
+				}
+				else {
+					for (var parent of childPages)
+					{
+						if (parent.page._id.equals(child.page.parent))
+						{
+							parent.children = parent.children == null ? [] : parent.children;
+							parent.children.push(child);
+						}
+					}
+				}
+			}
+
+			return res.json(parents);
+		} else {
+			res.statusCode = 500;
+
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
+
+			return res.json({
+				error: 'Server error.'
+			});
+		}
+	});
+});
+
 router.get('/', function(req, res) {
 
-	Page.find().select('-content').sort({ title: 1 }).exec(function (err, pages) {
+	Page.find().sort({ title: 1 }).exec(function (err, pages) {
 		if (!err) {
 			return res.json(pages);
 		} else {

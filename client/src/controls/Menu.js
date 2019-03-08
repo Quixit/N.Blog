@@ -15,6 +15,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import HomeIcon from '@material-ui/icons/Home';
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import Collapse from "@material-ui/core/Collapse";
 
 import LoginButton from '../controls/LoginButton';
 import Client from '../api/ApiClient';
@@ -31,7 +34,7 @@ class Menu extends Component {
     super(props);
     this.state = {
       settings : {},
-      pages : [],
+      list : [],
       drawer : false
     };
 
@@ -41,8 +44,26 @@ class Menu extends Component {
       this.setState({ settings : settings });
     });
     Client.setPagesCallBack((pages) => {
-      this.setState({ pages : pages });
+      this.setState({ list : pages });
     });
+  }
+  navigatePage(item) {
+    var history = this.props.history;
+
+    if (item.page === undefined)
+    {
+      history.push(item);
+      this.toggleDrawer(false);
+    }
+    else if (item.children.length < 1) {
+      history.push("/" +  item.page.slug);
+      this.toggleDrawer(false);
+    }
+    else {
+      item.expanded = !item.expanded;
+
+      this.setState({list: this.state.list});
+    }
   }
   render() {
     const { classes, history /*, serverError */ } = this.props;
@@ -70,22 +91,30 @@ class Menu extends Component {
            onOpen={() => this.toggleDrawer(true)}>
            <div
              tabIndex={0}
-             role="button"
-             onClick={() => this.toggleDrawer(false)}
-             onKeyDown={() => this.toggleDrawer(false)}>
+             role="button">
            <div className={classes.list}>
             <List>
-              <ListItem button>
+              <ListItem button onClick={() => this.navigatePage("/") }>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
-                <ListItemText onClick={() => history.push("/")} primary="Home" />
+                <ListItemText  primary="Home" />
               </ListItem>
               <Divider />
-              {this.state.pages.map((page, index) => (
-                <ListItem button key={page.slug}>
-                  <ListItemText onClick={() => history.push("/" +  page.slug)} primary={page.title} />
-                </ListItem>
+              {this.state.list.map((item, index) => (
+                <List key={item.page.slug}>
+                  <ListItem button onClick={() => this.navigatePage(item)}>
+                    <ListItemText primary={item.page.title} />
+                    {item.children.length > 0 ? (item.expanded ? <ExpandLess /> : <ExpandMore />) : null}
+                  </ListItem>
+                  <Collapse in={item.expanded} timeout="auto" unmountOnExit>
+                   <List component="div" disablePadding>
+                     <ListItem button className={classes.nested}>
+                       <ListItemText inset primary="Starred" />
+                     </ListItem>
+                   </List>
+                 </Collapse>
+               </List>
               ))}
             </List>
           </div>

@@ -157,7 +157,7 @@ class ApiClient {
       this.refreshOptions();
   }
   refreshPages() {
-    this.get('pages').then(pages => {
+    this.get('pages/index').then(pages => {
       this.pages = pages;
 
       if (this.pagesCallBack !== null)
