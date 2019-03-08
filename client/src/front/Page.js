@@ -48,7 +48,7 @@ class Page extends Component {
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
-              <Typography variant="body1">
+              <Typography variant="body1" component="div">
                 { this.state.display.content != null ? parse(this.state.display.content) : '' }
               </Typography>
             </Paper>

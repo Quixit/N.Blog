@@ -37,8 +37,8 @@ var passComplexity = function(password) {
 	return messages;
 };
 
-router.get('/', passport.authenticate('bearer', { session: false }), function(req, res) {
-	User.find({ inactive: false },function (err, users) {
+router.get('/', function(req, res) {
+	User.find({ inactive: false }).select('-salt, -hashedPassword').exec(function (err, users) {
 		if (!err) {
 			return res.json(users);
 		} else {
@@ -55,7 +55,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function(re
 
 router.get('/:id', function(req, res) {
 
-	User.findById(req.params.id, function (err, user) {
+	User.findById(req.params.id).select('-salt, -hashedPassword').exec( function (err, user) {
 
 		if(!user) {
 			res.statusCode = 404;

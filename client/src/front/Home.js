@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link} from "react-router-dom";
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -17,16 +18,30 @@ class Home extends Component {
     super(props);
     this.state = {
       list: [],
-      page: 0
+      users: {}
     };
-
+    this.page = 0;
     this.serverError = props.serverError;
     this.getIndex();
   }
   getIndex()
   {
-    Client.get('posts/index/' + this.state.page).then(posts => {
+    Client.get('posts/index/' + this.page).then(posts => {
       this.setState({ list: this.state.list.concat(posts) });
+    })
+    .catch(msg => {
+      this.serverError(msg.error);
+    });
+
+    Client.get('users').then(users => {
+      let lookupUsers = {};
+
+      for(let user of users)
+      {
+        lookupUsers[user._id] = user;
+      }
+
+      this.setState({ users: lookupUsers });
     })
     .catch(msg => {
       this.serverError(msg.error);
@@ -34,7 +49,7 @@ class Home extends Component {
   }
   getNext()
   {
-    this.setState({ page: this.state.page + 1 });
+    this.page += 1;
     this.getIndex();
   }
   render() {
@@ -43,13 +58,19 @@ class Home extends Component {
     return (
       <div style={{ padding: 8 * 3 }}>
         {this.state.list.map((item, index) => (
-          <Grid container spacing={16}>
-            <Grid item xs={12}>
-              <Typography variant="h4">{item.title} {moment(item.created).format('LLL')}</Typography>
+          <Grid container spacing={16} key={item.slug}>
+            <Grid item xs={8}>
+              <Link to={`/blog/${item.slug}`}>
+                <Typography variant="h4">{item.title}</Typography>
+              </Link>
+            </Grid>
+            <Grid item xs={4}>
+                <Typography variant="body1" align="right">{moment(item.created).format('LLL')}</Typography>
+                <Typography variant="body1" align="right">{this.state.users[item.userId] == null ? '' : parse('<a href="mailto:' + this.state.users[item.userId].email + '">' + this.state.users[item.userId].firstName + ' ' + this.state.users[item.userId].lastName + '</a>') }</Typography>
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
-                <Typography variant="body1">
+                <Typography component="div" variant="body1">
                     { item.description != null ? parse(item.description) : '' }
                 </Typography>
               </Paper>
