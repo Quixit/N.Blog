@@ -192,7 +192,7 @@ class Pages extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h2" gutterBottom>Pages<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Pages<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -286,6 +286,9 @@ class Pages extends Component {
                       </MenuItem>
                     ))}
                   </TextField>
+                  <Grid item xs={12} className={classes.baseline}>
+                    <Typography variant="h6">Content</Typography>
+                  </Grid>
                   <div>
                     <Editor
                       editorState={this.state.editorState}

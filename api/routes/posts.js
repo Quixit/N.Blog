@@ -7,6 +7,26 @@ const util = require('util');
 
 var mongoose = require('../db/mongoose');
 var Post = require('../model/post');
+const pageSize = 10;
+
+router.get('/index/:page', function(req, res) {
+	var page = Number(req.params.page);
+
+	Post.find({published : true}).select('-content').limit(pageSize)
+    .skip(pageSize * page).sort({ created: -1 }).exec(function (err, posts) {
+		if (!err) {
+			return res.json(posts);
+		} else {
+			res.statusCode = 500;
+
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
+
+			return res.json({
+				error: 'Server error.'
+			});
+		}
+	});
+});
 
 router.get('/', function(req, res) {
 
@@ -41,6 +61,33 @@ router.get('/:id', function(req, res) {
 			return res.json({
 				status: 'OK',
 				post:post
+			});
+		} else {
+			res.statusCode = 500;
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
+
+			return res.json({
+				error: 'Server error.'
+			});
+		}
+	});
+});
+
+router.get('/slug/:slug', function(req, res) {
+	Post.find({ slug: req.params.slug }, function (err, post) {
+
+		if(!post) {
+			res.statusCode = 404;
+
+			return res.json({
+				error: 'Not found.'
+			});
+		}
+
+		if (!err) {
+			return res.json({
+				status: 'OK',
+				post: post[0]
 			});
 		} else {
 			res.statusCode = 500;
@@ -118,7 +165,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		post.tags = req.body.tags;
 		post.published = req.body.published;
 		post.slug = req.body.slug;
-		post.modified = new Date();
+		post.modified = Date.now();
 
 		if (req.body.categoryId != null && req.body.categoryId != '')
 			post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);

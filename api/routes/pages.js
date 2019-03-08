@@ -179,7 +179,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		page.content = req.body.content;
 		page.slug = req.body.slug;
 		page.published = req.body.published;
-		page.modified = new Date();
+		page.modified = Date.now();
 
 		if (req.body.parent !== null && req.body.parent !== '' && req.body.parent != pageId) {
 			page.parent = mongoose.Types.ObjectId(req.body.parent);

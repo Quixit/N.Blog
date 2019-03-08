@@ -119,7 +119,7 @@ class Categories extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h2" gutterBottom>Categories<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Categories<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }

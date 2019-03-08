@@ -15,11 +15,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import HomeIcon from '@material-ui/icons/Home';
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Collapse from "@material-ui/core/Collapse";
 
 import LoginButton from '../controls/LoginButton';
+import MenuItem from './MenuItem';
 import Client from '../api/ApiClient';
 import { Styles } from '../Theme';
 
@@ -38,9 +36,12 @@ class Menu extends Component {
       drawer : false
     };
 
+    this.navigatePage = this.navigatePage.bind(this);
+
     //this.serverError = props.serverError;
 
     Client.setOptionsCallBack((settings) => {
+      document.title = settings.title;  
       this.setState({ settings : settings });
     });
     Client.setPagesCallBack((pages) => {
@@ -66,7 +67,7 @@ class Menu extends Component {
     }
   }
   render() {
-    const { classes, history /*, serverError */ } = this.props;
+    const { classes  /*, serverError */ } = this.props;
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -102,19 +103,7 @@ class Menu extends Component {
               </ListItem>
               <Divider />
               {this.state.list.map((item, index) => (
-                <List key={item.page.slug}>
-                  <ListItem button onClick={() => this.navigatePage(item)}>
-                    <ListItemText primary={item.page.title} />
-                    {item.children.length > 0 ? (item.expanded ? <ExpandLess /> : <ExpandMore />) : null}
-                  </ListItem>
-                  <Collapse in={item.expanded} timeout="auto" unmountOnExit>
-                   <List component="div" disablePadding>
-                     <ListItem button className={classes.nested}>
-                       <ListItemText inset primary="Starred" />
-                     </ListItem>
-                   </List>
-                 </Collapse>
-               </List>
+                <MenuItem item={item} onClick={this.navigatePage} key={item.page.slug} />
               ))}
             </List>
           </div>

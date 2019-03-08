@@ -46,6 +46,7 @@ class Posts extends Component {
       tags: '',
       published: false,
       slug: '',
+      editorDescriptionState: EditorState.createEmpty(),
       editorState: EditorState.createEmpty()
     };
 
@@ -69,6 +70,12 @@ class Posts extends Component {
   handleEditorStateChange: Function = (editorState) => {
     this.setState({
       editorState
+    });
+  };
+
+  handleEditorDescriptionStateChange: Function = (editorDescriptionState) => {
+    this.setState({
+      editorDescriptionState
     });
   };
 
@@ -98,11 +105,17 @@ class Posts extends Component {
 
   select(item) {
       const contentBlock = htmlToDraft(item.content || '');
-      let editorState;
+      const descriptionBlock = htmlToDraft(item.description || '');
+      let editorState, editorDescriptionState;
 
       if (contentBlock) {
         const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
         editorState = EditorState.createWithContent(contentState);
+      }
+
+      if (descriptionBlock) {
+        const contentDescriptionState = ContentState.createFromBlockArray(descriptionBlock.contentBlocks);
+        editorDescriptionState = EditorState.createWithContent(contentDescriptionState);
       }
 
       this.setState({
@@ -113,7 +126,8 @@ class Posts extends Component {
         slug: item.slug || '',
         categoryId: item.categoryId || '',
         tags: item.tags === undefined ? '' : item.tags.join(','),
-        editorState: editorState || EditorState.createEmpty()
+        editorState: editorState || EditorState.createEmpty(),
+        editorDescriptionState: editorDescriptionState || EditorState.createEmpty()
       });
   }
 
@@ -121,7 +135,7 @@ class Posts extends Component {
     var item = {
       _id: this.state._id,
       title: this.state.title,
-      description: this.state.description,
+      description: draftToHtml(convertToRaw(this.state.editorDescriptionState.getCurrentContent())),
       content: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
       published: this.state.published,
       slug: this.state.slug,
@@ -206,7 +220,7 @@ class Posts extends Component {
     return (
       <Grid container spacing={16}>
         <Grid item xs={12}>
-          <Typography variant="h2" gutterBottom>Blog<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Blog<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -306,6 +320,22 @@ class Posts extends Component {
                     onChange={this.handleChange('tags')}
                     margin="normal"
                   />
+                  <Grid item xs={12} className={classes.baseline}>
+                    <Typography variant="h6">Description</Typography>
+                  </Grid>
+                  <div>
+                    <Editor
+                      editorState={this.state.editorDescriptionState}
+                      onEditorStateChange={this.handleEditorDescriptionStateChange}
+                      toolbar={{
+                        image: { uploadCallback: this.uploadImageCallBack, previewImage: true, alt: { present: true, mandatory: true } },
+                      }}
+                    />
+                  </div>
+                  <Divider light/>
+                  <Grid item xs={12} className={classes.baseline}>
+                    <Typography variant="h6">Detailed</Typography>
+                  </Grid>
                   <div>
                     <Editor
                       editorState={this.state.editorState}

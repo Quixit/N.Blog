@@ -141,6 +141,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		user.email = req.body.email;
 		user.firstName = req.body.firstName;
 		user.lastName = req.body.lastName;
+		user.modified = Date.now();
 
 		if (req.body.password != null && req.body.password != '') {
 			var complexity = passComplexity(req.body.password);
