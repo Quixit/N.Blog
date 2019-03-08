@@ -53,6 +53,34 @@ router.get('/:id', function(req, res) {
 	});
 });
 
+router.get('/slug/:slug', function(req, res) {
+
+	Page.find({ slug: req.params.slug }, function (err, page) {
+
+		if(!page) {
+			res.statusCode = 404;
+
+			return res.json({
+				error: 'Not found.'
+			});
+		}
+
+		if (!err) {
+			return res.json({
+				status: 'OK',
+				page: page[0]
+			});
+		} else {
+			res.statusCode = 500;
+			log.error(util.format('Internal error(%d): %s',res.statusCode,err.message));
+
+			return res.json({
+				error: 'Server error.'
+			});
+		}
+	});
+});
+
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
 
 	var page = new Page({

@@ -35,7 +35,7 @@ class Routes extends Component {
             <Route exact path="/" render={(props) => <Home {...props} serverError={this.serverError}/>}  />
             <Route exact path="/admin" render={(props) => <Admin {...props} serverError={this.serverError}/>} />
             <Route path="/blog/:slug" render={(props) => <Blog {...props} serverError={this.serverError}/>} />
-            <Route path="/:slug" render={(props) => <Page {...props} serverError={this.serverError}/>} />
+            <Route path="/:slug" onChange={(a) => console.log('ent3r')} render={(props) => <Page {...props} serverError={this.serverError}/>} />
           </Switch>
 
         </div>

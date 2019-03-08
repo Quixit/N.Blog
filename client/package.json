@@ -11,6 +11,7 @@
     "ajv": "^6.6.2",
     "draft-js": "^0.10.5",
     "draftjs-to-html": "^0.8.4",
+    "html-react-parser": "^0.6.2",
     "html-to-draftjs": "^1.4.0",
     "image-data-uri": "^2.0.0",
     "react": "^16.7.0",
@@ -18,7 +19,7 @@
     "react-draft-wysiwyg": "^1.12.19",
     "react-loadable": "^5.5.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.3"
+    "react-scripts": "^2.1.8"
   },
   "scripts": {
     "start": "react-scripts start",
