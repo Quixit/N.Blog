@@ -9,8 +9,6 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import {  Redirect } from "react-router-dom";
-import {withRouter} from 'react-router-dom';
 
 class LoginButton extends Component {
   constructor(props) {
@@ -61,10 +59,6 @@ class LoginButton extends Component {
   render() {
     const { classes } = this.props;
 
-    if (this.state.redirectTo !== '' && this.state.redirectTo !== this.props.location.pathname) {
-      return <Redirect to={this.state.redirectTo} />;
-    }
-
     return (
       <div>
         {!this.state.isLoggedIn ? (<Button onClick={this.handleOpen} color="secondary">Login</Button>) : (<Button onClick={this.handleLogoffClick} color="secondary">Log Out</Button>)}
@@ -114,4 +108,4 @@ LoginButton.propTypes = {
   force: PropTypes.bool
 };
 
-export default withRouter(withStyles(Styles)(LoginButton));
+export default withStyles(Styles)(LoginButton);

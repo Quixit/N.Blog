@@ -15,6 +15,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import HomeIcon from '@material-ui/icons/Home';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import LoginButton from '../controls/LoginButton';
 import MenuItem from './MenuItem';
@@ -41,7 +42,7 @@ class Menu extends Component {
     //this.serverError = props.serverError;
 
     Client.setOptionsCallBack((settings) => {
-      document.title = settings.title;  
+      document.title = settings.title;
       this.setState({ settings : settings });
     });
     Client.setPagesCallBack((pages) => {
@@ -101,6 +102,15 @@ class Menu extends Component {
                 </ListItemIcon>
                 <ListItemText  primary="Home" />
               </ListItem>
+              {Client.isLoggedIn ?
+                <ListItem button onClick={() => this.navigatePage("/admin") }>
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText  primary="Settings" />
+                </ListItem>
+                : ""
+              }
               <Divider />
               {this.state.list.map((item, index) => (
                 <MenuItem item={item} onClick={this.navigatePage} key={item.page.slug} />
