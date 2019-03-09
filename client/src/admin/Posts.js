@@ -41,7 +41,6 @@ class Posts extends Component {
       deleteId: '',
       _id: '',
       title: '',
-      description: '',
       categoryId: '',
       tags: '',
       published: false,
@@ -121,7 +120,6 @@ class Posts extends Component {
       this.setState({
         _id: item._id || '',
         title: item.title || '',
-        description: item.description || '',
         published: item.published || false,
         slug: item.slug || '',
         categoryId: item.categoryId || '',
@@ -287,13 +285,6 @@ class Posts extends Component {
                     className={classes.textField}
                     value={this.state.slug }
                     onChange={this.handleChange('slug')}
-                    margin="normal"
-                  />
-                  <TextField
-                    label="Description"
-                    className={classes.textField}
-                    value={this.state.description }
-                    onChange={this.handleChange('description')}
                     margin="normal"
                   />
                   <TextField
