@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 
 import moment from 'moment-timezone';
@@ -57,7 +58,7 @@ class Home extends Component {
 
     return (
       <div style={{ padding: 8 * 3 }}>
-        {this.state.list.map((item, index) => (
+        {this.state.list.length < 1 ? <CircularProgress className={classes.progress} /> : this.state.list.map((item, index) => (
           <Grid container spacing={16} key={item.slug}>
             <Grid item xs={8}>
               <Link to={`/blog/${item.slug}`}>
