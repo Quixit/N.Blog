@@ -20,7 +20,11 @@
     "react-draft-wysiwyg": "^1.13.2",
     "react-loadable": "^5.5.0",
     "react-router-dom": "^4.3.1",
+<<<<<<< HEAD
     "react-scripts": "^3.2.0"
+=======
+    "react-scripts": "3.1.1"
+>>>>>>> e67932685a1dadb4dad8b59f3be4e8da0408638d
   },
   "scripts": {
     "start": "react-scripts start",
