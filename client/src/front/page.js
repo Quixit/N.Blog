@@ -21,7 +21,15 @@ class Page extends Component {
         slug : null
       }
     };
+
+    this.getPage(this.props.match.params.slug);
   }
+
+  componentDidUpdate()
+  {
+    this.getPage(this.props.match.params.slug);
+  }
+
   getPage(slug)
   {
     if (slug !== this.state.display.slug)
@@ -34,11 +42,9 @@ class Page extends Component {
       });
     }
   }
+
   render() {
     const { classes } = this.props;
-    const slug = this.props.match.params.slug;
-
-    this.getPage(slug);
 
     return (
       <div style={{ padding: 8 * 3 }}>

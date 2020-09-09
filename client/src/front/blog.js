@@ -21,7 +21,15 @@ class Blog extends Component {
         slug : null
       }
     };
+
+    this.getPost(this.props.match.params.slug);
   }
+
+  componentDidUpdate()
+  {
+    this.getPost(this.props.match.params.slug);
+  }
+
   getPost(slug)
   {
     if (slug !== this.state.display.slug)
@@ -34,11 +42,9 @@ class Blog extends Component {
       });
     }
   }
+
   render() {
     const { classes } = this.props;
-    const slug = this.props.match.params.slug;
-
-    this.getPost(slug);
 
     return (
       <div style={{ padding: 8 * 3 }}>
