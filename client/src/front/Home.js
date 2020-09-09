@@ -84,9 +84,9 @@ class Home extends Component {
                 </Paper>
               </Grid>
             </Grid>
-            { this.state.hasMore && <Button onClick={() => this.getNext()}>Load More</Button>}
           </div>
         ))}
+        { this.state.hasMore && <Button onClick={() => this.getNext()}>Load More</Button>}
       </div>
     );
   }
