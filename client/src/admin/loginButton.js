@@ -9,16 +9,19 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import {
+  Redirect
+} from "react-router-dom";
 
 class LoginButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.username || '',
-      password: props.password || '',
+      username: props.username,
+      password: props.password,
       isLoggedIn: Client.isLoggedIn,
-      loginOpen: props.force === true  && !Client.isLoggedIn,
-      redirectTo: ''
+      loginOpen: false,
+      redirectTo: null
     };
 
     //This binding is necessary to make `this` work in the callback
@@ -59,6 +62,10 @@ class LoginButton extends Component {
   render() {
     const { classes } = this.props;
 
+    if (this.state.redirectTo) {
+      return <Redirect to={this.state.redirectTo} />;
+    }
+
     return (
       <div>
         {!this.state.isLoggedIn ? (<Button onClick={this.handleOpen} color="secondary">Login</Button>) : (<Button onClick={this.handleLogoffClick} color="secondary">Log Out</Button>)}
@@ -68,7 +75,7 @@ class LoginButton extends Component {
           open={this.state.loginOpen}
           onClose={this.handleClose}>
           <div className={classes.modalPaper}>
-            <Typography variant="h6" id="login-modal-title" gutterBottom>
+            <Typography variant="title" id="login-modal-title" gutterBottom>
               Login
             </Typography>
             <Grid container spacing={16}>
@@ -104,8 +111,7 @@ class LoginButton extends Component {
 LoginButton.propTypes = {
   classes: PropTypes.object.isRequired,
   username: PropTypes.string,
-  password: PropTypes.string,
-  force: PropTypes.bool
+  password: PropTypes.string
 };
 
 export default withStyles(Styles)(LoginButton);

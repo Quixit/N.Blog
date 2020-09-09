@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Styles} from '../Theme';
+import { Styles} from '../theme';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

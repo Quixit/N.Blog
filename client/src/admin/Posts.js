@@ -28,9 +28,9 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
-import { Styles} from '../Theme';
-import Client from '../api/ApiClient';
-import GenericDialog from '../controls/GenericDialog';
+import { Styles} from '../theme';
+import Client from '../api/apiClient';
+import GenericDialog from '../controls/genericDialog';
 
 class Posts extends Component {
   constructor(props) {

@@ -15,14 +15,14 @@
         "debug": "^4.1.1",
         "express": "^4.17.1",
         "method-override": "^3.0.x",
-        "mongoose": "^5.7.12",
+        "mongoose": "^5.10.4",
         "nconf": "^0.10.0",
         "oauth2orize": "^1.0.x",
         "passport": "^0.4.0",
         "passport-http": "^0.3.0",
         "passport-http-bearer": "^1.0.x",
         "passport-oauth2-client-password": "^0.1.x",
-        "winston": "^3.2.1"
+        "winston": "^3.3.3"
     },
     "jshintConfig": {
         "curly": true,

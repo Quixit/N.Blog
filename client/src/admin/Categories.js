@@ -17,9 +17,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 
-import { Styles} from '../Theme';
-import Client from '../api/ApiClient';
-import GenericDialog from '../controls/GenericDialog';
+import { Styles} from '../theme';
+import Client from '../api/apiClient';
+import GenericDialog from '../controls/genericDialog';
 
 class Categories extends Component {
   constructor(props) {

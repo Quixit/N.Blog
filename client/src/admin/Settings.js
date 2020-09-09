@@ -7,8 +7,8 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
-import { Styles} from '../Theme';
-import Client from '../api/ApiClient';
+import { Styles} from '../theme';
+import Client from '../api/apiClient';
 
 class Settings extends Component {
   constructor(props) {

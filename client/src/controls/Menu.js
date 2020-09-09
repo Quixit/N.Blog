@@ -17,10 +17,10 @@ import Divider from '@material-ui/core/Divider';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import LoginButton from '../controls/LoginButton';
-import MenuItem from './MenuItem';
-import Client from '../api/ApiClient';
-import { Styles } from '../Theme';
+import LoginButton from '../controls/loginButton';
+import MenuItem from './menuItem';
+import Client from '../api/apiClient';
+import { Styles } from '../theme';
 
 class Menu extends Component {
   toggleDrawer = value => {

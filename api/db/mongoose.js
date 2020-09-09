@@ -6,7 +6,7 @@ var connectUri = config.get('mongoose:uri');
 
 mongoose.set('useCreateIndex', true);
 mongoose.Promise = global.Promise;
-mongoose.connect(connectUri, { useNewUrlParser: true });
+mongoose.connect(connectUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 var db = mongoose.connection;
 

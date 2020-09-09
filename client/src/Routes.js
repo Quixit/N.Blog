@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import React, { Component } from 'react';
-import Home from './front/Home';
-import Blog from './front/Blog';
-import Page from './front/Page';
-import Admin from './admin/Admin';
-import Menu from './controls/Menu';
-import GenericDialog from './controls/GenericDialog';
+import Home from './front/home';
+import Blog from './front/blog';
+import Page from './front/page';
+import Admin from './admin/admin';
+import Menu from './controls/menu';
+import GenericDialog from './controls/genericDialog';
 
 class Routes extends Component {
   constructor(props) {

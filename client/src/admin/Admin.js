@@ -4,12 +4,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import Posts from './Posts';
-import Categories from './Categories';
-import Pages from './Pages';
-import Users from './Users';
-import Settings from './Settings';
-import { Styles} from '../Theme';
+import Posts from './posts';
+import Categories from './categories';
+import Pages from './pages';
+import Users from './users';
+import Settings from './settings';
+import { Styles} from '../theme';
 
 class Admin extends Component {
   constructor(props) {

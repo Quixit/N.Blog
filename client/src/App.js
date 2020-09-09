@@ -2,8 +2,8 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import React, { Component } from 'react';
-import Routes from './Routes';
-import { Theme } from './Theme';
+import Routes from './routes';
+import { Theme } from './theme';
 
 class App extends Component {
   render() {

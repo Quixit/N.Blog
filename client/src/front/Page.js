@@ -7,8 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import parse from 'html-react-parser';
 
-import { Styles} from '../Theme';
-import Client from '../api/ApiClient';
+import { Styles} from '../theme';
+import Client from '../api/apiClient';
 
 class Page extends Component {
   constructor(props) {

@@ -11,15 +11,18 @@ import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment-timezone';
 import parse from 'html-react-parser';
 
-import Client from '../api/ApiClient';
-import { Styles} from '../Theme';
+import Client from '../api/apiClient';
+import { Styles} from '../theme';
 
 class Home extends Component {
+  pageSize = 10;
+
   constructor(props) {
     super(props);
     this.state = {
       list: [],
-      users: {}
+      users: {},
+      hasMore: true
     };
     this.page = 0;
     this.serverError = props.serverError;
@@ -28,7 +31,7 @@ class Home extends Component {
   getIndex()
   {
     Client.get('posts/index/' + this.page).then(posts => {
-      this.setState({ list: this.state.list.concat(posts) });
+      this.setState({ list: this.state.list.concat(posts), hasMore: posts.length === this.pageSize });
     })
     .catch(msg => {
       this.serverError(msg.error);
@@ -50,35 +53,40 @@ class Home extends Component {
   }
   getNext()
   {
-    this.page += 1;
-    this.getIndex();
+    if (this.state.hasMore)
+    {
+      this.page += 1;
+      this.getIndex();
+    }
   }
   render() {
     const { classes /*, serverError*/ } = this.props;
 
     return (
       <div style={{ padding: 8 * 3 }}>
-        {this.state.list.length < 1 ? <CircularProgress className={classes.progress} /> : this.state.list.map((item, index) => (
-          <Grid container spacing={16} key={item.slug}>
-            <Grid item xs={8}>
-              <Link to={`/blog/${item.slug}`}>
-                <Typography variant="h4">{item.title}</Typography>
-              </Link>
+        {this.state.list.length < 1 && this.state.hasMore ? <CircularProgress className={classes.progress} /> : this.state.list.map((item, index) => (
+          <div key={item.slug}>
+            <Grid container spacing={16}>
+              <Grid item xs={8}>
+                <Link to={`/blog/${item.slug}`}>
+                  <Typography variant="h4">{item.title}</Typography>
+                </Link>
+              </Grid>
+              <Grid item xs={4}>
+                  <Typography variant="body1" align="right">{moment(item.created).format('LLL')}</Typography>
+                  <Typography variant="body1" align="right">{this.state.users[item.userId] == null ? '' : parse('<a href="mailto:' + this.state.users[item.userId].email + '">' + this.state.users[item.userId].firstName + ' ' + this.state.users[item.userId].lastName + '</a>') }</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
+                  <Typography component="div" variant="body1">
+                      { item.description != null ? parse(item.description) : '' }
+                  </Typography>
+                </Paper>
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-                <Typography variant="body1" align="right">{moment(item.created).format('LLL')}</Typography>
-                <Typography variant="body1" align="right">{this.state.users[item.userId] == null ? '' : parse('<a href="mailto:' + this.state.users[item.userId].email + '">' + this.state.users[item.userId].firstName + ' ' + this.state.users[item.userId].lastName + '</a>') }</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
-                <Typography component="div" variant="body1">
-                    { item.description != null ? parse(item.description) : '' }
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
+            { this.state.hasMore && <Button onClick={() => this.getNext()}>Load More</Button>}
+          </div>
         ))}
-        <Button onClick={() => this.getNext()}>Load More</Button>
       </div>
     );
   }
