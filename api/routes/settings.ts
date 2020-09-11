@@ -1,14 +1,15 @@
-var express = require('express');
-var passport = require('passport');
-var router = express.Router();
+import express from 'express';
+import passport from 'passport';
 
-var log = require('../log')(module);
-const util = require('util');
+const router = express.Router();
 
-var mongoose = require('../db/mongoose');
-var Setting = require('../model/setting');
+import getLogger from '../log';
+const log = getLogger(module);
+import util from 'util';
 
-router.get('/', function(req, res) {
+import Setting from '../model/setting';
+
+router.get('/', function(_req, res) {
 
 	Setting.find(function (err, settings) {
 		if (!err) {
@@ -60,7 +61,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		var item = req.body[i];
 
 		promises.push(new Promise(function(resolve, reject) {
-			Setting.findOne({ name: item.name }, function (err, setting) {
+			Setting.findOne({ name: item.name }, function (_err, setting) {
 				if(setting) {
 					setting.name = item.name;
 					setting.value = item.value;
@@ -78,7 +79,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 						reject(err);
 					}
 					else {
-						log.info(util.format("Setting with id: %s updated", setting.id));
+						log.info(util.format("Setting with id: %s updated", setting?.id));
 						resolve(err);
 					}
 				});
@@ -86,11 +87,11 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		}));
 	}
 
-	Promise.all(promises).then(function(values) {
+	Promise.all(promises).then(function() {
 		return res.json({
 			status: 'OK'
 		});
-	}).catch(error => {
+	}).catch(() => {
 		res.statusCode = 500;
 
 		return res.json({
@@ -99,4 +100,4 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 	});
 });
 
-module.exports = router;
+export default router;

@@ -1,14 +1,16 @@
-var log = require('./log')(module);
-var db = require('./db/mongoose');
-var defaults = require('./defaults');
-const util = require('util');
+import getLogger from './log';
+import db from './db/mongoose';
+import defaults from './defaults';
+import util from 'util';
 
-var User = require('./model/user');
-var Client = require('./model/client');
-var AccessToken = require('./model/accessToken');
-var RefreshToken = require('./model/refreshToken');
+import User from './model/user';
+import Client from './model/client';
+import AccessToken from './model/accessToken';
+import RefreshToken from './model/refreshToken';
 
-User.deleteMany({}, function(err) {
+const log = getLogger(module);
+
+User.deleteMany({}, function(_err) {
     var user = new User({
         username: defaults.get("default:user:username"),
         password: defaults.get("default:user:password"),
@@ -24,7 +26,7 @@ User.deleteMany({}, function(err) {
     });
 });
 
-Client.deleteMany({}, function(err) {
+Client.deleteMany({}, function(_err) {
     var client = new Client({
         name: defaults.get("default:client:name"),
         clientId: defaults.get("default:client:clientId"),

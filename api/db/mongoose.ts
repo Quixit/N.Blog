@@ -1,8 +1,10 @@
-var mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-var log = require('../log')(module);
-var config = require('../config');
-var connectUri = config.get('mongoose:uri');
+import getLogger from '../log';
+import config from '../config';
+
+const log = getLogger(module);
+const connectUri = config.get('mongoose:uri');
 
 mongoose.set('useCreateIndex', true);
 mongoose.Promise = global.Promise;
@@ -18,4 +20,4 @@ db.once('open', function callback () {
 	log.info("Connected to " + connectUri);
 });
 
-module.exports = mongoose;
+export default mongoose;

@@ -1,12 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const passport = require('./auth/passport');
-const methodOverride = require('method-override');
-const log = require('./log')(module);
-const router = require('./routes/router');
-const util = require('util');
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import passport from './auth/passport';
+import methodOverride from 'method-override';
+import getLogger from './log';
+import router from './routes/router';
+import util from 'util';
+
+const log = getLogger(module);
 
 //Configure express.
 var app = express();
@@ -21,7 +23,7 @@ app.use(passport.initialize());
 app.use(router);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next){
+app.use(function(req, res){
     res.status(404);
     log.debug(util.format('%s %d %s', req.method, res.statusCode, req.url));
     res.json({
@@ -31,7 +33,7 @@ app.use(function(req, res, next){
 });
 
 // error handlers
-app.use(function(err, req, res, next){
+app.use(function(err: any, req: any, res: any, _next: any){
     res.status(err.status || 500);
     log.debug(util.format('%s %d %s', req.method, res.statusCode, err.message));
     res.json({
@@ -40,4 +42,4 @@ app.use(function(err, req, res, next){
     return;
 });
 
-module.exports = app;
+export default app;

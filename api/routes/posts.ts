@@ -1,38 +1,23 @@
-var express = require('express');
-var passport = require('passport');
-var router = express.Router();
+import express from 'express';
+import passport from 'passport';
 
-var log = require('../log')(module);
-const util = require('util');
+const router = express.Router();
 
-var mongoose = require('../db/mongoose');
-var Page = require('../model/page');
+import getLogger from '../log';
+const log = getLogger(module);
+import util from 'util';
 
-router.get('/index', function(req, res) {
+import mongoose from '../db/mongoose';
+import Post from '../model/post';
+const pageSize = 10;
 
-	Page.find({published : true}).select('-content').sort({ title: 1 }).exec(function (err, pages) {
+router.get('/index/:page', function(req, res) {
+	var page = Number(req.params.page);
+
+	Post.find({published : true}).select('-content').limit(pageSize)
+    .skip(pageSize * page).sort({ created: -1 }).exec(function (err, posts) {
 		if (!err) {
-			var childPages = pages.map(page => ({page: page, children: [], expanded: false}));
-			var parents = [];
-
-			for (var child of childPages) {
-				if (child.page.parent == null)
-				{
-		  		parents.push(child);
-				}
-				else {
-					for (var parent of childPages)
-					{
-						if (parent.page._id.equals(child.page.parent))
-						{
-							parent.children = parent.children == null ? [] : parent.children;
-							parent.children.push(child);
-						}
-					}
-				}
-			}
-
-			return res.json(parents);
+			return res.json(posts);
 		} else {
 			res.statusCode = 500;
 
@@ -45,11 +30,11 @@ router.get('/index', function(req, res) {
 	});
 });
 
-router.get('/', function(req, res) {
+router.get('/', function(_req, res) {
 
-	Page.find().sort({ title: 1 }).exec(function (err, pages) {
+	Post.find().sort({ created: -1 }).exec(function (err, posts) {
 		if (!err) {
-			return res.json(pages);
+			return res.json(posts);
 		} else {
 			res.statusCode = 500;
 
@@ -64,9 +49,9 @@ router.get('/', function(req, res) {
 
 router.get('/:id', function(req, res) {
 
-	Page.findById(req.params.id, function (err, page) {
+	Post.findById(req.params.id, function (err, post) {
 
-		if(!page) {
+		if(!post) {
 			res.statusCode = 404;
 
 			return res.json({
@@ -77,7 +62,7 @@ router.get('/:id', function(req, res) {
 		if (!err) {
 			return res.json({
 				status: 'OK',
-				page:page
+				post:post
 			});
 		} else {
 			res.statusCode = 500;
@@ -91,10 +76,9 @@ router.get('/:id', function(req, res) {
 });
 
 router.get('/slug/:slug', function(req, res) {
+	Post.find({ slug: req.params.slug }, function (err, post) {
 
-	Page.find({ slug: req.params.slug }, function (err, page) {
-
-		if(!page) {
+		if(!post) {
 			res.statusCode = 404;
 
 			return res.json({
@@ -105,7 +89,7 @@ router.get('/slug/:slug', function(req, res) {
 		if (!err) {
 			return res.json({
 				status: 'OK',
-				page: page[0]
+				post: post[0]
 			});
 		} else {
 			res.statusCode = 500;
@@ -120,23 +104,25 @@ router.get('/slug/:slug', function(req, res) {
 
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
 
-	var page = new Page({
+	var post = new Post({
 		title: req.body.title,
 		description: req.body.description,
 		content: req.body.content,
+		userId: mongoose.Types.ObjectId((req.user as any).id),
+		tags: req.body.tags,
 		published: req.body.published,
 		slug: req.body.slug
 	});
 
-	if (req.body.parent != null && req.body.parent !== '')
-		page.parent = mongoose.Types.ObjectId(req.body.parent);
+	if (req.body.categoryId != null && req.body.categoryId != '')
+		post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
 
-	page.save(function (err) {
+	post.save(function (err) {
 		if (!err) {
-			log.info(util.format("New page created with id: %s", page.id));
+			log.info(util.format("New post created with id: %s", post.id));
 			return res.json({
 				status: 'OK',
-				page:page
+				post:post
 			});
 		} else {
 			if(err.name === 'ValidationError') {
@@ -163,37 +149,35 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 });
 
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	var pageId = req.params.id;
+	var postId = req.params.id;
 
-	Page.findById(pageId, function (err, page) {
-		if(!page) {
+	Post.findById(postId, function (_err, post) {
+		if(!post) {
 			res.statusCode = 404;
-			log.error(util.format('Page with id: %s Not Found', pageId));
+			log.error(util.format('Post with id: %s Not Found', postId));
 			return res.json({
 				error: 'Not found.'
 			});
 		}
 
-		page.title = req.body.title;
-		page.description = req.body.description;
-		page.content = req.body.content;
-		page.slug = req.body.slug;
-		page.published = req.body.published;
-		page.modified = Date.now();
+		post.title = req.body.title;
+		post.description = req.body.description;
+		post.content = req.body.content;
+		post.userId = mongoose.Types.ObjectId((req.user as any).id);
+		post.tags = req.body.tags;
+		post.published = req.body.published;
+		post.slug = req.body.slug;
+		post.modified = new Date();
 
-		if (req.body.parent !== null && req.body.parent !== '' && req.body.parent != pageId) {
-			page.parent = mongoose.Types.ObjectId(req.body.parent);
-		}
-		else {
-			page.parent = null;
-		}
+		if (req.body.categoryId != null && req.body.categoryId != '')
+			post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
 
-		page.save(function (err) {
+		post.save(function (err) {
 			if (!err) {
-				log.info(util.format("Page with id: %s updated", page.id));
+				log.info(util.format("Post with id: %s updated", post.id));
 				return res.json({
 					status: 'OK',
-					page:page
+					post:post
 				});
 			} else {
 				if(err.name === 'ValidationError') {
@@ -201,8 +185,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 					return res.json({
 						error: 'Validation error.'
 					});
-				}
-				else if(err.message.startsWith('E11000')) {
+				} else if(err.message.startsWith('E11000')) {
 					res.statusCode = 400;
 					return res.json({
 						error: 'Slug must be unique.'
@@ -214,17 +197,15 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
 });
 
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-
-	Page.deleteOne({ _id: req.params.id },function (err) {
+	Post.deleteOne({ _id: req.params.id },function (err) {
 		if (!err) {
-			log.info(util.format("Page with id: %s deleted", req.params.id));
+			log.info(util.format("Post with id: %s deleted", req.params.id));
 			return res.json({
 				status: 'OK'
 			});
@@ -241,9 +222,8 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 					error: 'Server error.'
 				});
 			}
-			log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 		}
 	});
 });
 
-module.exports = router;
+export default router;

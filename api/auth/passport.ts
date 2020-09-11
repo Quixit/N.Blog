@@ -1,15 +1,16 @@
-var passport = require('passport');
-var BasicStrategy = require('passport-http').BasicStrategy;
-var ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
-var BearerStrategy = require('passport-http-bearer').Strategy;
-var crypto = require('crypto');
+import passport from 'passport';
+import basic from 'passport-http';
+import oauth2 from 'passport-oauth2-client-password';
+import bearer from 'passport-http-bearer';
+const BasicStrategy = basic.BasicStrategy;
+const ClientPasswordStrategy = oauth2.Strategy;
+const BearerStrategy = bearer.Strategy;
+import crypto from 'crypto';
 
-var config = require('../config');
-
-var User = require('../model/user');
-var Client = require('../model/client');
-var AccessToken = require('../model/accessToken');
-var RefreshToken = require('../model/refreshToken');
+import config from '../config';
+import User from '../model/user';
+import Client from '../model/client';
+import AccessToken from '../model/accessToken';
 
 passport.use(new BasicStrategy(
     function(username, password, done) {
@@ -34,6 +35,7 @@ passport.use(new BasicStrategy(
 
 passport.use(new ClientPasswordStrategy(
     function(clientId, clientSecret, done) {
+        console.log("asdf");
 
         Client.findOne({ clientId: clientId }, function(err, client) {
             if (err) {
@@ -47,7 +49,7 @@ passport.use(new ClientPasswordStrategy(
             if (client.clientSecret !== clientSecret) {
             	return done(null, false);
             }
-
+console.log(client);
             return done(null, client);
         });
     }
@@ -79,7 +81,7 @@ passport.use(new BearerStrategy(
         	return done(null, false);
         }
 
-        if( Math.round((Date.now()-token.created)/1000) > config.get('security:tokenLife') ) {
+        if( Math.round((Date.now()-token.created.getDate())/1000) > config.get('security:tokenLife') ) {
 
             AccessToken.deleteOne({ token: hash }, function (err) {
                 if (err) {
@@ -87,7 +89,7 @@ passport.use(new BearerStrategy(
                 }
             });
 
-            return done(null, false, { message: 'Token expired' });
+            return done(null, false, 'Token expired');
         }
 
         User.findById(token.userId, function(err, user) {
@@ -97,7 +99,7 @@ passport.use(new BearerStrategy(
             }
 
             if (!user || user.inactive) {
-            	return done(null, false, { message: 'Unknown user' });
+            	return done(null, false, 'Unknown user');
             }
 
             var info = { scope: '*' };
@@ -106,4 +108,4 @@ passport.use(new BearerStrategy(
     });
 }));
 
-module.exports = passport;
+export default passport;

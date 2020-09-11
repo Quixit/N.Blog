@@ -3,7 +3,7 @@ var nconf = require('nconf');
 nconf.argv()
 	.env()
 	.file({
-		file: './config.json'
+		file: './defaults.json'
 	});
 
-module.exports = nconf;
+export default nconf;

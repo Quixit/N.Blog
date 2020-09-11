@@ -1,17 +1,19 @@
-var express = require('express');
-var passport = require('passport');
-var router = express.Router();
+import express from 'express';
+import passport from 'passport';
+const router = express.Router();
 
-var log = require('../log')(module);
-const util = require('util');
+import getLogger from '../log'
+const log = getLogger(module);
 
-var mongoose = require('../db/mongoose');
-var Category = require('../model/category');
-var Post = require('../model/post');
+import util from 'util';
 
-router.get('/', function(req, res) {
+import mongoose from '../db/mongoose';
+import CategoryModel, { CategoryDocument } from '../model/category';
+import Post from '../model/post';
 
-	Category.find().sort({ name: 1 }).exec(function (err, categorys) {
+router.get('/', function(_req, res) {
+
+	CategoryModel.find().sort({ name: 1 }).exec(function (err, categorys) {
 		if (!err) {
 			return res.json(categorys);
 		} else {
@@ -28,7 +30,7 @@ router.get('/', function(req, res) {
 
 router.get('/:id', function(req, res) {
 
-	Category.findById(req.params.id, function (err, category) {
+	CategoryModel.findById(req.params.id, function (err, category) {
 
 		if(!category) {
 			res.statusCode = 404;
@@ -56,7 +58,7 @@ router.get('/:id', function(req, res) {
 
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
 
-	var category = new Category({
+	var category = new CategoryModel({
 		name: req.body.name,
 		description: req.body.description
 	});
@@ -95,7 +97,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var categoryId = req.params.id;
 
-	Category.findById(categoryId, function (err, category) {
+	CategoryModel.findById(categoryId, function (_err: Error, category: CategoryDocument) {
 		if(!category) {
 			res.statusCode = 404;
 			log.error(util.format('Category with id: %s Not Found', categoryId));
@@ -107,7 +109,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		category.name = req.body.name;
 		category.description = req.body.description;
 
-		category.save(function (err) {
+		category.save(function (err: Error) {
 			if (!err) {
 				log.info(util.format("Category with id: %s updated", category.id));
 				return res.json({
@@ -132,23 +134,22 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
 });
 
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	let queryId = mongoose.Types.ObjectId(req.id);
+	let queryId = mongoose.Types.ObjectId(req.params.id);
 
 	Post.find({ categoryId : queryId},function (err, posts) {
 		if (!err) {
 			for (var i = 0; i < posts.length; i++)
 			{
 				posts[i].categoryId = null;
-				post[i].save(function (err) {
+				posts[i].save(function (err) {
 					if (!err) {
-						log.info(util.format("Post with id: %s category removed.", category.id));
+						log.info(util.format("Post with id: %s category removed.", queryId));
 					} else {
 						if(err.name === 'ValidationError') {
 							res.statusCode = 400;
@@ -162,12 +163,11 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 								error: 'Server error.'
 							});
 						}
-						log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 					}
 				});
 			}
 
-			Category.deleteOne({ _id: req.params.id },function (err) {
+			CategoryModel.deleteOne({ _id: req.params.id },function (err) {
 				if (!err) {
 					log.info(util.format("Category with id: %s deleted", queryId));
 					return res.json({
@@ -186,7 +186,6 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 							error: 'Server error.'
 						});
 					}
-					log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 				}
 			});
 		} else {
@@ -203,4 +202,4 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 
 });
 
-module.exports = router;
+export default router;

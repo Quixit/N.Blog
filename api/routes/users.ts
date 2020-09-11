@@ -1,14 +1,15 @@
-var express = require('express');
-var passport = require('passport');
-var router = express.Router();
+import express from 'express';
+import passport from 'passport';
 
-var log = require('../log')(module);
-const util = require('util');
+const router = express.Router();
 
-var mongoose = require('../db/mongoose');
-var User = require('../model/user');
+import getLogger from '../log';
+const log = getLogger(module);
+import util from 'util';
 
-var passComplexity = function(password) {
+import User from '../model/user';
+
+var passComplexity = function(password: string) {
 	var options = {
 		length: 8,
 		upperCase: true,
@@ -37,7 +38,7 @@ var passComplexity = function(password) {
 	return messages;
 };
 
-router.get('/', function(req, res) {
+router.get('/', function(_req, res) {
 	User.find({ inactive: false }).select('-salt, -hashedPassword').exec(function (err, users) {
 		if (!err) {
 			return res.json(users);
@@ -128,7 +129,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var userId = req.params.id;
 
-	User.findById(userId, function (err, user) {
+	User.findById(userId, function (_err, user) {
 		if(!user) {
 			res.statusCode = 404;
 			log.error(util.format('User with id: %s Not Found', userId));
@@ -141,7 +142,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		user.email = req.body.email;
 		user.firstName = req.body.firstName;
 		user.lastName = req.body.lastName;
-		user.modified = Date.now();
+		user.modified = new Date();
 
 		if (req.body.password != null && req.body.password != '') {
 			var complexity = passComplexity(req.body.password);
@@ -177,7 +178,6 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 						error: 'Server error.'
 					});
 				}
-				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
@@ -186,7 +186,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var userId = req.params.id;
 
-	User.findById(userId, function (err, user) {
+	User.findById(userId, function (_err, user) {
 		if(!user) {
 			res.statusCode = 404;
 			log.error(util.format('User with id: %s Not Found', userId));
@@ -217,10 +217,9 @@ router.delete('/:id', passport.authenticate('bearer', { session: false }), funct
 						error: 'Server error.'
 					});
 				}
-				log.error(util.format('Internal error (%d): %s', res.statusCode, err.message));
 			}
 		});
 	});
 });
 
-module.exports = router;
+export default router;
