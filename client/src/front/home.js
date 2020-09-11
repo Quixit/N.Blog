@@ -60,7 +60,7 @@ class Home extends Component {
     }
   }
   render() {
-    const { classes /*, serverError*/ } = this.props;
+    const { classes } = this.props;
 
     return (
       <div style={{ padding: 8 * 3 }}>
