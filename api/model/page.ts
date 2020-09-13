@@ -1,16 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
-interface Page {
-	id?: any;
-	title: string;
-	description?: string;
-	content?: string;
-	created: Date;
-	modified: Date;
-	published: boolean;
-	slug: string;
-	parent: PageDocument["_id"];
-}
+import { Page } from '../../shared';
 
 interface PageDocument extends Page, Document {}
 

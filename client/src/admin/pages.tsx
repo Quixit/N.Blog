@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -28,12 +27,29 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
-import { Styles} from '../theme';
+import { styles } from '../theme';
 import Client from '../api/apiClient';
 import GenericDialog from '../controls/genericDialog';
+import { Page } from '../../../shared';
 
-class Pages extends Component {
-  constructor(props) {
+interface Props extends WithStyles {
+  serverError: (value: string) => void;
+}
+
+interface State {
+    items: Page[];
+    deleteId: string;
+    _id: string;
+    title: string;
+    description: string;
+    published: boolean;
+    slug: string;
+    parent: string;
+    editorState: EditorState;
+}
+
+class Pages extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       items: [],
@@ -47,23 +63,10 @@ class Pages extends Component {
       editorState: EditorState.createEmpty()
     };
 
-    this.serverError = this.props.serverError;
     this.list();
   }
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
-
-  handleCheck = name => event => {
-    this.setState({
-      [name]: event.target.checked,
-    });
-  };
-
-  handleEditorStateChange: Function = (editorState) => {
+  handleEditorStateChange = (editorState: EditorState) => {
     this.setState({
       editorState
     });
@@ -80,12 +83,12 @@ class Pages extends Component {
       this.setState({ items : pages });
     })
     .catch(msg => {
-      this.serverError(msg.error);
+      this.props.serverError(msg.error);
     });
   }
 
-  select(item) {
-      const contentBlock = htmlToDraft(item.content || '');
+  select(item?: Page, isNew?: boolean) {
+      const contentBlock = htmlToDraft(item?.content || '');
       let editorState;
 
       if (contentBlock) {
@@ -94,12 +97,12 @@ class Pages extends Component {
       }
 
       this.setState({
-        _id: item._id || '',
-        title: item.title || '',
-        description: item.description || '',
-        published: item.published || false,
-        slug: item.slug || '',
-        parent: item.parent || '',
+        _id: item?._id || (isNew ? 'new' : ""),
+        title: item?.title || '',
+        description: item?.description || '',
+        published: item?.published || false,
+        slug: item?.slug || '',
+        parent: item?.parent || '',
         editorState: editorState || EditorState.createEmpty()
       });
   }
@@ -117,46 +120,46 @@ class Pages extends Component {
 
     if (this.state._id === 'new') {
       Client.post('pages', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       Client.put('pages', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
   }
 
-  delete(result) {
+  delete(result: string) {
     if (result === 'ok')
     {
       Client.delete('pages', this.state.deleteId)
-      .then(users => {
+      .then(() => {
         this.setState({deleteId : ''});
-        this.select({});
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       this.setState({deleteId : ''});
-      this.select({});
+      this.select();
     }
   }
 
-  uploadImageCallBack(file) {
+  uploadImageCallBack(file: Blob) {
     return new Promise(
       (resolve, reject) => {
         var reader  = new FileReader();
@@ -175,7 +178,7 @@ class Pages extends Component {
     );
   }
 
-  getParent(id) {
+  getParent(id: string) {
 
     for(var i =0; i < this.state.items.length; i++)
     {
@@ -183,16 +186,16 @@ class Pages extends Component {
           return this.state.items[i];
     }
 
-    return {};
+    return undefined;
   }
 
   render() {
     const { classes } = this.props;
 
     return (
-      <Grid container spacing={16}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h2">Pages<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Pages<IconButton color="primary" aria-label="Add" onClick={() => this.select(undefined, true)}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -223,10 +226,10 @@ class Pages extends Component {
                         </TableCell>
                         <TableCell>{p.slug}</TableCell>
                         <TableCell>{p.published ? 'Yes' : 'No'}</TableCell>
-                        <TableCell>{this.getParent(p.parent).title}</TableCell>
+                        <TableCell>{this.getParent(p.parent)?.title}</TableCell>
                         <TableCell>
-                          <IconButton color="primary" aria-label="Edit" onClick={e => this.select(p)}><EditIcon /></IconButton>
-                          <IconButton color="primary" aria-label="Delete" onClick={e => this.setState({ deleteId: p._id})}><DeleteIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Edit" onClick={() => this.select(p)}><EditIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Delete" onClick={() => this.setState({ deleteId: p._id})}><DeleteIcon /></IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -249,7 +252,7 @@ class Pages extends Component {
                     label="Title"
                     className={classes.textField}
                     value={this.state.title}
-                    onChange={this.handleChange('title')}
+                    onChange={(e) => this.setState({ title: e.target.value })}
                     margin="normal"
                   />
                   <TextField
@@ -258,14 +261,14 @@ class Pages extends Component {
                     label="Slug"
                     className={classes.textField}
                     value={this.state.slug }
-                    onChange={this.handleChange('slug')}
+                    onChange={(e) => this.setState({ slug: e.target.value })}
                     margin="normal"
                   />
                   <TextField
                     label="Description"
                     className={classes.textField}
                     value={this.state.description }
-                    onChange={this.handleChange('description')}
+                    onChange={(e) => this.setState({ description: e.target.value })}
                     margin="normal"
                   />
                   <TextField
@@ -275,7 +278,7 @@ class Pages extends Component {
                     helperText ={this.state.parent === this.state._id ? 'A page cannot be its own parent' : ''}
                     className={classes.textField}
                     value={this.state.parent}
-                    onChange={this.handleChange('parent')}
+                    onChange={(e) => this.setState({ parent: e.target.value })}
                     margin="normal"
                   >
                     <MenuItem key={1} value={''}>
@@ -300,33 +303,32 @@ class Pages extends Component {
                   </div>
                   <Divider light/>
                   <FormGroup
-                    margin="normal"
                     className={classes.textField}>
                     <FormControlLabel
                        control={
                          <Checkbox
                            checked={this.state.published}
-                           onChange={this.handleCheck('published')}
+                           onChange={(e) => this.setState({ published: e.target.checked })}
                          />
                        }
                        label="Published" />
                   </FormGroup>
                 </form>
               </Grid>
-              <Grid item xs={12} align="right">
+              <Grid item xs={12} alignContent="flex-end">
                 <Button
                   color="primary"
                   aria-label="Save"
                   className={classes.button}
                   disabled={!this.isValid()}
-                  onClick={e => this.save()}>
+                  onClick={() => this.save()}>
                   Save
                 </Button>
                 <Button
                   color="secondary"
                   aria-label="Cancel"
                   className={classes.button}
-                  onClick={e => this.select({})}>
+                  onClick={() => this.select()}>
                   Cancel
                 </Button>
               </Grid>
@@ -338,9 +340,4 @@ class Pages extends Component {
   }
 }
 
-Pages.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(Pages);
+export default withStyles(styles)(Pages);

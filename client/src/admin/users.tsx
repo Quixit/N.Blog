@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -17,12 +16,28 @@ import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 
-import { Styles} from '../theme';
+import { styles } from '../theme';
 import Client from '../api/apiClient';
 import GenericDialog from '../controls/genericDialog';
+import { User } from '../../../shared';
 
-class Users extends Component {
-  constructor(props) {
+interface Props extends WithStyles {
+  serverError: (value: string) => void;
+}
+
+interface State {
+  items: User[],
+  deleteId: string,
+  _id: string,
+  username: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+  password: string
+}
+
+class Users extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       items: [],
@@ -35,15 +50,8 @@ class Users extends Component {
       password: ''
     };
 
-    this.serverError = this.props.serverError;
     this.list();
   }
-
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
 
   isValid() {
     var state = this.state;
@@ -51,11 +59,11 @@ class Users extends Component {
     return state.username !== '' && this.isEmail(this.state.email) && state.firstName !== '' && (state._id !== 'new' || state.password !== '' );
   }
 
-  isEmail(address) {
+  isEmail(address: string) {
     return !! address.match(/.+@.+\../);
   }
 
-  passComplexity(password)
+  passComplexity(password: string)
   {
   	var options = {
   		length: 8,
@@ -91,17 +99,17 @@ class Users extends Component {
       this.setState({ items : users });
     })
     .catch(msg => {
-      this.serverError(msg.error);
+      this.props.serverError(msg.error);
     });
   }
 
-  select(item) {
+  select(item?: User, isNew?: boolean) {
       this.setState({
-        _id: item._id || '',
-        username: item.username || '',
-        email: item.email || '',
-        firstName: item.firstName || '',
-        lastName: item.lastName || '',
+        _id: item?._id || (isNew ? 'new' : ''),
+        username: item?.username || '',
+        email: item?.email || '',
+        firstName: item?.firstName || '',
+        lastName: item?.lastName || '',
         password: ''
       });
   }
@@ -118,42 +126,42 @@ class Users extends Component {
 
     if (this.state._id === 'new') {
       Client.post('users', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       Client.put('users', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
   }
 
-  delete(result) {
+  delete(result: string) {
     if (result === 'ok')
     {
       Client.delete('users', this.state.deleteId)
-      .then(users => {
+      .then(() => {
         this.setState({deleteId : ''});
-        this.select({});
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       this.setState({deleteId : ''});
-      this.select({});
+      this.select();
     }
   }
 
@@ -161,9 +169,9 @@ class Users extends Component {
     const { classes } = this.props;
 
     return (
-      <Grid container spacing={16}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h2">Users<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Users<IconButton color="primary" aria-label="Add" onClick={e => this.select(undefined, true)}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -220,7 +228,7 @@ class Users extends Component {
                     label="Username"
                     className={classes.textField}
                     value={this.state.username}
-                    onChange={this.handleChange('username')}
+                    onChange={(e) => this.setState({ username: e.target.value})}
                     margin="normal"
                   />
                   <TextField
@@ -231,7 +239,7 @@ class Users extends Component {
                     type="email"
                     className={classes.textField}
                     value={this.state.email}
-                    onChange={this.handleChange('email')}
+                    onChange={(e) => this.setState({ email: e.target.value})}
                     margin="normal"
                   />
                   <TextField
@@ -240,14 +248,14 @@ class Users extends Component {
                     error={this.state.firstName === ""}
                     className={classes.textField}
                     value={this.state.firstName}
-                    onChange={this.handleChange('firstName')}
+                    onChange={(e) => this.setState({ firstName: e.target.value})}
                     margin="normal"
                   />
                   <TextField
                     label="Last Name"
                     className={classes.textField}
                     value={this.state.lastName}
-                    onChange={this.handleChange('lastName')}
+                    onChange={(e) => this.setState({ lastName: e.target.value})}
                     margin="normal"
                   />
                   <TextField
@@ -258,25 +266,25 @@ class Users extends Component {
                     type="password"
                     className={classes.textField}
                     value={this.state.password}
-                    onChange={this.handleChange('password')}
+                    onChange={(e) => this.setState({ password: e.target.value})}
                     margin="normal"
                   />
                 </form>
               </Grid>
-              <Grid item xs={12} align="right">
+              <Grid item xs={12} alignContent="flex-end">
                 <Button
                   color="primary"
                   aria-label="Save"
                   className={classes.button}
                   disabled={!this.isValid()}
-                  onClick={e => this.save()}>
+                  onClick={() => this.save()}>
                   Save
                 </Button>
                 <Button
                   color="secondary"
                   aria-label="Cancel"
                   className={classes.button}
-                  onClick={e => this.select({})}>
+                  onClick={() => this.select()}>
                   Cancel
                 </Button>
               </Grid>
@@ -288,9 +296,4 @@ class Users extends Component {
   }
 }
 
-Users.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(Users);
+export default withStyles(styles)(Users);

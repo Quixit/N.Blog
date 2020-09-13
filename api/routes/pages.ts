@@ -8,17 +8,12 @@ const log = getLogger(module);
 import util from  'util';
 
 import mongoose from '../db/mongoose';
-import Page, { PageDocument } from '../model/page';
-
-interface PageItem {
-		page: PageDocument;
-		children: PageItem[];
-		expanded: boolean;
-}
+import PageModel from '../model/page';
+import { PageItem } from '../../shared';
 
 router.get('/index', function(_req, res) {
 
-	Page.find({published : true}).select('-content').sort({ title: 1 }).exec(function (err, pages) {
+	PageModel.find({published : true}).select('-content').sort({ title: 1 }).exec(function (err, pages) {
 		if (!err) {
 			var childPages: PageItem[] = pages.map(page => ({page: page, children: [], expanded: false}));
 			var parents: PageItem[]  = [];
@@ -55,7 +50,7 @@ router.get('/index', function(_req, res) {
 
 router.get('/', function(_req, res) {
 
-	Page.find().sort({ title: 1 }).exec(function (err, pages) {
+	PageModel.find().sort({ title: 1 }).exec(function (err, pages) {
 		if (!err) {
 			return res.json(pages);
 		} else {
@@ -72,7 +67,7 @@ router.get('/', function(_req, res) {
 
 router.get('/:id', function(req, res) {
 
-	Page.findById(req.params.id, function (err, page) {
+	PageModel.findById(req.params.id, function (err, page) {
 
 		if(!page) {
 			res.statusCode = 404;
@@ -100,7 +95,7 @@ router.get('/:id', function(req, res) {
 
 router.get('/slug/:slug', function(req, res) {
 
-	Page.find({ slug: req.params.slug }, function (err, page) {
+	PageModel.find({ slug: req.params.slug }, function (err, page) {
 
 		if(!page) {
 			res.statusCode = 404;
@@ -128,7 +123,7 @@ router.get('/slug/:slug', function(req, res) {
 
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
 
-	var page = new Page({
+	var page = new PageModel({
 		title: req.body.title,
 		description: req.body.description,
 		content: req.body.content,
@@ -173,10 +168,10 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var pageId = req.params.id;
 
-	Page.findById(pageId, function (_err, page) {
+	PageModel.findById(pageId, function (_err, page) {
 		if(!page) {
 			res.statusCode = 404;
-			log.error(util.format('Page with id: %s Not Found', pageId));
+			log.error(util.format('PageModel with id: %s Not Found', pageId));
 			return res.json({
 				error: 'Not found.'
 			});
@@ -198,7 +193,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		page.save(function (err) {
 			if (!err) {
-				log.info(util.format("Page with id: %s updated", page.id));
+				log.info(util.format("PageModel with id: %s updated", page.id));
 				return res.json({
 					status: 'OK',
 					page:page
@@ -229,9 +224,9 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 
-	Page.deleteOne({ _id: req.params.id },function (err) {
+	PageModel.deleteOne({ _id: req.params.id },function (err) {
 		if (!err) {
-			log.info(util.format("Page with id: %s deleted", req.params.id));
+			log.info(util.format("PageModel with id: %s deleted", req.params.id));
 			return res.json({
 				status: 'OK'
 			});

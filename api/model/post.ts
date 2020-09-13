@@ -1,20 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { UserDocument } from './user';
-import { CategoryDocument } from './category';
-
-interface Post {
-	id?: any;
-	title: string;
-	description?: string;
-	content?: string;
-	userId?:  UserDocument["_id"];
-	categoryId?: CategoryDocument["_id"];
-	tags: string[];
-	published: boolean;
-	slug: string;
-	created: Date;
-	modified: Date;
-}
+import { Post } from '../../shared';
 
 interface PostDocument extends Post, Document {}
 

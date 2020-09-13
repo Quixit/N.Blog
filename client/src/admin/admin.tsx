@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
@@ -9,17 +8,25 @@ import Categories from './categories';
 import Pages from './pages';
 import Users from './users';
 import Settings from './settings';
-import { Styles} from '../theme';
+import { styles } from '../theme';
 
-class Admin extends Component {
-  constructor(props) {
+interface Props extends WithStyles {
+  serverError: (value: string) => void;
+}
+
+interface State {
+  tab: number;
+}
+
+class Admin extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       tab: 0
     };
   }
 
-  handleChange = (event, value) => {
+  handleChange = (_event: React.ChangeEvent<{}>, value: number) => {
     this.setState({ tab: value });
   };
 
@@ -50,9 +57,4 @@ class Admin extends Component {
   }
 }
 
-Admin.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(Admin);
+export default withStyles(styles)(Admin);

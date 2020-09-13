@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -28,12 +27,31 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
-import { Styles} from '../theme';
+import { styles } from '../theme';
 import Client from '../api/apiClient';
 import GenericDialog from '../controls/genericDialog';
+import { Category, Post } from '../../../shared';
 
-class Posts extends Component {
-  constructor(props) {
+interface Props extends WithStyles {
+  serverError: (value: string) => void;
+}
+
+interface State {
+  items: Post[],
+  categories: Category[],
+  deleteId: string;
+  _id: string;
+  title: string;
+  categoryId: string;
+  tags: string;
+  published: boolean;
+  slug: string;
+  editorDescriptionState: EditorState;
+  editorState: EditorState;
+}
+
+class Posts extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       items: [],
@@ -49,30 +67,17 @@ class Posts extends Component {
       editorState: EditorState.createEmpty()
     };
 
-    this.serverError = this.props.serverError;
     this.list();
     this.listCategories();
   }
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
-
-  handleCheck = name => event => {
-    this.setState({
-      [name]: event.target.checked,
-    });
-  };
-
-  handleEditorStateChange: Function = (editorState) => {
+  handleEditorStateChange = (editorState: EditorState) => {
     this.setState({
       editorState
     });
   };
 
-  handleEditorDescriptionStateChange: Function = (editorDescriptionState) => {
+  handleEditorDescriptionStateChange = (editorDescriptionState: EditorState) => {
     this.setState({
       editorDescriptionState
     });
@@ -89,7 +94,7 @@ class Posts extends Component {
       this.setState({ items : posts });
     })
     .catch(msg => {
-      this.serverError(msg.error);
+      this.props.serverError(msg.error);
     });
   }
 
@@ -98,13 +103,13 @@ class Posts extends Component {
       this.setState({ categories });
     })
     .catch(msg => {
-      this.serverError(msg.error);
+      this.props.serverError(msg.error);
     });
   }
 
-  select(item) {
-      const contentBlock = htmlToDraft(item.content || '');
-      const descriptionBlock = htmlToDraft(item.description || '');
+  select(item?: Post, isNew?: boolean) {
+      const contentBlock = htmlToDraft(item?.content || '');
+      const descriptionBlock = htmlToDraft(item?.description || '');
       let editorState, editorDescriptionState;
 
       if (contentBlock) {
@@ -118,12 +123,12 @@ class Posts extends Component {
       }
 
       this.setState({
-        _id: item._id || '',
-        title: item.title || '',
-        published: item.published || false,
-        slug: item.slug || '',
-        categoryId: item.categoryId || '',
-        tags: item.tags === undefined ? '' : item.tags.join(','),
+        _id: item?._id || (isNew ? 'new' : ""),
+        title: item?.title || '',
+        published: item?.published || false,
+        slug: item?.slug || '',
+        categoryId: item?.categoryId || '',
+        tags: item?.tags === undefined ? '' : item?.tags.join(','),
         editorState: editorState || EditorState.createEmpty(),
         editorDescriptionState: editorDescriptionState || EditorState.createEmpty()
       });
@@ -143,46 +148,46 @@ class Posts extends Component {
 
     if (this.state._id === 'new') {
       Client.post('posts', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       Client.put('posts', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
   }
 
-  delete(result) {
+  delete(result: string) {
     if (result === 'ok')
     {
       Client.delete('posts', this.state.deleteId)
-      .then(users => {
+      .then(() => {
         this.setState({deleteId : ''});
-        this.select({});
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       this.setState({deleteId : ''});
-      this.select({});
+      this.select();
     }
   }
 
-  uploadImageCallBack(file) {
+  uploadImageCallBack(file: Blob) {
     return new Promise(
       (resolve, reject) => {
         var reader  = new FileReader();
@@ -201,7 +206,7 @@ class Posts extends Component {
     );
   }
 
-  getCategory(id) {
+  getCategory(id: string) {
 
     for(var i =0; i < this.state.categories.length; i++)
     {
@@ -209,16 +214,16 @@ class Posts extends Component {
           return this.state.categories[i];
     }
 
-    return {};
+    return undefined;
   }
 
   render() {
     const { classes } = this.props;
 
     return (
-      <Grid container spacing={16}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h2">Blog<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Blog<IconButton color="primary" aria-label="Add" onClick={() => this.select(undefined, true)}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -248,11 +253,11 @@ class Posts extends Component {
                           {p.title}
                         </TableCell>
                         <TableCell>{p.slug}</TableCell>
-                        <TableCell>{this.getCategory(p.categoryId).name}</TableCell>
+                        <TableCell>{this.getCategory(p.categoryId)?.name}</TableCell>
                         <TableCell>{p.published ? 'Yes' : 'No'}</TableCell>
                         <TableCell>
-                          <IconButton color="primary" aria-label="Edit" onClick={e => this.select(p)}><EditIcon /></IconButton>
-                          <IconButton color="primary" aria-label="Delete" onClick={e => this.setState({ deleteId: p._id})}><DeleteIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Edit" onClick={() => this.select(p)}><EditIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Delete" onClick={() => this.setState({ deleteId: p._id})}><DeleteIcon /></IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -275,7 +280,7 @@ class Posts extends Component {
                     label="Title"
                     className={classes.textField}
                     value={this.state.title}
-                    onChange={this.handleChange('title')}
+                    onChange={(e) => this.setState({ title: e.target.value })}
                     margin="normal"
                   />
                   <TextField
@@ -284,7 +289,7 @@ class Posts extends Component {
                     label="Slug"
                     className={classes.textField}
                     value={this.state.slug }
-                    onChange={this.handleChange('slug')}
+                    onChange={(e) => this.setState({ slug: e.target.value })}
                     margin="normal"
                   />
                   <TextField
@@ -292,7 +297,7 @@ class Posts extends Component {
                     label="Category"
                     className={classes.textField}
                     value={this.state.categoryId}
-                    onChange={this.handleChange('categoryId')}
+                    onChange={(e) => this.setState({ categoryId: e.target.value })}
                     margin="normal"
                   >
                     <MenuItem key={1} value={''}>
@@ -308,7 +313,7 @@ class Posts extends Component {
                     className={classes.textField}
                     helperText="Separated by commas"
                     value={this.state.tags }
-                    onChange={this.handleChange('tags')}
+                    onChange={(e) => this.setState({ tags: e.target.value })}
                     margin="normal"
                   />
                   <Grid item xs={12} className={classes.baseline}>
@@ -338,33 +343,32 @@ class Posts extends Component {
                   </div>
                   <Divider light/>
                   <FormGroup
-                    margin="normal"
                     className={classes.textField}>
                     <FormControlLabel
                        control={
                          <Checkbox
                            checked={this.state.published}
-                           onChange={this.handleCheck('published')}
+                           onChange={(e) => this.setState({ published: e.target.checked })}
                          />
                        }
                        label="Published" />
                   </FormGroup>
                 </form>
               </Grid>
-              <Grid item xs={12} align="right">
+              <Grid item xs={12} alignContent="flex-end">
                 <Button
                   color="primary"
                   aria-label="Save"
                   className={classes.button}
                   disabled={!this.isValid()}
-                  onClick={e => this.save()}>
+                  onClick={() => this.save()}>
                   Save
                 </Button>
                 <Button
                   color="secondary"
                   aria-label="Cancel"
                   className={classes.button}
-                  onClick={e => this.select({})}>
+                  onClick={() => this.select()}>
                   Cancel
                 </Button>
               </Grid>
@@ -376,9 +380,4 @@ class Posts extends Component {
   }
 }
 
-Posts.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(Posts);
+export default withStyles(styles)(Posts);

@@ -1,10 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
-interface Category {
-	id?: any;
-	name: string;
-	description?: string;
-}
+import { Category } from '../../shared';
 
 interface CategoryDocument extends Category, Document {}
 

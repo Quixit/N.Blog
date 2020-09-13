@@ -1,11 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
-interface Client {
-	id?: any;
-	name: string;
-	clientId: string;
-	clientSecret: string;
-}
+import { Client } from '../../shared';
 
 interface ClientDocument extends Client, Document {}
 

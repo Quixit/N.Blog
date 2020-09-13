@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -20,44 +19,46 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import LoginButton from '../controls/loginButton';
 import MenuItem from './menuItem';
 import Client from '../api/apiClient';
-import { Styles } from '../theme';
+import { styles } from '../theme';
+import { PageItem } from '../../../shared';
 
-class Menu extends Component {
-  toggleDrawer = value => {
-    this.setState({
-      drawer: value
-    });
-  };
+interface Props extends WithStyles, RouteComponentProps  {
+  serverError: (value: string) => void;
+}
 
-  constructor(props) {
+interface State {
+    settings: Map<string, string | undefined>;
+    list: PageItem[];
+    drawer: boolean;
+}
+
+class Menu extends Component<Props, State> {
+
+  constructor(props: Props) {
     super(props);
     this.state = {
-      settings : {},
+      settings : new Map(),
       list : [],
       drawer : false
     };
 
-    this.navigatePage = this.navigatePage.bind(this);
-
-    //this.serverError = props.serverError;
-
     Client.setOptionsCallBack((settings) => {
-      document.title = settings.title;
+      document.title = settings.get('title') ?? '';
       this.setState({ settings : settings });
     });
     Client.setPagesCallBack((pages) => {
       this.setState({ list : pages });
     });
   }
-  navigatePage(item) {
+  toggleDrawer = (value : boolean) => {
+    this.setState({
+      drawer: value
+    });
+  };
+  navigatePage = (item: PageItem) => {
     var history = this.props.history;
 
-    if (item.page === undefined)
-    {
-      history.push(item);
-      this.toggleDrawer(false);
-    }
-    else if (item.children.length < 1) {
+    if (item.children.length < 1) {
       history.push("/" +  item.page.slug);
       this.toggleDrawer(false);
     }
@@ -66,6 +67,12 @@ class Menu extends Component {
 
       this.setState({list: this.state.list});
     }
+  }
+  navigateTo = (url: string) => {
+    var history = this.props.history;
+
+    history.push(url);
+    this.toggleDrawer(false);
   }
   render() {
     const { classes  /*, serverError */ } = this.props;
@@ -81,7 +88,7 @@ class Menu extends Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" className={classes.grow} style={{ flex: 1 }}>
-              { this.state.settings.title}
+              { this.state.settings.get("title") }
             </Typography>
             <div>
               <LoginButton  />
@@ -96,14 +103,14 @@ class Menu extends Component {
              role="button">
            <div className={classes.list}>
             <List>
-              <ListItem button onClick={() => this.navigatePage("/") }>
+              <ListItem button onClick={() => this.navigateTo("/") }>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText  primary="Home" />
               </ListItem>
               {Client.isLoggedIn ?
-                <ListItem button onClick={() => this.navigatePage("/admin") }>
+                <ListItem button onClick={() => this.navigateTo("/admin") }>
                   <ListItemIcon>
                     <SettingsIcon />
                   </ListItemIcon>
@@ -112,7 +119,7 @@ class Menu extends Component {
                 : ""
               }
               <Divider />
-              {this.state.list.map((item, index) => (
+              {this.state.list.map((item) => (
                 <MenuItem item={item} onClick={this.navigatePage} key={item.page.slug} />
               ))}
             </List>
@@ -125,9 +132,4 @@ class Menu extends Component {
   }
 }
 
-Menu.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withRouter(withStyles(Styles)(Menu));
+export default withRouter(withStyles(styles)(Menu));

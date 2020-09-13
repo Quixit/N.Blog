@@ -1,10 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
-interface Setting {
-	id?: any;
-	name: string;
-	value?: string;
-}
+import { Setting } from '../../shared';
 
 interface SettingDocument extends Setting, Document {}
 

@@ -1,35 +1,47 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
-import { Styles} from '../theme';
+import { styles } from '../theme';
 import Client from '../api/apiClient';
+import { Setting } from '../../../shared';
 
-class Settings extends Component {
-  constructor(props) {
+interface Props extends WithStyles {
+  serverError: (value: string) => void;
+}
+
+interface State {
+  title: string;
+}
+
+class Settings extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       title : ''
     };
 
-    this.serverError = this.props.serverError;
     this.list();
   }
 
   list() {
-    Client.get('settings').then(settings => {
+    Client.get('settings').then((settings: Setting[]) => {
+      const map = new Map<string, string | undefined>();
+
       for(let i = 0; i < settings.length; i++)
       {
-        this.setState({ [settings[i].name] : settings[i].value });
+        map.set(settings[i].name, settings[i].value);
       }
+
+      this.setState({ title: map.get('title') ?? '' });
     })
     .catch(msg => {
-      this.serverError(msg.error);
+      this.props.serverError(msg.error);
     });
   }
 
@@ -42,38 +54,30 @@ class Settings extends Component {
     ];
 
     Client.post('settings', settings)
-    .then(users => {
+    .then(() => {
       this.list();
     })
     .catch(msg => {
-      this.serverError(msg.error);
+      this.props.serverError(msg.error);
     });
   }
-
-  sen
 
   isValid() {
       return true;
   }
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
-
   render() {
     const { classes } = this.props;
 
     return (
-      <Grid container spacing={16}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h2" gutterBottom>Settings</Typography>
         </Grid>
         <Grid item xs={12}>
           <Paper>
           <Grid item xs={12} className={classes.baseline}>
-            <Typography variant="h4">{this.state._id === 'new' ? 'New' : 'Edit'}</Typography>
+            <Typography variant="h4">{'Edit'}</Typography>
           </Grid>
           <Grid item xs={12}>
             <form className={classes.container} noValidate autoComplete="off">
@@ -83,18 +87,18 @@ class Settings extends Component {
                 label="Title"
                 className={classes.textField}
                 value={this.state.title}
-                onChange={this.handleChange('title')}
+                onChange={(e) => this.setState({ title: e.target.value })}
                 margin="normal"
               />
             </form>
           </Grid>
-          <Grid item xs={12} align="right">
+          <Grid item xs={12} alignContent="flex-end">
             <Button
               color="primary"
               aria-label="Save"
               className={classes.button}
               disabled={!this.isValid()}
-              onClick={e => this.save()}>
+              onClick={() => this.save()}>
               Save
             </Button>
           </Grid>
@@ -105,9 +109,4 @@ class Settings extends Component {
   }
 }
 
-Settings.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(Settings);
+export default withStyles(styles)(Settings);

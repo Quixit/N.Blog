@@ -35,7 +35,6 @@ passport.use(new BasicStrategy(
 
 passport.use(new ClientPasswordStrategy(
     function(clientId, clientSecret, done) {
-        console.log("asdf");
 
         Client.findOne({ clientId: clientId }, function(err, client) {
             if (err) {
@@ -49,7 +48,7 @@ passport.use(new ClientPasswordStrategy(
             if (client.clientSecret !== clientSecret) {
             	return done(null, false);
             }
-console.log(client);
+
             return done(null, client);
         });
     }
@@ -81,7 +80,7 @@ passport.use(new BearerStrategy(
         	return done(null, false);
         }
 
-        if( Math.round((Date.now()-token.created.getDate())/1000) > config.get('security:tokenLife') ) {
+        if( Math.round((Date.now()-Number(token.created))/1000) > config.get('security:tokenLife') ) {
 
             AccessToken.deleteOne({ token: hash }, function (err) {
                 if (err) {

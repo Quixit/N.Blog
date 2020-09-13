@@ -1,15 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { UserDocument } from './user';
-import { ClientDocument } from './client';
-
-interface AccessToken {
-    id?: any;
-    userId: UserDocument['_id'];
-    clientId: ClientDocument['_id'];
-    token: string;
-    salt: string;
-    created: Date;
-}
+import { AccessToken } from '../../shared';
 
 interface AccessTokenDocument extends AccessToken, Document {}
 

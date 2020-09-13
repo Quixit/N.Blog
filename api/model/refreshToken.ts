@@ -1,15 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { UserDocument } from './user';
-import { ClientDocument } from './client';
-
-interface RefreshToken {
-  id?: any;
-  userId: UserDocument["_id"];
-  clientId: ClientDocument["_id"];
-	token: string;
-	salt: string;
-	created: Date;
-}
+import { RefreshToken } from '../../shared';
 
 interface RefreshTokenDocument extends RefreshToken, Document {}
 

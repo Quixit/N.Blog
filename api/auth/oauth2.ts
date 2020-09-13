@@ -6,8 +6,9 @@ import config from  '../config';
 import getLogger from  '../log';
 
 import User from '../model/user';
-import AccessTokenModel, { AccessToken } from'../model/accessToken';
-import RefreshTokenModel, { RefreshToken } from '../model/refreshToken';
+import AccessTokenModel from '../model/accessToken';
+import RefreshTokenModel from '../model/refreshToken';
+import { AccessToken, RefreshToken } from '../../shared'
 
 // create OAuth 2.0 server
 var authServer = oauth2orize.createServer();
@@ -23,7 +24,7 @@ var errFn = function (cb: Function, err: string) {
 
 // Destroys any old tokens and generates a new access and refresh token
 var generateTokens = function (refresh: RefreshToken, access: AccessToken, done: oauth2orize.ExchangeDoneFunction) {
-	log.info("generate");
+
 	// curries in `done` callback so we don't need to pass it
     const errorHandler = errFn.bind(undefined, done);
 
@@ -67,7 +68,7 @@ var generateTokens = function (refresh: RefreshToken, access: AccessToken, done:
 
 // Exchange username & password for access token.
 authServer.exchange(oauth2orize.exchange.password(function(client, username, password, _scope, done) {
-	log.info("find");
+
 	User.findOne({ username: username }, function(err, user) {
 
 		if (err) {
@@ -79,12 +80,14 @@ authServer.exchange(oauth2orize.exchange.password(function(client, username, pas
 		}
 
 		generateTokens({
+			_id: null,
 			userId: user._id,
 			clientId: client._id,
 			token: "",
 			salt: "",
 			created: new Date()
 		}, {
+			_id: null,
 			userId: user._id,
 			clientId: client._id,
 			token: "",
@@ -125,12 +128,14 @@ authServer.exchange(oauth2orize.exchange.refreshToken(function(client, refreshTo
 			if (!user) { return done(null, false); }
 
 			generateTokens({
+				_id: null,
 				userId: user._id,
 				clientId: client._id,
 				token: "",
 				salt: "",
 				created: new Date()
 			}, {
+				_id: null,
 				userId: user._id,
 				clientId: client._id,
 				token: "",

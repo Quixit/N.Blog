@@ -3,12 +3,12 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import React, { Component } from 'react';
 import Routes from './routes';
-import { Theme } from './theme';
+import { theme } from './theme';
 
 class App extends Component {
   render() {
     return (
-      <MuiThemeProvider theme={Theme}>
+      <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <Routes />
       </MuiThemeProvider>

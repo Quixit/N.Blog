@@ -1,12 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { PageDocument } from './page';
-
-interface Index {
-	id?: any;
-	title: string;
-	slug: string;
-	pageId: PageDocument["_id"];
-}
+import { Index } from '../../shared';
 
 interface IndexDocument extends Index, Document {}
 

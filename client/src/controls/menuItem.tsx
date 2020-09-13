@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Styles} from '../theme';
+import { styles } from '../theme';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -13,8 +12,15 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 
 import { withStyles } from '@material-ui/core/styles';
+import { PageItem } from '../../../shared';
 
-class MenuItem extends Component {
+interface Props {
+  item: PageItem;
+  onClick:  (page: PageItem) => void;
+  isChild?: boolean;
+}
+
+class MenuItem extends Component<Props> {
   render() {
     const { item, onClick, isChild} = this.props;
 
@@ -29,7 +35,7 @@ class MenuItem extends Component {
         </ListItem>
         <Collapse in={item.expanded} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {item.children.map((child, index) => (
+          {item.children.map((child) => (
              <MenuItem item={child} onClick={onClick} isChild={true} key={child.page.slug} />
           ))}
          </List>
@@ -39,10 +45,4 @@ class MenuItem extends Component {
   }
 }
 
-MenuItem.propTypes = {
-  item: PropTypes.object.isRequired,
-  onClick: PropTypes.func.isRequired,
-  isChild: PropTypes.bool
-};
-
-export default withStyles(Styles)(MenuItem);
+export default withStyles(styles)(MenuItem);

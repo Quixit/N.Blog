@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -17,12 +15,25 @@ import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 
-import { Styles} from '../theme';
+import { styles} from '../theme';
 import Client from '../api/apiClient';
 import GenericDialog from '../controls/genericDialog';
+import { Category } from '../../../shared';
 
-class Categories extends Component {
-  constructor(props) {
+interface Props extends WithStyles {
+  serverError: (value: string) => void;
+}
+
+interface State {
+  items: Category[];
+  deleteId: string;
+  _id: any;
+  name: string;
+  description: string;
+}
+
+class Categories extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       items: [],
@@ -32,15 +43,8 @@ class Categories extends Component {
       description: ''
     };
 
-    this.serverError = this.props.serverError;
     this.list();
   }
-
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
 
   isValid() {
     var state = this.state;
@@ -53,15 +57,15 @@ class Categories extends Component {
       this.setState({ items : users });
     })
     .catch(msg => {
-      this.serverError(msg.error);
+      this.props.serverError(msg.error);
     });
   }
 
-  select(item) {
+  select(item?: Category, isNew?: boolean) {
       this.setState({
-        _id: item._id || '',
-        name: item.name || '',
-        description: item.description || ''
+        _id: item?._id || (isNew ? 'new' : ""),
+        name: item?.name || '',
+        description: item?.description || ''
       });
   }
 
@@ -74,42 +78,42 @@ class Categories extends Component {
 
     if (this.state._id === 'new') {
       Client.post('categories', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       Client.put('categories', item)
-      .then(users => {
-        this.select({});
+      .then(() => {
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
   }
 
-  delete(result) {
+  delete(result: string) {
     if (result === 'ok')
     {
       Client.delete('categories', this.state.deleteId)
-      .then(users => {
+      .then(() => {
         this.setState({deleteId : ''});
-        this.select({});
+        this.select();
         this.list();
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
     else {
       this.setState({deleteId : ''});
-      this.select({});
+      this.select();
     }
   }
 
@@ -117,9 +121,9 @@ class Categories extends Component {
     const { classes } = this.props;
 
     return (
-      <Grid container spacing={16}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h2">Categories<IconButton color="primary" aria-label="Add" onClick={e => this.select({_id : 'new'})}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Categories<IconButton color="primary" aria-label="Add" onClick={() => this.select(undefined, true)}><AddIcon fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -148,8 +152,8 @@ class Categories extends Component {
                         </TableCell>
                         <TableCell>{u.description}</TableCell>
                         <TableCell>
-                          <IconButton color="primary" aria-label="Edit" onClick={e => this.select(u)}><EditIcon /></IconButton>
-                          <IconButton color="primary" aria-label="Delete" onClick={e => this.setState({ deleteId: u._id})}><DeleteIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Edit" onClick={() => this.select(u)}><EditIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Delete" onClick={() => this.setState({ deleteId: u._id})}><DeleteIcon /></IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -172,7 +176,7 @@ class Categories extends Component {
                     label="Name"
                     className={classes.textField}
                     value={this.state.name}
-                    onChange={this.handleChange('name')}
+                    onChange={(e) => this.setState({ name: e.target.value })}
                     margin="normal"
                   />
                   <TextField
@@ -181,25 +185,25 @@ class Categories extends Component {
                     label="Description"
                     className={classes.textField}
                     value={this.state.description}
-                    onChange={this.handleChange('description')}
+                    onChange={(e) => this.setState({ description: e.target.value })}
                     margin="normal"
                   />
                 </form>
               </Grid>
-              <Grid item xs={12} align="right">
+              <Grid item xs={12} alignContent="flex-end">
                 <Button
                   color="primary"
                   aria-label="Save"
                   className={classes.button}
                   disabled={!this.isValid()}
-                  onClick={e => this.save()}>
+                  onClick={() => this.save()}>
                   Save
                 </Button>
                 <Button
                   color="secondary"
                   aria-label="Cancel"
                   className={classes.button}
-                  onClick={e => this.select({})}>
+                  onClick={() => this.select()}>
                   Cancel
                 </Button>
               </Grid>
@@ -211,9 +215,4 @@ class Categories extends Component {
   }
 }
 
-Categories.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(Categories);
+export default withStyles(styles)(Categories);

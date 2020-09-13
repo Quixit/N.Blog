@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Styles} from '../theme';
+import { styles } from '../theme';
 
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,7 +9,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-class ServerErrorDialog extends Component {
+interface Props extends WithStyles {
+  open: boolean;
+  handleClose: (result: string) => void;
+  title: string;
+  text: string;
+  type?: string;
+}
+
+class GenericDialog extends Component<Props> {
   render() {
     const { open, handleClose, title, text, type } = this.props;
 
@@ -30,16 +37,16 @@ class ServerErrorDialog extends Component {
           {
             type === 'ok' ?
             <DialogActions>
-              <Button onClick={e => handleClose('ok')} color="primary" autoFocus>
+              <Button onClick={() => handleClose('ok')} color="primary" autoFocus>
                 Ok
               </Button>
-              <Button onClick={e => handleClose('cancel')} color="secondary">
+              <Button onClick={() => handleClose('cancel')} color="secondary">
                 Cancel
               </Button>
             </DialogActions>
             :
             <DialogActions>
-              <Button onClick={e => handleClose('dismiss')} color="primary" autoFocus>
+              <Button onClick={() => handleClose('dismiss')} color="primary" autoFocus>
                 Dismiss
               </Button>
             </DialogActions>
@@ -49,13 +56,4 @@ class ServerErrorDialog extends Component {
   }
 }
 
-ServerErrorDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
-  type: PropTypes.string
-};
-
-export default withStyles(Styles)(ServerErrorDialog);
+export default withStyles(styles)(GenericDialog);

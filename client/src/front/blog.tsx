@@ -1,25 +1,33 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 
 import parse from 'html-react-parser';
 
-import { Styles} from '../theme';
+import { styles } from '../theme';
 import Client from '../api/apiClient';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Post } from '../../../shared';
 
-class Blog extends Component {
-  constructor(props) {
+interface Params {
+  slug?: string;
+}
+
+interface Props extends WithStyles, RouteComponentProps<Params> {
+  serverError: (value: string) => void;
+}
+
+interface State {
+  display?: Post
+}
+
+class Blog extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
-    this.serverError = this.props.serverError;
-
     this.state = {
-      display: {
-        slug : null
-      }
     };
 
     this.getPost(this.props.match.params.slug);
@@ -30,15 +38,15 @@ class Blog extends Component {
     this.getPost(this.props.match.params.slug);
   }
 
-  getPost(slug)
+  getPost(slug?: string)
   {
-    if (slug !== this.state.display.slug)
+    if (this.state.display === undefined || slug !== this.state.display.slug)
     {
       Client.get('posts/slug/' + slug).then(post => {
         this.setState({ display: post.post });
       })
       .catch(msg => {
-        this.serverError(msg.error);
+        this.props.serverError(msg.error);
       });
     }
   }
@@ -48,14 +56,14 @@ class Blog extends Component {
 
     return (
       <div style={{ padding: 8 * 3 }}>
-        <Grid container spacing={16}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h2">{this.state.display.title}</Typography>
+            <Typography variant="h2">{this.state.display?.title}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
               <Typography variant="body1" component="div">
-                { this.state.display.content != null ? parse(this.state.display.content) : '' }
+                { this.state.display?.content !== undefined ? parse(this.state.display.content) : '' }
               </Typography>
             </Paper>
           </Grid>
@@ -65,9 +73,4 @@ class Blog extends Component {
   }
 }
 
-Blog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  serverError: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(Blog);
+export default withRouter(withStyles(styles)(Blog));

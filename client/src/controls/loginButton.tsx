@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Client from '../api/apiClient';
-import { Styles} from '../theme';
+import { styles } from '../theme';
 
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 
-class LoginButton extends Component {
-  constructor(props) {
+interface Props extends WithStyles {
+  force?: boolean;
+  username?: string;
+  password?: string;
+}
+
+interface State {
+  username: string;
+  password: string;
+  isLoggedIn: boolean;
+  loginOpen: boolean;
+  redirectTo: string;
+}
+
+class LoginButton extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       username: props.username || '',
@@ -21,30 +34,17 @@ class LoginButton extends Component {
       redirectTo: ''
     };
 
-    //This binding is necessary to make `this` work in the callback
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleLoginClick = this.handleLoginClick.bind(this);
-    this.handleLogoffClick = this.handleLogoffClick.bind(this);
   }
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  }
-  handleLoginClick(event)
+  handleLoginClick = (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) =>
   {
     event.preventDefault();
-    Client.login(this.state.username,this.state.password).then(a => this.setState({ isLoggedIn : Client.isLoggedIn, redirectTo: this.redirectTo(Client.isLoggedIn)}));
+    Client.login(this.state.username,this.state.password).then(() => this.setState({ isLoggedIn : Client.isLoggedIn, redirectTo: this.redirectTo(Client.isLoggedIn)}));
     this.handleClose();
   }
-  handleLogoffClick(event)
+  handleLogoffClick = (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) =>
   {
     event.preventDefault();
-    Client.logoff().then(a => this.setState({ isLoggedIn : Client.isLoggedIn, redirectTo: this.redirectTo(Client.isLoggedIn) }));
+    Client.logoff().then(() => this.setState({ isLoggedIn : Client.isLoggedIn, redirectTo: this.redirectTo(Client.isLoggedIn) }));
   }
   handleOpen = () => {
    this.setState({ loginOpen: true });
@@ -52,7 +52,7 @@ class LoginButton extends Component {
   handleClose = () => {
    this.setState({ loginOpen: false });
   }
-  redirectTo(loggedIn)
+  redirectTo(loggedIn: boolean)
   {
     return  loggedIn ? '/admin' : "/";
   }
@@ -71,7 +71,7 @@ class LoginButton extends Component {
             <Typography variant="h6" id="login-modal-title" gutterBottom>
               Login
             </Typography>
-            <Grid container spacing={16}>
+            <Grid container spacing={2}>
              <Grid item xs={12}>
                <TextField
                  name="username"
@@ -79,7 +79,7 @@ class LoginButton extends Component {
                  label = "Username"
                  fullWidth
                  value={this.state.username}
-                 onChange={this.handleInputChange} />
+                 onChange={(e) => this.setState({ username: e.target.value })} />
              </Grid>
              <Grid item xs={12}>
                <TextField
@@ -88,9 +88,9 @@ class LoginButton extends Component {
                  label="Password"
                  fullWidth
                  value={this.state.password}
-                 onChange={this.handleInputChange} />
+                 onChange={(e) => this.setState({ password: e.target.value })} />
              </Grid>
-             <Grid item xs={12} align='end'>
+             <Grid item xs={12} alignContent='flex-end'>
                <Button onClick={this.handleLoginClick} color="primary" variant="contained">login</Button>
              </Grid>
             </Grid>
@@ -101,11 +101,4 @@ class LoginButton extends Component {
   }
 }
 
-LoginButton.propTypes = {
-  classes: PropTypes.object.isRequired,
-  username: PropTypes.string,
-  password: PropTypes.string,
-  force: PropTypes.bool
-};
-
-export default withStyles(Styles)(LoginButton);
+export default withStyles(styles)(LoginButton);

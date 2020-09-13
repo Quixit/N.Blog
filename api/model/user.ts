@@ -1,23 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import crypto from 'crypto';
-
-interface User{
-	id?: any;
-	userId?: any;
-	username: string;
-	email: string;
-	firstName?: string;
-	lastName?: string;
-	hashedPassword: string;
-	password?: string;
-	_plainPassword?: string;
-	salt: string;
-	created: Date;
-	modified: Date;
-	inactive: boolean;
-	encryptPassword: (password: string) => string;
-	checkPassword: (password: string) => boolean;
-}
+import { User } from '../../shared';
 
 interface UserDocument extends User, Document {}
 
