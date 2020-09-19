@@ -126,7 +126,8 @@ class ApiClient {
       return this.fetch(url, {
         method: method,
         headers: {
-          Authorization: 'Bearer ' + this.token.access_token
+          Authorization: 'Bearer ' + this.token.access_token,
+          'Content-Type':'application/json'
         },
         body: body
       });
