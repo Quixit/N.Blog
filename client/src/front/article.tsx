@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 
-import parse from 'html-react-parser';
-
-import { styles } from '../theme';
+import { ArticleTemplate, styles } from '../theme';
 import Client from '../api/apiClient';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Page } from '../../../shared';
@@ -52,23 +48,12 @@ class Article extends Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
-
+    const { display } = this.state;
     return (
-      <div style={{ padding: 8 * 3 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h2">{this.state.display?.title}</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
-              <Typography variant="body1" component="div">
-                { this.state.display?.content !== undefined ? parse(this.state.display.content) : '' }
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      </div>
+      <ArticleTemplate
+        {...this.props}
+        display={display}
+      />
     );
   }
 }

@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import Client from '../api/apiClient';
-import { styles } from '../theme';
+import { LoginButtonTemplate, styles } from '../theme';
 
 import { WithStyles, withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 
 interface Props extends WithStyles {
   force?: boolean;
@@ -58,45 +53,20 @@ class LoginButton extends Component<Props, State> {
   }
   render() {
     const { classes } = this.props;
+    const { username, password, isLoggedIn, loginOpen } = this.state;
 
     return (
-      <div>
-        {!this.state.isLoggedIn ? (<Button onClick={this.handleOpen} color="secondary">Login</Button>) : (<Button onClick={this.handleLogoffClick} color="secondary">Log Out</Button>)}
-        <Modal
-          aria-labelledby="login-modal-title"
-          aria-describedby="login-modal-description"
-          open={this.state.loginOpen}
-          onClose={this.handleClose}>
-          <div className={classes.modalPaper}>
-            <Typography variant="h6" id="login-modal-title" gutterBottom>
-              Login
-            </Typography>
-            <Grid container spacing={2}>
-             <Grid item xs={12}>
-               <TextField
-                 name="username"
-                 type="text"
-                 label = "Username"
-                 fullWidth
-                 value={this.state.username}
-                 onChange={(e) => this.setState({ username: e.target.value })} />
-             </Grid>
-             <Grid item xs={12}>
-               <TextField
-                 name="password"
-                 type="password"
-                 label="Password"
-                 fullWidth
-                 value={this.state.password}
-                 onChange={(e) => this.setState({ password: e.target.value })} />
-             </Grid>
-             <Grid item xs={12} alignContent='flex-end'>
-               <Button onClick={this.handleLoginClick} color="primary" variant="contained">login</Button>
-             </Grid>
-            </Grid>
-          </div>
-        </Modal>
-      </div>
+      <LoginButtonTemplate
+        handleLoginClick={this.handleLoginClick}
+        handleLogoffClick={this.handleLogoffClick}
+        handleOpen={this.handleOpen}
+        handleClose={this.handleClose}
+        username={username}
+        password={password}
+        classes={classes}
+        isLoggedIn={isLoggedIn}
+        loginOpen={loginOpen}
+      />
     );
   }
 }

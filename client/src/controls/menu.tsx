@@ -2,24 +2,11 @@ import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from "react-router-dom";
 
 import { WithStyles, withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import HomeIcon from '@material-ui/icons/Home';
-import SettingsIcon from '@material-ui/icons/Settings';
 
 import LoginButton from '../controls/loginButton';
 import MenuItem from './menuItem';
 import Client from '../api/apiClient';
-import { styles } from '../theme';
+import { MenuTemplate, styles } from '../theme';
 import { PageItem } from '../../../shared';
 
 interface Props extends WithStyles, RouteComponentProps  {
@@ -75,59 +62,20 @@ class Menu extends Component<Props, State> {
     this.toggleDrawer(false);
   }
   render() {
-    const { classes  /*, serverError */ } = this.props;
+    const { list, settings, drawer } = this.state;
     return (
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="Menu"
-              onClick={() => this.toggleDrawer(true)}>
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" className={classes.grow} style={{ flex: 1 }}>
-              { this.state.settings.get("title") }
-            </Typography>
-            <div>
-              <LoginButton  />
-            </div>
-          </Toolbar>
-          <SwipeableDrawer
-           open={this.state.drawer}
-           onClose={() => this.toggleDrawer(false)}
-           onOpen={() => this.toggleDrawer(true)}>
-           <div
-             tabIndex={0}
-             role="button">
-           <div className={classes.list}>
-            <List>
-              <ListItem button onClick={() => this.navigateTo("/") }>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText  primary="Home" />
-              </ListItem>
-              {Client.isLoggedIn ?
-                <ListItem button onClick={() => this.navigateTo("/admin") }>
-                  <ListItemIcon>
-                    <SettingsIcon />
-                  </ListItemIcon>
-                  <ListItemText  primary="Settings" />
-                </ListItem>
-                : ""
-              }
-              <Divider />
-              {this.state.list.map((item) => (
-                <MenuItem item={item} onClick={this.navigatePage} key={item.page.slug} />
-              ))}
-            </List>
-          </div>
-         </div>
-       </SwipeableDrawer>
-        </AppBar>
-      </div>
+      <MenuTemplate
+        toggleDrawer={this.toggleDrawer}
+        navigateTo={this.navigateTo}
+        settings={settings}
+        list={list.map((item) => (
+          <MenuItem item={item} onClick={this.navigatePage} key={item.page.slug} />
+        ))}
+        drawer={drawer}
+        isLoggedIn={Client.isLoggedIn}
+        loginButton={<LoginButton />}
+        {...this.props}
+        />
     );
   }
 }
