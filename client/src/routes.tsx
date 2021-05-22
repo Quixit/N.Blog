@@ -32,7 +32,7 @@ class Routes extends Component<Props, State> {
         <div>
         <GenericDialog
           open={ this.state.errorText !== '' }
-          handleClose={() => this.setState({errorText : ''})}
+          onClose={() => this.setState({errorText : ''})}
           title="Request Error"
           text={"There has been an error processing your request. " + this.state.errorText}
         />

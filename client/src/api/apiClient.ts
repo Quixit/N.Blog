@@ -84,7 +84,7 @@ class ApiClient {
 
     return new Promise(function(resolve) {
       self.setTokens(null);
-      resolve();
+      resolve(null);
     });
   }
   fetch(url : string, options?: RequestInit)

@@ -10,7 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 interface Props extends WithStyles {
   open: boolean;
-  handleClose: (result: string) => void;
+  onClose: (result: string) => void;
   title: string;
   text: string;
   type?: string;
@@ -18,12 +18,12 @@ interface Props extends WithStyles {
 
 class GenericDialogTemplate extends Component<Props> {
   render() {
-    const { open, handleClose, title, text, type } = this.props;
+    const { open, onClose, title, text, type } = this.props;
 
     return (
       <Dialog
           open={open}
-          onClose={handleClose}
+          onClose={onClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -36,16 +36,16 @@ class GenericDialogTemplate extends Component<Props> {
           {
             type === 'ok' ?
             <DialogActions>
-              <Button onClick={() => handleClose('ok')} color="primary" autoFocus>
+              <Button onClick={() => onClose('ok')} color="primary" autoFocus>
                 Ok
               </Button>
-              <Button onClick={() => handleClose('cancel')} color="secondary">
+              <Button onClick={() => onClose('cancel')} color="secondary">
                 Cancel
               </Button>
             </DialogActions>
             :
             <DialogActions>
-              <Button onClick={() => handleClose('dismiss')} color="primary" autoFocus>
+              <Button onClick={() => onClose('dismiss')} color="primary" autoFocus>
                 Dismiss
               </Button>
             </DialogActions>

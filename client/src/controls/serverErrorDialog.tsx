@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 interface Props {
   open: boolean;
-  handleClose: () => void;
+  onClose: () => void;
 };
 
 class ServerErrorDialog extends Component<Props> {

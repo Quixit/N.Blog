@@ -127,7 +127,7 @@ class Categories extends Component<Props, State> {
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
-          handleClose={ r => this.delete(r) }
+          onClose={ r => this.delete(r) }
           title="Confirm Delete"
           text={"This will permanently delete this category. Do you want to continue?"}
           type="ok"

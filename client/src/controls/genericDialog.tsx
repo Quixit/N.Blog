@@ -7,7 +7,7 @@ import {GenericDialogTemplate } from '../theme';
 
 interface Props extends WithStyles {
   open: boolean;
-  handleClose: (result: string) => void;
+  onClose: (result: string) => void;
   title: string;
   text: string;
   type?: string;

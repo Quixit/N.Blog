@@ -1,48 +1,73 @@
 {
   "name": "N.Blog.Client",
   "license": "GPL3",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Jonathan Bruce",
   "description": "Frontend Client for N.Blog platform.",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
-    "@types/draft-js": "^0.10.44",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^13.1.9",
+    "@types/draft-js": "^0.11.3",
     "@types/draftjs-to-html": "^0.8.0",
     "@types/html-to-draftjs": "^1.4.0",
-    "@types/jest": "^26.0.13",
-    "@types/node": "^14.10.1",
-    "@types/react": "^16.9.49",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-draft-wysiwyg": "^1.13.0",
-    "@types/react-router-dom": "^5.1.5",
-    "ajv": "^6.10.2",
-    "draft-js": "^0.10.5",
-    "draftjs-to-html": "^0.8.4",
-    "html-react-parser": "^0.6.4",
-    "html-to-draftjs": "^1.4.0",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.6.0",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "@types/react-draft-wysiwyg": "^1.13.2",
+    "@types/react-router-dom": "^5.1.7",
+    "draft-js": "^0.11.7",
+    "draftjs-to-html": "^0.9.1",
+    "html-react-parser": "^1.2.6",
+    "html-to-draftjs": "^1.5.0",
     "image-data-uri": "^2.0.1",
-    "moment-timezone": "^0.5.27",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-draft-wysiwyg": "^1.13.2",
-    "react-loadable": "^5.5.0",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.4.3",
-    "typescript": "^4.0.2"
+    "moment-timezone": "^0.5.33",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-draft-wysiwyg": "^1.14.7",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.3",
+    "typescript": "^4.2.4",
+    "web-vitals": "^1.1.2",
+    "workbox-background-sync": "^6.1.5",
+    "workbox-broadcast-update": "^6.1.5",
+    "workbox-cacheable-response": "^6.1.5",
+    "workbox-core": "^6.1.5",
+    "workbox-expiration": "^6.1.5",
+    "workbox-google-analytics": "^6.1.5",
+    "workbox-navigation-preload": "^6.1.5",
+    "workbox-precaching": "^6.1.5",
+    "workbox-range-requests": "^6.1.5",
+    "workbox-routing": "^6.1.5",
+    "workbox-strategies": "^6.1.5",
+    "workbox-streams": "^6.1.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "devDependencies": {}
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

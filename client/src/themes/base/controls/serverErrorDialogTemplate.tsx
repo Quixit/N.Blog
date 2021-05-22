@@ -9,17 +9,17 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 interface Props {
   open: boolean;
-  handleClose: () => void;
+  onClose: () => void;
 };
 
 class ServerErrorDialogTemplate extends Component<Props> {
   render() {
-    const { open, handleClose } = this.props;
+    const { open, onClose } = this.props;
 
     return (
       <Dialog
           open={open}
-          onClose={handleClose}
+          onClose={onClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -30,7 +30,7 @@ class ServerErrorDialogTemplate extends Component<Props> {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary" autoFocus>
+            <Button onClick={onClose} color="primary" autoFocus>
               Dismiss
             </Button>
           </DialogActions>

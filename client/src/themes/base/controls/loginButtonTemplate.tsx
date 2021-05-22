@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 
 import { WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -10,26 +10,28 @@ import Grid from '@material-ui/core/Grid';
 interface Props extends WithStyles {
   username: string;
   password: string;
-  handleLoginClick: (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
-  handleLogoffClick: (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
-  handleOpen: () => void;
-  handleClose: () => void;
+  onLoginClick: (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
+  onLogoffClick: (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
+  onOpen: () => void;
+  onClose: () => void;
+  onUsernameChange: (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+  onPasswordChange: (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
   loginOpen: boolean;
   isLoggedIn: boolean;
 }
 
 class LoginButtonTemplate extends Component<Props> {
   render() {
-    const { classes, handleLoginClick, handleLogoffClick, handleOpen, handleClose, loginOpen, isLoggedIn, username, password } = this.props;
+    const { classes, onLoginClick, onLogoffClick, onOpen, onClose, loginOpen, isLoggedIn, username, password, onUsernameChange, onPasswordChange } = this.props;
 
     return (
       <div>
-        {!isLoggedIn ? (<Button onClick={handleOpen} color="secondary">Login</Button>) : (<Button onClick={handleLogoffClick} color="secondary">Log Out</Button>)}
+        {!isLoggedIn ? (<Button onClick={onOpen} color="secondary">Login</Button>) : (<Button onClick={onLogoffClick} color="secondary">Log Out</Button>)}
         <Modal
           aria-labelledby="login-modal-title"
           aria-describedby="login-modal-description"
           open={loginOpen}
-          onClose={handleClose}>
+          onClose={onClose}>
           <div className={classes.modalPaper}>
             <Typography variant="h6" id="login-modal-title" gutterBottom>
               Login
@@ -42,7 +44,7 @@ class LoginButtonTemplate extends Component<Props> {
                  label = "Username"
                  fullWidth
                  value={username}
-                 onChange={(e) => this.setState({ username: e.target.value })} />
+                 onChange={onUsernameChange} />
              </Grid>
              <Grid item xs={12}>
                <TextField
@@ -51,10 +53,10 @@ class LoginButtonTemplate extends Component<Props> {
                  label="Password"
                  fullWidth
                  value={password}
-                 onChange={(e) => this.setState({ password: e.target.value })} />
+                 onChange={onPasswordChange} />
              </Grid>
              <Grid item xs={12} alignContent='flex-end'>
-               <Button onClick={handleLoginClick} color="primary" variant="contained">login</Button>
+               <Button onClick={onLoginClick} color="primary" variant="contained">login</Button>
              </Grid>
             </Grid>
           </div>

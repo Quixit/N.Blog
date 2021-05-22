@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { ChangeEvent, Component } from 'react';
 import Client from '../api/apiClient';
 import { LoginButtonTemplate, styles } from '../theme';
 
@@ -47,6 +47,12 @@ class LoginButton extends Component<Props, State> {
   handleClose = () => {
    this.setState({ loginOpen: false });
   }
+  handleUsernameChange  = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    this.setState({ username: e.target.value })
+  }
+  handlePasswordChange  = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    this.setState({ password: e.target.value })
+  }
   redirectTo(loggedIn: boolean)
   {
     return  loggedIn ? '/admin' : "/";
@@ -57,10 +63,12 @@ class LoginButton extends Component<Props, State> {
 
     return (
       <LoginButtonTemplate
-        handleLoginClick={this.handleLoginClick}
-        handleLogoffClick={this.handleLogoffClick}
-        handleOpen={this.handleOpen}
-        handleClose={this.handleClose}
+        onLoginClick={this.handleLoginClick}
+        onLogoffClick={this.handleLogoffClick}
+        onOpen={this.handleOpen}
+        onClose={this.handleClose}
+        onUsernameChange={this.handleUsernameChange}
+        onPasswordChange={this.handlePasswordChange}
         username={username}
         password={password}
         classes={classes}
