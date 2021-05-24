@@ -1,26 +1,14 @@
-import React, { Component, ChangeEvent } from 'react';
+import React, { Component } from 'react';
 
-import { WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 
-interface Props extends WithStyles {
-  username: string;
-  password: string;
-  onLoginClick: (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
-  onLogoffClick: (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
-  onOpen: () => void;
-  onClose: () => void;
-  onUsernameChange: (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
-  onPasswordChange: (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
-  loginOpen: boolean;
-  isLoggedIn: boolean;
-}
+import { LoginButtonProps } from '../../interfaces/props';
 
-class LoginButtonTemplate extends Component<Props> {
+class LoginButtonTemplate extends Component<LoginButtonProps> {
   render() {
     const { classes, onLoginClick, onLogoffClick, onOpen, onClose, loginOpen, isLoggedIn, username, password, onUsernameChange, onPasswordChange } = this.props;
 

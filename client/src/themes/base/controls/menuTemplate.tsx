@@ -1,7 +1,5 @@
-import React, { Component, ReactNode } from 'react';
-import { RouteComponentProps } from "react-router-dom";
+import React, { Component } from 'react';
 
-import { WithStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -16,18 +14,9 @@ import Divider from '@material-ui/core/Divider';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-interface Props extends WithStyles, RouteComponentProps  {
-  serverError: (value: string) => void;
-  toggleDrawer: (value : boolean) => void;
-  navigateTo: (url: string) => void;
-  settings: Map<string, string | undefined>;
-  list: ReactNode[];
-  drawer: boolean;
-  isLoggedIn: boolean;
-  loginButton: ReactNode;
-}
+import { MenuProps } from '../../interfaces/props';
 
-class MenuTemplate extends Component<Props> {
+class MenuTemplate extends Component<MenuProps> {
   render() {
     const { classes, toggleDrawer, navigateTo, settings, list, drawer, isLoggedIn, loginButton } = this.props;
     return (

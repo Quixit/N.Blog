@@ -2,23 +2,12 @@ import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { WithStyles } from '@material-ui/core/styles';
 
 import parse from 'html-react-parser';
 
-import { RouteComponentProps } from 'react-router-dom';
-import { Page } from '../../../../../shared';
+import { ArticleProps } from '../../interfaces/props';
 
-interface Params {
-  slug?: string;
-}
-
-interface Props extends WithStyles, RouteComponentProps<Params> {
-  serverError: (value: string) => void;
-  display?: Page;
-}
-
-class ArticleTemplate extends Component<Props> {
+class ArticleTemplate extends Component<ArticleProps> {
 
   render() {
     const { classes, display } = this.props;

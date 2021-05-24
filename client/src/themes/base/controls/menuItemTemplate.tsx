@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -10,16 +10,9 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 
-import { PageItem } from '../../../../../shared';
+import { MenuItemProps } from '../../interfaces/props';
 
-interface Props {
-  item: PageItem;
-  onClick:  (page: PageItem) => void;
-  isChild?: boolean;
-  menuItems: ReactNode[];
-}
-
-class MenuItemTemplate extends Component<Props> {
+class MenuItemTemplate extends Component<MenuItemProps> {
   render() {
     const { item, onClick, isChild, menuItems} = this.props;
 

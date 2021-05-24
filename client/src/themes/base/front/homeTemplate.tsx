@@ -1,30 +1,17 @@
-import React, { Component } from 'react';
-import { Link, RouteComponentProps} from "react-router-dom";
+import { Component } from 'react';
+import { Link} from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { WithStyles } from '@material-ui/core/styles';
 
 import moment from 'moment-timezone';
 import parse from 'html-react-parser';
 
-import { Post, User } from '../../../../../shared';
+import { HomeProps } from '../../interfaces/props';
 
-interface Params {
-  slug?: string;
-}
-
-interface Props extends WithStyles, RouteComponentProps<Params> {
-  serverError: (value: string) => void;
-  list: Post[];
-  users: Map<string, User>;
-  hasMore: boolean;
-  getNext: () => void;
-}
-
-class Home extends Component<Props> {
+class Home extends Component<HomeProps> {
   render() {
     const { classes, list, users, hasMore, getNext } = this.props;
 

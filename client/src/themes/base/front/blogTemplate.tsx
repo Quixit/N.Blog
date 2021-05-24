@@ -2,23 +2,12 @@ import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { WithStyles } from '@material-ui/core/styles';
 
 import parse from 'html-react-parser';
 
-import { RouteComponentProps } from 'react-router-dom';
-import { Post } from '../../../../../shared';
+import { BlogProps } from '../../interfaces/props';
 
-interface Params {
-  slug?: string;
-}
-
-interface Props extends WithStyles, RouteComponentProps<Params> {
-  serverError: (value: string) => void;
-  display?: Post
-}
-
-class BlogTemplate extends Component<Props> {
+class BlogTemplate extends Component<BlogProps> {
   render() {
     const { classes, display } = this.props;
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,15 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-interface Props extends WithStyles {
-  open: boolean;
-  onClose: (result: string) => void;
-  title: string;
-  text: string;
-  type?: string;
-}
+import { GenericDialogProps } from '../../interfaces/props';
 
-class GenericDialogTemplate extends Component<Props> {
+class GenericDialogTemplate extends Component<GenericDialogProps> {
   render() {
     const { open, onClose, title, text, type } = this.props;
 

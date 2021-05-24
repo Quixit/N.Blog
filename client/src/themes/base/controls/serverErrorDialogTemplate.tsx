@@ -7,12 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-interface Props {
-  open: boolean;
-  onClose: () => void;
-};
+import { ServerErrorDialogProps } from '../../interfaces/props';
 
-class ServerErrorDialogTemplate extends Component<Props> {
+class ServerErrorDialogTemplate extends Component<ServerErrorDialogProps> {
   render() {
     const { open, onClose } = this.props;
 
