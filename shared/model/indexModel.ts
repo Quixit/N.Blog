@@ -1,5 +1,5 @@
 interface Index {
-	_id: any;
+	_id?: any;
 	title: string;
 	slug: string;
 	pageId: any;

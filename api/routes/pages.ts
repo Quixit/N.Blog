@@ -8,8 +8,9 @@ const log = getLogger(module);
 import util from  'util';
 
 import mongoose from '../db/mongoose';
-import PageModel from '../model/page';
+import PageModel, { PageDocument } from '../model/page';
 import { PageItem } from '../../shared';
+import { CallbackError } from 'mongoose';
 
 router.get('/index', function(_req, res) {
 
@@ -67,7 +68,7 @@ router.get('/', function(_req, res) {
 
 router.get('/:id', function(req, res) {
 
-	PageModel.findById(req.params.id, function (err, page) {
+	PageModel.findById(req.params.id, function (err: CallbackError, page: PageDocument) {
 
 		if(!page) {
 			res.statusCode = 404;
@@ -95,7 +96,7 @@ router.get('/:id', function(req, res) {
 
 router.get('/slug/:slug', function(req, res) {
 
-	PageModel.find({ slug: req.params.slug }, function (err, page) {
+	PageModel.find({ slug: req.params.slug }, function (err: CallbackError, page: PageDocument[]) {
 
 		if(!page) {
 			res.statusCode = 404;
@@ -132,7 +133,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 	});
 
 	if (req.body.parent != null && req.body.parent !== '')
-		page.parent = mongoose.Types.ObjectId(req.body.parent);
+		page.parent = new mongoose.Types.ObjectId(req.body.parent);
 
 	page.save(function (err) {
 		if (!err) {
@@ -168,7 +169,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var pageId = req.params.id;
 
-	PageModel.findById(pageId, function (_err, page) {
+	PageModel.findById(pageId, function (_err: CallbackError, page: PageDocument) {
 		if(!page) {
 			res.statusCode = 404;
 			log.error(util.format('PageModel with id: %s Not Found', pageId));
@@ -185,7 +186,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		page.modified = new Date();
 
 		if (req.body.parent !== null && req.body.parent !== '' && req.body.parent != pageId) {
-			page.parent = mongoose.Types.ObjectId(req.body.parent);
+			page.parent = new mongoose.Types.ObjectId(req.body.parent);
 		}
 		else {
 			page.parent = null;

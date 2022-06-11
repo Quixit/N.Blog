@@ -7,7 +7,8 @@ import getLogger from '../log';
 const log = getLogger(module);
 import util from 'util';
 
-import User from '../model/user';
+import User, { UserDocument } from '../model/user';
+import { CallbackError } from 'mongoose';
 
 var passComplexity = function(password: string) {
 	var options = {
@@ -129,7 +130,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var userId = req.params.id;
 
-	User.findById(userId, function (_err, user) {
+	User.findById(userId, function (_err: CallbackError, user: UserDocument) {
 		if(!user) {
 			res.statusCode = 404;
 			log.error(util.format('User with id: %s Not Found', userId));
@@ -158,7 +159,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 
 		user.inactive = false;
 
-		user.save(function (err) {
+		user.save(function (err: CallbackError) {
 			if (!err) {
 				log.info(util.format("User with id: %s updated", user.id));
 				return res.json({
@@ -186,7 +187,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var userId = req.params.id;
 
-	User.findById(userId, function (_err, user) {
+	User.findById(userId, function (_err: CallbackError, user: UserDocument) {
 		if(!user) {
 			res.statusCode = 404;
 			log.error(util.format('User with id: %s Not Found', userId));

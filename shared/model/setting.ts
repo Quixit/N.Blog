@@ -1,5 +1,5 @@
 interface Setting {
-	_id: any;
+	_id?: any;
 	name: string;
 	value?: string;
 }

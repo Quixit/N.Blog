@@ -5,10 +5,11 @@ import crypto from 'crypto';
 import config from  '../config';
 import getLogger from  '../log';
 
-import User from '../model/user';
+import User, { UserDocument } from '../model/user';
 import AccessTokenModel from '../model/accessToken';
 import RefreshTokenModel from '../model/refreshToken';
 import { AccessToken, RefreshToken } from '../../shared'
+import { CallbackError } from 'mongoose';
 
 // create OAuth 2.0 server
 var authServer = oauth2orize.createServer();
@@ -16,7 +17,7 @@ var authServer = oauth2orize.createServer();
 const log = getLogger(module);
 
 // Generic error handler
-var errFn = function (cb: Function, err: string) {
+var errFn = function (cb: (err: CallbackError) => void, err: CallbackError) {
 	if (err) {
 		return cb(err);
 	}
@@ -69,7 +70,7 @@ var generateTokens = function (refresh: RefreshToken, access: AccessToken, done:
 // Exchange username & password for access token.
 authServer.exchange(oauth2orize.exchange.password(function(client, username, password, _scope, done) {
 
-	User.findOne({ username: username }, function(err, user) {
+	User.findOne({ username: username }, function(err: CallbackError, user: UserDocument) {
 
 		if (err) {
 			return done(err);
@@ -123,7 +124,7 @@ authServer.exchange(oauth2orize.exchange.refreshToken(function(client, refreshTo
 			return done(null, false);
 		}
 
-		User.findById(token.userId, function(err, user) {
+		User.findById(token.userId, (err: CallbackError, user: UserDocument) => {
 			if (err) { return done(err); }
 			if (!user) { return done(null, false); }
 

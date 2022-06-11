@@ -20,7 +20,7 @@ Steps:
 4. Navigate to the api subdirectory and run "npm install".
 5. Modify the defaults.json file to contain the user information you want to use.
 7. Configure the config.json file to match your MongoDB settings.
-6. While still in the api directory run "node defaults.js".
+6. While still in the api directory run "npm run seed".
 7. Copy the api directory to the production folder and run npm start.
 8. Navigate to the client subdirectory and run "npm install".
 7. Configure the config.json file to match your settings from the back-end.
@@ -37,7 +37,7 @@ Steps:
   4. Navigate to the api subdirectory and run "npm install".
   5. Modify the defaults.json file to contain the user information you want to use.
   7. Configure the config.json file to match your MongoDB settings.
-  6. While still in the api directory run "node defaults.js".
+  6. While still in the api directory run "npm run seed".
   7. Navigate to the client subdirectory and run "npm install".
   7. Configure the config.json file to match your settings from the back-end.
   8. Ensure the mongoDB binary is in you PATH.

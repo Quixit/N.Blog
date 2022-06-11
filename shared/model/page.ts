@@ -1,5 +1,5 @@
 interface Page {
-	_id: any;
+	_id?: any;
 	title: string;
 	description?: string;
 	content?: string;

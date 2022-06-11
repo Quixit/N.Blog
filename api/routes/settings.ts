@@ -7,7 +7,8 @@ import getLogger from '../log';
 const log = getLogger(module);
 import util from 'util';
 
-import Setting from '../model/setting';
+import Setting, { SettingDocument } from '../model/setting';
+import { CallbackError } from 'mongoose';
 
 router.get('/', function(_req, res) {
 
@@ -28,7 +29,7 @@ router.get('/', function(_req, res) {
 
 router.get('/:id', function(req, res) {
 
-	Setting.findById(req.params.id, function (err, setting) {
+	Setting.findById(req.params.id, function (err: CallbackError, setting: SettingDocument) {
 
 		if(!setting) {
 			res.statusCode = 404;
@@ -61,7 +62,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		var item = req.body[i];
 
 		promises.push(new Promise(function(resolve, reject) {
-			Setting.findOne({ name: item.name }, function (_err, setting) {
+			Setting.findOne({ name: item.name }, function (_err: CallbackError, setting: SettingDocument) {
 				if(setting) {
 					setting.name = item.name;
 					setting.value = item.value;

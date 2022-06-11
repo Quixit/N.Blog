@@ -8,7 +8,8 @@ const log = getLogger(module);
 import util from 'util';
 
 import mongoose from '../db/mongoose';
-import Post from '../model/post';
+import Post, { PostDocument } from '../model/post';
+import { CallbackError } from 'mongoose';
 const pageSize = 10;
 
 router.get('/index/:page', function(req, res) {
@@ -49,7 +50,7 @@ router.get('/', function(_req, res) {
 
 router.get('/:id', function(req, res) {
 
-	Post.findById(req.params.id, function (err, post) {
+	Post.findById(req.params.id, function (err: CallbackError, post: PostDocument) {
 
 		if(!post) {
 			res.statusCode = 404;
@@ -76,7 +77,7 @@ router.get('/:id', function(req, res) {
 });
 
 router.get('/slug/:slug', function(req, res) {
-	Post.find({ slug: req.params.slug }, function (err, post) {
+	Post.find({ slug: req.params.slug }, function (err: CallbackError, post: PostDocument[]) {
 
 		if(!post) {
 			res.statusCode = 404;
@@ -108,14 +109,14 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 		title: req.body.title,
 		description: req.body.description,
 		content: req.body.content,
-		userId: mongoose.Types.ObjectId((req.user as any).id),
+		userId: new mongoose.Types.ObjectId((req.user as any).id),
 		tags: req.body.tags,
 		published: req.body.published,
 		slug: req.body.slug
 	});
 
 	if (req.body.categoryId != null && req.body.categoryId != '')
-		post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
+		post.categoryId = new mongoose.Types.ObjectId(req.body.categoryId);
 
 	post.save(function (err) {
 		if (!err) {
@@ -151,7 +152,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 router.put('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
 	var postId = req.params.id;
 
-	Post.findById(postId, function (_err, post) {
+	Post.findById(postId, function (err: CallbackError, post: PostDocument) {
 		if(!post) {
 			res.statusCode = 404;
 			log.error(util.format('Post with id: %s Not Found', postId));
@@ -163,14 +164,14 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		post.title = req.body.title;
 		post.description = req.body.description;
 		post.content = req.body.content;
-		post.userId = mongoose.Types.ObjectId((req.user as any).id);
+		post.userId = new mongoose.Types.ObjectId((req.user as any).id);
 		post.tags = req.body.tags;
 		post.published = req.body.published;
 		post.slug = req.body.slug;
 		post.modified = new Date();
 
 		if (req.body.categoryId != null && req.body.categoryId != '')
-			post.categoryId = mongoose.Types.ObjectId(req.body.categoryId);
+			post.categoryId = new mongoose.Types.ObjectId(req.body.categoryId);
 
 		post.save(function (err) {
 			if (!err) {

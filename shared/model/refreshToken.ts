@@ -1,5 +1,5 @@
 interface RefreshToken {
-  _id: any;
+  _id?: any;
   userId: any;
   clientId: any;
 	token: string;

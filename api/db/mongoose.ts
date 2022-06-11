@@ -6,9 +6,8 @@ import config from '../config';
 const log = getLogger(module);
 const connectUri = config.get('mongoose:uri');
 
-mongoose.set('useCreateIndex', true);
 mongoose.Promise = global.Promise;
-mongoose.connect(connectUri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(connectUri);
 
 var db = mongoose.connection;
 

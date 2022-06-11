@@ -1,5 +1,5 @@
 interface Client {
-	_id: any;
+	_id?: any;
 	name: string;
 	clientId: string;
 	clientSecret: string;

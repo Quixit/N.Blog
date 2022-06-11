@@ -9,7 +9,8 @@ import util from 'util';
 
 import mongoose from '../db/mongoose';
 import CategoryModel, { CategoryDocument } from '../model/category';
-import Post from '../model/post';
+import Post, { PostDocument } from '../model/post';
+import { CallbackError } from 'mongoose';
 
 router.get('/', function(_req, res) {
 
@@ -30,7 +31,7 @@ router.get('/', function(_req, res) {
 
 router.get('/:id', function(req, res) {
 
-	CategoryModel.findById(req.params.id, function (err, category) {
+	CategoryModel.findById(req.params.id, function (err: CallbackError, category: CategoryDocument) {
 
 		if(!category) {
 			res.statusCode = 404;
@@ -109,7 +110,7 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 		category.name = req.body.name;
 		category.description = req.body.description;
 
-		category.save(function (err: Error) {
+		category.save(function (err) {
 			if (!err) {
 				log.info(util.format("Category with id: %s updated", category.id));
 				return res.json({
@@ -140,9 +141,9 @@ router.put('/:id', passport.authenticate('bearer', { session: false }), function
 });
 
 router.delete('/:id', passport.authenticate('bearer', { session: false }), function (req, res){
-	let queryId = mongoose.Types.ObjectId(req.params.id);
+	let queryId = new mongoose.Types.ObjectId(req.params.id);
 
-	Post.find({ categoryId : queryId},function (err, posts) {
+	Post.find({ categoryId : queryId},function (err: CallbackError, posts: PostDocument[]) {
 		if (!err) {
 			for (var i = 0; i < posts.length; i++)
 			{

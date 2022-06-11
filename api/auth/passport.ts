@@ -8,14 +8,15 @@ const BearerStrategy = bearer.Strategy;
 import crypto from 'crypto';
 
 import config from '../config';
-import User from '../model/user';
-import Client from '../model/client';
-import AccessToken from '../model/accessToken';
+import User, { UserDocument } from '../model/user';
+import Client, { ClientDocument } from '../model/client';
+import AccessToken, { AccessTokenDocument } from '../model/accessToken';
+import { CallbackError } from 'mongoose';
 
 passport.use(new BasicStrategy(
     function(username, password, done) {
 
-        Client.findOne({ clientId: username }, function(err, client) {
+        Client.findOne({ clientId: username }, function(err: CallbackError, client: ClientDocument) {
             if (err) {
             	return done(err);
             }
@@ -36,7 +37,7 @@ passport.use(new BasicStrategy(
 passport.use(new ClientPasswordStrategy(
     function(clientId, clientSecret, done) {
 
-        Client.findOne({ clientId: clientId }, function(err, client) {
+        Client.findOne({ clientId: clientId }, function(err: CallbackError, client: ClientDocument) {
             if (err) {
             	return done(err);
             }
@@ -70,7 +71,7 @@ passport.use(new BearerStrategy(
                  .update(key)
                  .digest('hex');
 
-      AccessToken.findOne({ token: hash }, function(err, token) {
+      AccessToken.findOne({ token: hash }, function(err: CallbackError, token: AccessTokenDocument) {
 
         if (err) {
         	return done(err);
@@ -91,7 +92,7 @@ passport.use(new BearerStrategy(
             return done(null, false, 'Token expired');
         }
 
-        User.findById(token.userId, function(err, user) {
+        User.findById(token.userId, function(err: CallbackError, user: UserDocument) {
 
             if (err) {
             	return done(err);

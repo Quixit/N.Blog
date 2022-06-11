@@ -1,5 +1,5 @@
 interface Category {
-	_id: any;
+	_id?: any;
 	name: string;
 	description?: string;
 }
