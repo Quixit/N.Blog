@@ -1,25 +1,7 @@
 import React, { Component } from 'react';
 
-import { WithStyles, withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Divider from '@material-ui/core/Divider';
+import { Divider, Checkbox, FormControlLabel, FormGroup, MenuItem, TextField, IconButton, Button, Paper, TableRow, TableHead, TableCell, TableBody, Table, Grid, Typography } from "@mui/material";
+import { Delete, Edit, Add } from "@mui/icons-material";
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
@@ -27,12 +9,11 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
-import { styles } from '../theme';
 import Client from '../api/apiClient';
 import GenericDialog from '../controls/genericDialog';
 import { Page } from '../../../shared';
 
-interface Props extends WithStyles {
+interface Props {
   serverError: (value: string) => void;
 }
 
@@ -190,12 +171,11 @@ class Pages extends Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
 
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h2">Pages<IconButton color="primary" aria-label="Add" onClick={() => this.select(undefined, true)}><AddIcon fontSize="large" /></IconButton></Typography>
+          <Typography variant="h2">Pages<IconButton color="primary" aria-label="Add" onClick={() => this.select(undefined, true)}><Add fontSize="large" /></IconButton></Typography>
         </Grid>
         <GenericDialog
           open={ this.state.deleteId !== '' }
@@ -206,8 +186,8 @@ class Pages extends Component<Props, State> {
         />
         {this.state._id === '' ?
           <Grid item xs={12}>
-            <Paper className={classes.tableContainer}>
-              <Table className={classes.table}>
+            <Paper>
+              <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell>Title</TableCell>
@@ -228,8 +208,8 @@ class Pages extends Component<Props, State> {
                         <TableCell>{p.published ? 'Yes' : 'No'}</TableCell>
                         <TableCell>{this.getParent(p.parent)?.title}</TableCell>
                         <TableCell>
-                          <IconButton color="primary" aria-label="Edit" onClick={() => this.select(p)}><EditIcon /></IconButton>
-                          <IconButton color="primary" aria-label="Delete" onClick={() => this.setState({ deleteId: p._id})}><DeleteIcon /></IconButton>
+                          <IconButton color="primary" aria-label="Edit" onClick={() => this.select(p)}><Edit /></IconButton>
+                          <IconButton color="primary" aria-label="Delete" onClick={() => this.setState({ deleteId: p._id})}><Delete /></IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -241,16 +221,15 @@ class Pages extends Component<Props, State> {
           :
           <Grid item xs={12}>
             <Paper>
-              <Grid item xs={12} className={classes.baseline}>
+              <Grid item xs={12}>
                 <Typography variant="h4">{this.state._id === 'new' ? 'New' : 'Edit'}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <form className={classes.container} noValidate autoComplete="off">
+                <form noValidate autoComplete="off">
                   <TextField
                     required
                     error={this.state.title === ""}
                     label="Title"
-                    className={classes.textField}
                     value={this.state.title}
                     onChange={(e) => this.setState({ title: e.target.value })}
                     margin="normal"
@@ -259,14 +238,12 @@ class Pages extends Component<Props, State> {
                     required
                     error={this.state.slug === ""}
                     label="Slug"
-                    className={classes.textField}
                     value={this.state.slug }
                     onChange={(e) => this.setState({ slug: e.target.value })}
                     margin="normal"
                   />
                   <TextField
                     label="Description"
-                    className={classes.textField}
                     value={this.state.description }
                     onChange={(e) => this.setState({ description: e.target.value })}
                     margin="normal"
@@ -276,7 +253,6 @@ class Pages extends Component<Props, State> {
                     label="Parent"
                     error={this.state.parent === this.state._id}
                     helperText ={this.state.parent === this.state._id ? 'A page cannot be its own parent' : ''}
-                    className={classes.textField}
                     value={this.state.parent}
                     onChange={(e) => this.setState({ parent: e.target.value })}
                     margin="normal"
@@ -289,7 +265,7 @@ class Pages extends Component<Props, State> {
                       </MenuItem>
                     ))}
                   </TextField>
-                  <Grid item xs={12} className={classes.baseline}>
+                  <Grid item xs={12}>
                     <Typography variant="h6">Content</Typography>
                   </Grid>
                   <div>
@@ -302,8 +278,7 @@ class Pages extends Component<Props, State> {
                     />
                   </div>
                   <Divider light/>
-                  <FormGroup
-                    className={classes.textField}>
+                  <FormGroup>
                     <FormControlLabel
                        control={
                          <Checkbox
@@ -319,7 +294,6 @@ class Pages extends Component<Props, State> {
                 <Button
                   color="primary"
                   aria-label="Save"
-                  className={classes.button}
                   disabled={!this.isValid()}
                   onClick={() => this.save()}>
                   Save
@@ -327,7 +301,6 @@ class Pages extends Component<Props, State> {
                 <Button
                   color="secondary"
                   aria-label="Cancel"
-                  className={classes.button}
                   onClick={() => this.select()}>
                   Cancel
                 </Button>
@@ -340,4 +313,4 @@ class Pages extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(Pages);
+export default Pages;

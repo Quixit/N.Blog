@@ -1,36 +1,24 @@
 import React, { Component } from 'react';
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import HomeIcon from '@material-ui/icons/Home';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { Divider, ListItemText, ListItemIcon, ListItem, List, SwipeableDrawer, IconButton, Typography, Toolbar, AppBar } from "@mui/material";
+import { Settings, Home, Menu } from "@mui/icons-material";
 
 import { MenuProps } from '../../interfaces/props';
 
 class MenuTemplate extends Component<MenuProps> {
   render() {
-    const { classes, toggleDrawer, navigateTo, settings, list, drawer, isLoggedIn, loginButton } = this.props;
+    const { toggleDrawer, navigateTo, settings, list, drawer, isLoggedIn, loginButton } = this.props;
     return (
-      <div className={classes.root}>
+      <div>
         <AppBar position="static">
           <Toolbar>
             <IconButton
-              className={classes.menuButton}
               color="inherit"
               aria-label="Menu"
               onClick={() => toggleDrawer(true)}>
-              <MenuIcon />
+              <Menu />
             </IconButton>
-            <Typography variant="h6" color="inherit" className={classes.grow} style={{ flex: 1 }}>
+            <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
               { settings.get("title") }
             </Typography>
             <div>
@@ -44,18 +32,18 @@ class MenuTemplate extends Component<MenuProps> {
            <div
              tabIndex={0}
              role="button">
-           <div className={classes.list}>
+           <div>
             <List>
               <ListItem button onClick={() => navigateTo("/") }>
                 <ListItemIcon>
-                  <HomeIcon />
+                  <Home />
                 </ListItemIcon>
                 <ListItemText  primary="Home" />
               </ListItem>
               {isLoggedIn ?
                 <ListItem button onClick={() => navigateTo("/admin") }>
                   <ListItemIcon>
-                    <SettingsIcon />
+                    <Settings />
                   </ListItemIcon>
                   <ListItemText  primary="Settings" />
                 </ListItem>

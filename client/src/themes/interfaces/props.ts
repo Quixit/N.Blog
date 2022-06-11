@@ -1,9 +1,8 @@
-import { WithStyles } from '@material-ui/core/styles';
 import { ChangeEvent, ReactNode } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Page, PageItem, Post, User } from '../../../../shared';
 
-interface GenericDialogProps extends WithStyles {
+interface GenericDialogProps {
   open: boolean;
   onClose: (result: 'ok' | 'cancel' | 'dismiss') => void;
   title: string;
@@ -11,7 +10,7 @@ interface GenericDialogProps extends WithStyles {
   type?: string;
 }
 
-interface LoginButtonProps extends WithStyles {
+interface LoginButtonProps {
   username: string;
   password: string;
   onLoginClick: (event: React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
@@ -31,7 +30,7 @@ interface MenuItemProps {
   menuItems: ReactNode[];
 }
 
-interface MenuProps extends WithStyles, RouteComponentProps  {
+interface MenuProps extends RouteComponentProps  {
   serverError: (value: string) => void;
   toggleDrawer: (value : boolean) => void;
   navigateTo: (url: string) => void;
@@ -51,7 +50,7 @@ interface ArticleRouteParams {
   slug?: string;
 }
 
-interface ArticleProps extends WithStyles, RouteComponentProps<ArticleRouteParams> {
+interface ArticleProps extends RouteComponentProps<ArticleRouteParams> {
   serverError: (value: string) => void;
   display?: Page;
 }
@@ -61,7 +60,7 @@ interface BlogRouteParams {
   slug?: string;
 }
 
-interface BlogProps extends WithStyles, RouteComponentProps<BlogRouteParams> {
+interface BlogProps extends RouteComponentProps<BlogRouteParams> {
   serverError: (value: string) => void;
   display?: Post
 }
@@ -70,7 +69,7 @@ interface HomeRouteParams {
   slug?: string;
 }
 
-interface HomeProps extends WithStyles, RouteComponentProps<HomeRouteParams> {
+interface HomeProps extends RouteComponentProps<HomeRouteParams> {
   serverError: (value: string) => void;
   list: Post[];
   users: Map<string, User>;

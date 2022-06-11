@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { styles } from '../theme';
-
-import { WithStyles, withStyles } from '@material-ui/core/styles';
 
 import {GenericDialogTemplate } from '../theme';
 
-interface Props extends WithStyles {
+interface Props {
   open: boolean;
   onClose: (result: string) => void;
   title: string;
@@ -21,4 +18,4 @@ class GenericDialog extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(GenericDialog);
+export default GenericDialog;

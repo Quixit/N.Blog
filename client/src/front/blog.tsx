@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { WithStyles, withStyles } from '@material-ui/core/styles';
 
-import { BlogTemplate, styles } from '../theme';
+import { BlogTemplate } from '../theme';
 import Client from '../api/apiClient';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Post } from '../../../shared';
@@ -10,7 +9,7 @@ interface Params {
   slug?: string;
 }
 
-interface Props extends WithStyles, RouteComponentProps<Params> {
+interface Props extends RouteComponentProps<Params> {
   serverError: (value: string) => void;
 }
 
@@ -58,4 +57,4 @@ class Blog extends Component<Props, State> {
   }
 }
 
-export default withRouter(withStyles(styles)(Blog));
+export default withRouter(Blog);

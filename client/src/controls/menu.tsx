@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from "react-router-dom";
 
-import { WithStyles, withStyles } from '@material-ui/core/styles';
-
 import LoginButton from '../controls/loginButton';
 import MenuItem from './menuItem';
 import Client from '../api/apiClient';
-import { MenuTemplate, styles } from '../theme';
+import { MenuTemplate } from '../theme';
 import { PageItem } from '../../../shared';
 
-interface Props extends WithStyles, RouteComponentProps  {
+interface Props extends RouteComponentProps  {
   serverError: (value: string) => void;
 }
 
@@ -80,4 +78,4 @@ class Menu extends Component<Props, State> {
   }
 }
 
-export default withRouter(withStyles(styles)(Menu));
+export default withRouter(Menu);

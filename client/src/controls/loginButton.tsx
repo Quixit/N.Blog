@@ -1,10 +1,8 @@
 import React, { ChangeEvent, Component } from 'react';
 import Client from '../api/apiClient';
-import { LoginButtonTemplate, styles } from '../theme';
+import { LoginButtonTemplate } from '../theme';
 
-import { WithStyles, withStyles } from '@material-ui/core/styles';
-
-interface Props extends WithStyles {
+interface Props {
   force?: boolean;
   username?: string;
   password?: string;
@@ -58,7 +56,6 @@ class LoginButton extends Component<Props, State> {
     return  loggedIn ? '/admin' : "/";
   }
   render() {
-    const { classes } = this.props;
     const { username, password, isLoggedIn, loginOpen } = this.state;
 
     return (
@@ -71,7 +68,6 @@ class LoginButton extends Component<Props, State> {
         onPasswordChange={this.handlePasswordChange}
         username={username}
         password={password}
-        classes={classes}
         isLoggedIn={isLoggedIn}
         loginOpen={loginOpen}
       />
@@ -79,4 +75,4 @@ class LoginButton extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(LoginButton);
+export default LoginButton;

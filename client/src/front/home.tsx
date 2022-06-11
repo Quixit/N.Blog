@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { RouteComponentProps} from "react-router-dom";
-import { WithStyles, withStyles } from '@material-ui/core/styles';
 
 import Client from '../api/apiClient';
-import { HomeTemplate, styles } from '../theme';
+import { HomeTemplate } from '../theme';
 import { Post, User } from '../../../shared';
 
 interface Params {
   slug?: string;
 }
 
-interface Props extends WithStyles, RouteComponentProps<Params> {
+interface Props extends RouteComponentProps<Params> {
   serverError: (value: string) => void;
 }
 
@@ -80,4 +79,4 @@ class Home extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(Home);
+export default Home;

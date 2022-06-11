@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-
+import { Typography, Grid, Paper } from "@mui/material";
 import parse from 'html-react-parser';
-
 import { BlogProps } from '../../interfaces/props';
 
 class BlogTemplate extends Component<BlogProps> {
   render() {
-    const { classes, display } = this.props;
+    const { display } = this.props;
 
     return (
       <div style={{ padding: 8 * 3 }}>
@@ -18,7 +14,7 @@ class BlogTemplate extends Component<BlogProps> {
             <Typography variant="h2">{display?.title}</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
+            <Paper style={{ padding: 8 *2 }}>
               <Typography variant="body1" component="div">
                 { display?.content !== undefined ? parse(display.content) : '' }
               </Typography>

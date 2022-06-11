@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 
-import Typography from '@material-ui/core/Typography';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
+import { Typography, Modal, Button, TextField, Grid } from "@mui/material";
 
 import { LoginButtonProps } from '../../interfaces/props';
 
 class LoginButtonTemplate extends Component<LoginButtonProps> {
   render() {
-    const { classes, onLoginClick, onLogoffClick, onOpen, onClose, loginOpen, isLoggedIn, username, password, onUsernameChange, onPasswordChange } = this.props;
+    const { onLoginClick, onLogoffClick, onOpen, onClose, loginOpen, isLoggedIn, username, password, onUsernameChange, onPasswordChange } = this.props;
 
     return (
       <div>
@@ -20,7 +16,7 @@ class LoginButtonTemplate extends Component<LoginButtonProps> {
           aria-describedby="login-modal-description"
           open={loginOpen}
           onClose={onClose}>
-          <div className={classes.modalPaper}>
+          <div>
             <Typography variant="h6" id="login-modal-title" gutterBottom>
               Login
             </Typography>

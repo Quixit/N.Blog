@@ -1,8 +1,36 @@
-import { createMuiTheme, createStyles } from "@material-ui/core/styles";
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
+import { createStyles, createTheme } from "@mui/material";
+import { Theme } from '@mui/material';
+import { green, purple } from "@mui/material/colors";
+
+declare module '@mui/material/styles' {
+  interface Theme {
+    status: {
+      danger: string;
+    },
+    primary: {
+      main: string;      
+    },
+    secondary: {
+      main: string;
+    };
+  }
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    status?: {
+      danger?: string;
+    },
+    primary?: {
+      main?: string;      
+    },
+    secondary?: {
+      main?: string;
+    };
+  }
+}
 
 //Override base theme styles.
-const theme = createMuiTheme({
+const theme = createTheme({
+  palette: { mode: 'dark' }
 });
 
 //Build on top of theme styles.

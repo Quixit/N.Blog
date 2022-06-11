@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
 
-import { WithStyles, withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import { TextField, Button, Paper, Grid, Typography } from "@mui/material";
 
-import { styles } from '../theme';
 import Client from '../api/apiClient';
 import { Setting } from '../../../shared';
 
-interface Props extends WithStyles {
+interface Props {
   serverError: (value: string) => void;
 }
 
@@ -67,7 +61,6 @@ class Settings extends Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
 
     return (
       <Grid container spacing={2}>
@@ -76,16 +69,15 @@ class Settings extends Component<Props, State> {
         </Grid>
         <Grid item xs={12}>
           <Paper>
-          <Grid item xs={12} className={classes.baseline}>
+          <Grid item xs={12}>
             <Typography variant="h4">{'Edit'}</Typography>
           </Grid>
           <Grid item xs={12}>
-            <form className={classes.container} noValidate autoComplete="off">
+            <form noValidate autoComplete="off">
               <TextField
                 required
                 error={this.state.title === ""}
                 label="Title"
-                className={classes.textField}
                 value={this.state.title}
                 onChange={(e) => this.setState({ title: e.target.value })}
                 margin="normal"
@@ -96,7 +88,6 @@ class Settings extends Component<Props, State> {
             <Button
               color="primary"
               aria-label="Save"
-              className={classes.button}
               disabled={!this.isValid()}
               onClick={() => this.save()}>
               Save
@@ -109,4 +100,4 @@ class Settings extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(Settings);
+export default Settings;

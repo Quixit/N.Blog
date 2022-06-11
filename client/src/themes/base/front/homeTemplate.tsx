@@ -1,10 +1,6 @@
 import { Component } from 'react';
 import { Link} from "react-router-dom";
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Typography, Grid, Paper, CircularProgress, Button } from "@mui/material";
 
 import moment from 'moment-timezone';
 import parse from 'html-react-parser';
@@ -13,11 +9,11 @@ import { HomeProps } from '../../interfaces/props';
 
 class Home extends Component<HomeProps> {
   render() {
-    const { classes, list, users, hasMore, getNext } = this.props;
+    const { list, users, hasMore, getNext } = this.props;
 
     return (
       <div style={{ padding: 8 * 3 }}>
-        {list.length < 1 && hasMore ? <CircularProgress className={classes.progress} /> : list.map((item) => (
+        {list.length < 1 && hasMore ? <CircularProgress /> : list.map((item) => (
           <div key={item.slug}>
             <Grid container spacing={2}>
               <Grid item xs={8}>
@@ -30,7 +26,7 @@ class Home extends Component<HomeProps> {
                   <Typography variant="body1" align="right">{users.has(item.userId) ? parse('<a href="mailto:' + users.get(item.userId)?.email + '">' + users.get(item.userId)?.firstName + ' ' + users.get(item.userId)?.lastName + '</a>') : '' }</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Paper className={classes.tableContainer} style={{ padding: 8 *2 }}>
+                <Paper style={{ padding: 8 *2 }}>
                   <Typography component="div" variant="body1">
                       { item.description != null ? parse(item.description) : '' }
                   </Typography>

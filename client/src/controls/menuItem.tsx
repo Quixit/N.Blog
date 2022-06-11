@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { MenuItemTemplate, styles } from '../theme';
+import { MenuItemTemplate } from '../theme';
 
-import { withStyles } from '@material-ui/core/styles';
 import { PageItem } from '../../../shared';
 
 interface Props {
@@ -27,4 +26,4 @@ class MenuItem extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(MenuItem);
+export default MenuItem;

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { ServerErrorDialogTemplate, styles } from '../theme';
-
-import { withStyles } from '@material-ui/core/styles';
+import { ServerErrorDialogTemplate } from '../theme';
 
 interface Props {
   open: boolean;
@@ -16,4 +14,4 @@ class ServerErrorDialog extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(ServerErrorDialog);
+export default (ServerErrorDialog);

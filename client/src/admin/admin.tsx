@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+
+import { Tab, Tabs } from "@mui/material";
 
 import Posts from './posts';
 import Categories from './categories';
 import Pages from './pages';
 import Users from './users';
 import Settings from './settings';
-import { styles } from '../theme';
 
-interface Props extends WithStyles {
+interface Props {
   serverError: (value: string) => void;
 }
 
@@ -31,11 +29,11 @@ class Admin extends Component<Props, State> {
   };
 
   render() {
-    const { classes, serverError } = this.props;
+    const { serverError } = this.props;
     const { tab } = this.state;
 
     return (
-      <div className={classes.root}>
+      <div>
 
         <Tabs value={tab} onChange={this.handleChange}>
           <Tab label="Blog" />
@@ -57,4 +55,4 @@ class Admin extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(Admin);
+export default Admin;

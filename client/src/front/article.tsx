@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-import { WithStyles, withStyles } from '@material-ui/core/styles';
-
-import { ArticleTemplate, styles } from '../theme';
+import { ArticleTemplate } from '../theme';
 import Client from '../api/apiClient';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Page } from '../../../shared';
@@ -11,7 +9,7 @@ interface Params {
   slug?: string;
 }
 
-interface Props extends WithStyles, RouteComponentProps<Params> {
+interface Props extends RouteComponentProps<Params> {
   serverError: (value: string) => void;
 }
 
@@ -58,4 +56,4 @@ class Article extends Component<Props, State> {
   }
 }
 
-export default withRouter(withStyles(styles)(Article));
+export default withRouter(Article);
