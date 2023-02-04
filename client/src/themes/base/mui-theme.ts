@@ -1,6 +1,5 @@
 import { createStyles, createTheme } from "@mui/material";
 import { Theme } from '@mui/material';
-import { green, purple } from "@mui/material/colors";
 
 declare module '@mui/material/styles' {
   interface Theme {
