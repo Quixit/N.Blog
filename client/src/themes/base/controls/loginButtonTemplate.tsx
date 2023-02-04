@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Typography, Button, TextField, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { Typography, Button, TextField, Grid, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 
 import { LoginButtonProps } from '../../interfaces/props';
 
