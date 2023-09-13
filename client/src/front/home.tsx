@@ -31,12 +31,16 @@ class Home extends Component<Props, State> {
       hasMore: true
     };
 
+  }
+
+  componentDidMount(): void {
     this.getIndex();
   }
+
   getIndex()
   {
     Client.get('posts/index/' + this.page).then(posts => {
-      this.setState({ list: this.state.list.concat(posts), hasMore: posts.length === this.pageSize });
+      this.setState({ list: this.page == 0 ? posts : this.state.list.concat(posts), hasMore: posts.length === this.pageSize });
     })
     .catch(msg => {
       this.props.serverError(msg.error);

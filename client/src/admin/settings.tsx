@@ -19,7 +19,9 @@ class Settings extends Component<Props, State> {
     this.state = {
       title : ''
     };
+  }
 
+  componentDidMount(): void {
     this.list();
   }
 

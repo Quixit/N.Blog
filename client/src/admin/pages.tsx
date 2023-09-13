@@ -42,8 +42,10 @@ class Pages extends Component<Props, State> {
       slug: '',
       parent: '',
       editorState: EditorState.createEmpty()
-    };
+    };    
+  }
 
+  componentDidMount(): void {
     this.list();
   }
 

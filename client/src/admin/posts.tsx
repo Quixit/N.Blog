@@ -47,7 +47,9 @@ class Posts extends Component<Props, State> {
       editorDescriptionState: EditorState.createEmpty(),
       editorState: EditorState.createEmpty()
     };
+  }
 
+  componentDidMount(): void {
     this.list();
     this.listCategories();
   }

@@ -29,7 +29,9 @@ class Categories extends Component<Props, State> {
       name: '',
       description: ''
     };
+  }
 
+  componentDidMount(): void {
     this.list();
   }
 

@@ -23,7 +23,9 @@ class Blog extends Component<Props, State> {
 
     this.state = {
     };
+  }
 
+  componentDidMount(): void {
     this.getPost(this.props.match.params.slug);
   }
 

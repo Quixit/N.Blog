@@ -35,7 +35,9 @@ class Users extends Component<Props, State> {
       lastName: '',
       password: ''
     };
+  }
 
+  componentDidMount(): void {
     this.list();
   }
 

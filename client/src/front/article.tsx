@@ -22,8 +22,10 @@ class Article extends Component<Props, State> {
     super(props);
 
     this.state = {
-    };
+    };    
+  }
 
+  componentDidMount(): void {
     this.getPage(this.props.match.params.slug);
   }
 
